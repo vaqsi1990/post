@@ -123,7 +123,7 @@ const RegisterPage = () => {
           <h2 className="mt-6 text-center text-3xl font-bold text-black">
             რეგისტრაცია
           </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
+          <p className="mt-2 text-center text-[16px] text-black">
             ან{' '}
             <Link
               href="/login"
@@ -137,7 +137,7 @@ const RegisterPage = () => {
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           {submitError && (
             <div className="rounded-md bg-red-50 p-4">
-              <p className="text-sm font-medium text-red-800">{submitError}</p>
+              <p className="text-[16px] font-medium text-red-800">{submitError}</p>
             </div>
           )}
 
@@ -162,7 +162,7 @@ const RegisterPage = () => {
                 placeholder="ელფოსტა"
               />
               {errors.email && (
-                <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+                <p className="mt-1 text-[16px] text-red-600">{errors.email}</p>
               )}
             </div>
 
@@ -189,7 +189,7 @@ const RegisterPage = () => {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-black"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-black hover:text-black"
                 >
                   {showPassword ? (
                     <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -231,7 +231,7 @@ const RegisterPage = () => {
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-black"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-black hover:text-black"
                 >
                   {showConfirmPassword ? (
                     <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

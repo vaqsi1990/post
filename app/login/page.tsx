@@ -85,7 +85,7 @@ const LoginPage = () => {
           <h2 className="mt-6 text-center text-3xl font-bold text-black">
             ავტორიზაცია
           </h2>
-          <p className="mt-2 text-center text-[16px] text-gray-600">
+          <p className="mt-2 text-center text-[16px] text-black">
             ან{' '}
             <Link
               href="/register"
@@ -150,7 +150,7 @@ const LoginPage = () => {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-black"
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-black hover:text-black"
               >
                 {showPassword ? (
                   <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

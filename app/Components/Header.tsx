@@ -3,9 +3,11 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { signOut, useSession } from 'next-auth/react';
 
 const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const { data: session, status } = useSession();
 
     const navLinks = [
         { href: '/', label: 'მთავარი' },
@@ -14,6 +16,11 @@ const Header = () => {
         { href: '/faq', label: 'კითხვები' },
         { href: '/contact', label: 'კონტაქტი' },
     ];
+
+    const isAuthed = status === 'authenticated';
+    const role = session?.user?.role;
+    const panelHref = role === 'ADMIN' ? '/admin' : '/dashboard';
+    const panelLabel = role === 'ADMIN' ? 'Admin Panel' : 'ჩემი კაბინეტი';
 
     return (
         <header className="header">
@@ -46,9 +53,24 @@ const Header = () => {
 
                 {/* Auth Button */}
                 <div className="header-actions">
-                    <Link href="/login" className="auth-button">
+                    {isAuthed ? (
+                      <div className="flex items-center gap-3">
+                        <Link href={panelHref} className="auth-button">
+                          {panelLabel}
+                        </Link>
+                        <button
+                          type="button"
+                          className="auth-button"
+                          onClick={() => signOut({ callbackUrl: '/' })}
+                        >
+                          გამოსვლა
+                        </button>
+                      </div>
+                    ) : (
+                      <Link href="/login" className="auth-button">
                         ავტორიზაცია
-                    </Link>
+                      </Link>
+                    )}
                 </div>
 
                 {/* Mobile Menu Button */}
@@ -77,13 +99,35 @@ const Header = () => {
                         {link.label}
                     </Link>
                 ))}
-                <Link 
-                    href="/login" 
-                    className="auth-button-mobile"
-                    onClick={() => setIsMenuOpen(false)}
-                >
-                    ავტორიზაცია
-                </Link>
+                {isAuthed ? (
+                  <>
+                    <Link 
+                        href={panelHref}
+                        className="auth-button-mobile"
+                        onClick={() => setIsMenuOpen(false)}
+                    >
+                        {panelLabel}
+                    </Link>
+                    <button
+                      type="button"
+                      className="auth-button-mobile"
+                      onClick={async () => {
+                        setIsMenuOpen(false);
+                        await signOut({ callbackUrl: '/' });
+                      }}
+                    >
+                      გამოსვლა
+                    </button>
+                  </>
+                ) : (
+                  <Link 
+                      href="/login" 
+                      className="auth-button-mobile"
+                      onClick={() => setIsMenuOpen(false)}
+                  >
+                      ავტორიზაცია
+                  </Link>
+                )}
             </nav>
         </header>
     );
