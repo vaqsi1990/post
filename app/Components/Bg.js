@@ -22,14 +22,13 @@ export default function Bg() {
   const websiteContentRef = useRef(null);
 
   const introHeaders = [
-    "<span>time to</span> be brave",
-    "<span>time to</span> be playful",
-    "<span>time to</span> design the future",
-    "<span>time to</span> meet harrnish",
-    "<span>time to</span> see project one",
+    "<span>დროა</span> მიიღო შენი ამანათი",
+    "<span>დროა</span> მარტივი შოპინგის",
+    "<span>დროა</span> საიმედო გადაზიდვის",
+    "<span>დროა</span> სწრაფი მიწოდების",
   ];
-
   const [currentHeaderIndex, setCurrentHeaderIndex] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
   const currentScaleRef = useRef(1);
 
   useGSAP(() => {
@@ -78,44 +77,79 @@ export default function Bg() {
       });
     }
 
-    // Animate hand rotation automatically like a clock
-    if (handRef.current) {
+    // Disable scroll during loading
+    if (isLoading) {
+      document.body.style.overflow = 'hidden';
+    }
+
+    // Animate hand rotation - 1 full rotation then transition to main page
+    if (handRef.current && handContainerRef.current && introRef.current) {
       // Set initial rotation to 0
       gsap.set(handRef.current, { rotation: 0, transformOrigin: "50% 0%" });
       
-      // Rotate the hand continuously like a clock (automatic rotation)
-      gsap.to(handRef.current, {
-        rotation: 360,
-        duration: 7, // 7 seconds for one full rotation (faster)
+      // Create timeline for 1 rotation
+      const rotationTimeline = gsap.timeline({
+        onComplete: () => {
+          // After 1 rotation, transition to main page
+          if (handContainerRef.current && introRef.current) {
+            // Fade out intro text
+            gsap.to(introRef.current, {
+              opacity: 0,
+              y: -50,
+              duration: 1,
+              ease: "power2.in",
+            });
+
+            // Move hand container to center and scale down
+            gsap.to(handContainerRef.current, {
+              scale: 0.3,
+              x: 0,
+              y: 0,
+              duration: 2,
+              ease: "power2.inOut",
+              onComplete: () => {
+                // Fade out hand container
+                gsap.to(handContainerRef.current, {
+                  opacity: 0,
+                  duration: 1,
+                  ease: "power2.out",
+                  onComplete: () => {
+                    // Loading complete - enable scroll and show main content
+                    setIsLoading(false);
+                    document.body.style.overflow = '';
+                    
+                    // Fade out loading screen
+                    if (stickyRef.current) {
+                      gsap.to(stickyRef.current, {
+                        opacity: 0,
+                        duration: 0.5,
+                        ease: "power2.out",
+                        onComplete: () => {
+                          if (stickyRef.current) {
+                            stickyRef.current.style.display = 'none';
+                          }
+                        },
+                      });
+                    }
+                  },
+                });
+              },
+            });
+          }
+        },
+      });
+
+      // Rotate 1 time (360 degrees)
+      rotationTimeline.to(handRef.current, {
+        rotation: 360, // 1 full rotation
+        duration: 5, // 5 seconds for faster rotation
         ease: "none",
-        repeat: -1, // Infinite loop
       });
     }
 
-    // Animate hand container scale on scroll
-    if (handContainerRef.current && container.current) {
-      const updateScale = (self) => {
-        // Update current scale based on scroll progress
-        const progress = self ? self.progress : 0;
-        currentScaleRef.current = 1 - (progress * 0.5); // Goes from 1 to 0.5
-      };
-      
-      gsap.to(handContainerRef.current, {
-        scale: 0.5,
-        scrollTrigger: {
-          trigger: container.current,
-          start: "top top",
-          end: "bottom top",
-          scrub: 1,
-          onUpdate: updateScale,
-          onEnter: updateScale,
-          onEnterBack: updateScale,
-        },
-      });
-      
-      // Initialize scale
-      currentScaleRef.current = 1;
-    }
+    // Don't animate scale on scroll during loading
+    // Initialize scale
+    currentScaleRef.current = 1;
 
       // Animate intro text with initial fade in
       if (introRef.current && h1ElementRef.current && container.current) {
@@ -155,26 +189,6 @@ export default function Bg() {
       }
     }
 
-    // Animate website content on scroll
-    if (websiteContentRef.current && container.current) {
-      gsap.fromTo(
-        websiteContentRef.current,
-        {
-          opacity: 0,
-          y: 50,
-        },
-        {
-          opacity: 1,
-          y: 0,
-          scrollTrigger: {
-            trigger: container.current,
-            start: "50% top",
-            end: "100% top",
-            scrub: 1,
-          },
-        }
-      );
-    }
   
     ScrollTrigger.refresh();
   
@@ -188,15 +202,21 @@ export default function Bg() {
     };
   }, { scope: container });
 
-  // Automatic header text rotation - only when image is near text (scale > 0.7)
+  // Cleanup: restore body overflow on unmount
   useEffect(() => {
-    if (!h1ElementRef.current) return;
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, []);
+
+  // Automatic header text rotation during loading
+  useEffect(() => {
+    if (!h1ElementRef.current || !isLoading) return;
 
     let interval;
-    let checkScaleInterval;
 
     const changeText = () => {
-      if (!h1ElementRef.current) return;
+      if (!h1ElementRef.current || !isLoading) return;
       
       setCurrentHeaderIndex((prevIndex) => {
         const nextIndex = (prevIndex + 1) % introHeaders.length;
@@ -233,54 +253,27 @@ export default function Bg() {
       });
     };
 
-    const checkAndUpdateText = () => {
-      // Check if ref exists before proceeding
-      if (!h1ElementRef.current) return;
-      
-      // Only change text when scale is greater than 0.7 (image is near text)
-      if (currentScaleRef.current > 0.7) {
-        // Start interval if not already running
-        if (!interval) {
-          interval = setInterval(() => {
-            // Double check scale and ref before changing text
-            if (currentScaleRef.current > 0.7 && h1ElementRef.current) {
-              changeText();
-            } else {
-              // Stop interval if scale changed
-              if (interval) {
-                clearInterval(interval);
-                interval = null;
-              }
-            }
-          }, 9000); // Change every 6 seconds
-        }
+    // Start text rotation during loading
+    interval = setInterval(() => {
+      if (isLoading && h1ElementRef.current) {
+        changeText();
       } else {
-        // Stop interval when image is far (scale <= 0.7)
         if (interval) {
           clearInterval(interval);
           interval = null;
         }
       }
-    };
-
-    // Small delay to ensure refs are ready
-    const timeoutId = setTimeout(() => {
-      // Check scale periodically
-      checkScaleInterval = setInterval(checkAndUpdateText, 100);
-
-      // Initial check
-      checkAndUpdateText();
-    }, 500);
+    }, 3000); // Change every 3 seconds during loading
 
     return () => {
-      clearTimeout(timeoutId);
       if (interval) clearInterval(interval);
-      if (checkScaleInterval) clearInterval(checkScaleInterval);
     };
-  }, [introHeaders.length]);
+  }, [introHeaders.length, isLoading]);
   return (
     <>
-      <div className="container" ref={container}>
+      {/* Loading Screen */}
+      {isLoading && (
+        <div className="container loading-screen" ref={container}>
           <section className="sticky" ref={stickyRef}>
             <div className="hand-container" ref={handContainerRef}>
               <div className="hand" ref={handRef}>
@@ -290,17 +283,14 @@ export default function Bg() {
 
             <div className="intro text-white" ref={introRef}>
               <h1 ref={h1ElementRef}>
-                <span>time to</span> be brave
+                <span>დროა</span> მიიღო რაც გინდა
               </h1>
-            
             </div>
-
-         
-          </section>
-          <section className="about">
-            <p>(Your next section goes here)</p>
           </section>
         </div>
+      )}
+
+   
     </>
   );
 }
