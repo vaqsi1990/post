@@ -19,7 +19,7 @@ export default async function AdminShell({
 
   return (
     <div className="min-h-[calc(100vh-120px)] bg-gray-100 py-8">
-      <div className="mx-auto w-full max-w-7xl px-4">
+      <div className="mx-auto w-full  px-4">
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[320px_1fr] lg:items-start">
           <AdminSidebar />
           <main className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">

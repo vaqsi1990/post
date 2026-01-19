@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 
 type User = {
@@ -9,7 +9,7 @@ type User = {
   firstName: string | null;
   lastName: string | null;
   role: string;
-  createdAt: Date;
+  createdAt: string; // Formatted date string from server
 };
 
 type UsersTableProps = {
@@ -21,6 +21,77 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
   const [users, setUsers] = useState(initialUsers);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [error, setError] = useState<string>('');
+  const [isLoading, setIsLoading] = useState(false);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const isInitialMount = useRef(true);
+
+  const fetchUsers = async (showLoading = true) => {
+    if (showLoading) {
+      setIsLoading(true);
+    }
+    try {
+      const res = await fetch('/api/admin/users');
+      if (!res.ok) return;
+      const data = await res.json();
+      if (data.users) {
+        // Format dates on client side
+        const formattedUsers = data.users.map((user: any) => ({
+          ...user,
+          createdAt: new Date(user.createdAt).toLocaleDateString('ka-GE'),
+        }));
+        setUsers(formattedUsers);
+      }
+    } catch (error) {
+      console.error('Failed to fetch users:', error);
+    } finally {
+      if (showLoading) {
+        setIsLoading(false);
+      }
+    }
+  };
+
+  useEffect(() => {
+    // Fetch users immediately when component mounts (without loading on initial mount)
+    fetchUsers(!isInitialMount.current);
+    isInitialMount.current = false;
+
+    // Set up polling every 5 seconds, but only when page is visible
+    const startPolling = () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+      intervalRef.current = setInterval(() => {
+        if (!document.hidden) {
+          fetchUsers(true);
+        }
+      }, 5000);
+    };
+
+    startPolling();
+
+    // Handle page visibility changes
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        if (intervalRef.current) {
+          clearInterval(intervalRef.current);
+          intervalRef.current = null;
+        }
+      } else {
+        fetchUsers(true); // Fetch immediately when page becomes visible
+        startPolling();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    // Cleanup interval and event listener on unmount
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, []);
 
   const handleDelete = async (userId: string, userEmail: string) => {
     if (!confirm(`დარწმუნებული ხართ, რომ გსურთ მომხმარებლის წაშლა: ${userEmail}?`)) {
@@ -59,7 +130,15 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
           <p className="text-[16px] text-red-800">{error}</p>
         </div>
       ) : null}
-      <div className="overflow-x-auto rounded-2xl border border-gray-200">
+      <div className="relative overflow-x-auto rounded-2xl border border-gray-200">
+        {isLoading && (
+          <div className="absolute inset-0 z-10 flex items-center justify-center bg-white bg-opacity-75 rounded-2xl">
+            <div className="flex flex-col items-center gap-2">
+              <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-black"></div>
+              <p className="text-[16px] text-gray-600">იტვირთება...</p>
+            </div>
+          </div>
+        )}
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
@@ -90,7 +169,7 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
                     {user.role === 'ADMIN' ? 'ადმინი' : 'მომხმარებელი'}
                   </td>
                   <td className="px-4 py-2 text-[16px] text-black">
-                    {new Date(user.createdAt).toLocaleDateString('ka-GE')}
+                    {user.createdAt}
                   </td>
                   <td className="px-4 py-2 text-[16px]">
                     <button

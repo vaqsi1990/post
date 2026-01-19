@@ -147,6 +147,8 @@ model Order {
   status        String   @default("pending") // "pending" | "processing" | "completed" | "cancelled"
   totalAmount   Float
   currency      String   @default("USD")
+  weight        String   @default("") // წონა (kg)
+  smsSent       Boolean  @default(false)
   notes         String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
