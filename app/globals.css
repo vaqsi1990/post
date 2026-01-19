@@ -72,12 +72,40 @@ img {
   height: 60px;
 }
 
-/* Hero image should be visible */
-.hero-image {
-  opacity: 1 !important;
+
+
+
+.parallax {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 120%;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  will-change: transform;
+  z-index: 0;
 }
 
-/* Services images should be visible */
+.img1 {
+  background-image: url('/gary-lopater-dOOGrK3zcUc-unsplash.jpg');
+}
+
+
+
+/* Editing the Divs */
+.par {
+  position: relative;
+  width: 60%;
+  height: auto;
+  margin: auto;
+ 
+
+  text-align: center;
+  vertical-align: middle;
+}
+
 .services-section img {
   opacity: 1 !important;
   width: 100px;
@@ -97,20 +125,32 @@ img {
   width: 100%;
   height: 100vh;
   overflow: hidden;
+  will-change: transform;
 }
 
-.hero-image-wrapper {
+
+.hero-image {
+  object-fit: cover;
+  opacity: 1 !important;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.hero-image-loading {
+  opacity: 0;
+}
+
+.hero-image-loaded {
+  opacity: 1;
+}
+
+.hero-image-placeholder {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 1;
-}
-
-.hero-image {
-  object-fit: cover;
-  opacity: 1 !important;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  z-index: 0;
 }
 
 .hero-overlay {
@@ -476,105 +516,6 @@ button:not(.mobile-menu-button):hover,
   }
 }
 
-.container {
-  position: relative;
-  height: 500vh; /* Enough height for scroll animation */
-  width: 100%;
-  max-width: 100vw;
-  overflow-x: hidden;
-}
-
-.loading-screen {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
-  z-index: 9999;
-  background-color: #161616;
-}
-
-.sticky {
-  position: sticky;
-  top: 0;
-
-  height: 100vh;
-  width: 100%;
-  max-width: 100vw;
-}
-
-.hand-container {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: min(600px, 90vw);
-  height: min(700px, 105vw);
-  max-width: 600px;
-  max-height: 700px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transform-origin: center center;
-  transform-style: preserve-3d;
-  will-change: transform;
-  z-index: 2;
-}
-
-.hand {
-  position: absolute;
-  width: 25%;
-  height: 40%;
-  background-color: rgb(238, 238, 238);
-  border-radius: 50%;
-  overflow: hidden;
-  will-change: transform;
-  opacity: 1;
-  transform-origin: 50% 0%;
-  top: 50% !important;
-  left: 50%;
-  margin-left: -5%;
-}
-
-.hand img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 50%;
-}
-
-.intro {
-  position: absolute;
-  top: calc(50% - 20px);
-  left: 25%;
-  width: 30.5%;
-  max-width: 400px;
-  padding-right: 2em;
-  box-sizing: border-box;
-}
-
-.intro p {
-  position: relative;
-  margin-top: 0.75em;
-  transform: translateX(20px);
-  opacity: 0;
-}
-
-.website-content {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-  opacity: 0;
-  z-index: 10;
-  pointer-events: none;
-}
-
-.website-content h1 {
-  font-size: clamp(3rem, 10vw, 8rem);
-  letter-spacing: -0.03em;
-}
 
 .lenis.lenis-smooth {
   scroll-behavior: auto !important;
@@ -593,20 +534,6 @@ button:not(.mobile-menu-button):hover,
 }
 
 @media (max-width: 900px) {
-  .intro {
-    width: 80%;
-    max-width: 400px;
-    left: 50%;
-    transform: translateX(-50%);
-    top: calc(50% - 20px);
-    padding-right: 0;
-    text-align: center;
-  }
-
-  .intro p {
-    text-align: center;
-  }
-
   h1 {
     font-size: clamp(16px, 4vw, 18px);
     text-align: center;
@@ -615,37 +542,9 @@ button:not(.mobile-menu-button):hover,
   p {
     font-size: clamp(12px, 3vw, 13px);
   }
-
-  .hand-container {
-    width: min(400px, 80vw);
-    height: min(500px, 100vw);
-  }
-
-  .website-content h1 {
-    font-size: clamp(2rem, 8vw, 6rem);
-  }
 }
 
 @media (max-width: 600px) {
-  .intro {
-    width: 85%;
-    max-width: 350px;
-    left: 50%;
-    transform: translateX(-50%);
-    top: calc(50% - 20px);
-    text-align: center;
-    padding: 0 1em;
-  }
-
-  .intro p {
-    text-align: center;
-  }
-
-  .hand-container {
-    width: min(300px, 70vw);
-    height: min(400px, 90vw);
-  }
-
   h1 {
     font-size: clamp(14px, 5vw, 16px);
     text-align: center;
