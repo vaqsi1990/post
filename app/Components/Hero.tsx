@@ -91,6 +91,17 @@ const Hero = () => {
 
   return (
     <div ref={containerRef} className="hero-parallax-container">
+      {/* Dark Overlay */}
+      <div className="absolute inset-0 bg-black/50 z-10"></div>
+      
+      {/* Hero Text */}
+      <div className="absolute inset-0 z-20 flex items-center justify-center">
+        <h1 className="md:text-[25px] text-[18px] text-white font-medium text-center px-4 max-w-4xl">
+        გამოიწერე მარტივად,  <br/> <span className='inline-block md:text-[30px] text-[20px] space-x-2 mt-10 text-white tracking-[20px]'> მიიღე სწრაფად </span>  
+        </h1>
+      </div>
+     
+
       <a
         className="ca3-scroll-down-link ca3-scroll-down-arrow"
         data-ca3_iconfont="ETmodules"
