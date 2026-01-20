@@ -70,3 +70,27 @@ span {
     color: black;
   }
 }
+
+.loader-text {
+  font-size: 17px;
+  font-weight: 500;
+  color: #fff;
+}
+
+@media (max-width: 426px) {
+  .ring {
+    width: 340px;
+    height: 340px;
+  }
+}
+
+@media (max-width: 321px) {
+  .ring {
+    width: 300px;
+    height: 300px;
+  }.loader-text {
+    font-size: 17px;
+    font-weight: 500;
+    color: #fff;
+  }
+}

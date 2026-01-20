@@ -4,11 +4,9 @@ import { useEffect, useState } from 'react';
 import './Loader.css';
 
 const loaderTexts = [
-  'შეუკვეთეთ ნივთები ჩვენთან ერთად',
+  'შეუკვეთეთ მარტივად ჩვენთან',
   'სწრაფი და უსაფრთხო მიწოდება',
-  'საიმედო ლოგისტიკური მომსახურება',
-  'თქვენი ნივთები უსაფრთხო ხელებშია',
-  'პროფესიონალური მომსახურება',
+  'სანდო მომსახურება ყოველ ეტაპზე',
 ];
 
 export default function Loader() {
@@ -65,7 +63,7 @@ export default function Loader() {
   <div className="ring">
 
   </div>
-  <span>{loaderTexts[currentTextIndex]}</span>
+  <span className='loader-text'>{loaderTexts[currentTextIndex]}</span>
 </div>
        
       </div>
