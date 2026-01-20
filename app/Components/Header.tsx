@@ -26,7 +26,7 @@ const Header = () => {
         <header className="header">
             <div className="header-container">
                 {/* Logo */}
-                <Link href="/" className="logo">
+                <Link href="/" className="logo" style={{ display: 'flex', alignItems: 'center' }}>
                   <Image 
                     src="/post.jpg" 
                     alt="Logo" 
@@ -35,6 +35,14 @@ const Header = () => {
                     className="logo-image"
                     priority
                     unoptimized
+                    style={{ 
+                      opacity: 1, 
+                      display: 'block',
+                      visibility: 'visible',
+                      width: '60px',
+                      height: '60px',
+                      objectFit: 'contain'
+                    }}
                   />
                 </Link>
 

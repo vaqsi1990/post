@@ -1,64 +1,109 @@
-"use client";
 
-import React, { useEffect, useRef } from "react";
+'use client';
+
+import { useEffect, useRef } from 'react';
+import { gsap } from 'gsap';
 
 const Hero = () => {
-  const imageRef = useRef<HTMLDivElement>(null);
-  const sectionRef = useRef<HTMLElement>(null);
+  const layer0Ref = useRef<HTMLDivElement>(null);
+  const layer1Ref = useRef<HTMLDivElement>(null);
+  const layer2Ref = useRef<HTMLDivElement>(null);
+  const xAxisRef = useRef<HTMLDivElement>(null);
+  const yAxisRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handleScroll = () => {
-      if (!imageRef.current || !sectionRef.current) return;
+    if (typeof window === 'undefined') return;
 
-      const rect = sectionRef.current.getBoundingClientRect();
-      const windowHeight = window.innerHeight;
-      
-      // Calculate scroll position relative to section
-      // When section top is at viewport top: rect.top = 0, offset should be 0
-      // As we scroll, rect.top decreases (becomes negative)
-      const scrollPosition = -rect.top;
-      
-      // Parallax effect: background moves slower than scroll
-      // Adjust the multiplier (0.5) to control parallax strength
-      // Lower values = less movement, higher values = more movement
-      const parallaxOffset = scrollPosition * 0.5;
-      
-      imageRef.current.style.transform = `translateY(${parallaxOffset}px)`;
-    };
+    const handleMouseMove = (event: MouseEvent) => {
+      if (!containerRef.current) return;
 
-    let ticking = false;
-    const onScroll = () => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          handleScroll();
-          ticking = false;
+      const container = containerRef.current;
+      const container_w = container.offsetWidth;
+      const container_h = container.offsetHeight;
+      const pos_x = event.pageX;
+      const pos_y = event.pageY;
+
+      const left = container_w / 2 - pos_x;
+      const top = container_h / 2 - pos_y;
+
+      if (xAxisRef.current) {
+        gsap.to(xAxisRef.current, {
+          duration: 1,
+          x: left * -1,
+          ease: 'expo.out',
+          overwrite: true,
         });
-        ticking = true;
+      }
+
+      if (yAxisRef.current) {
+        gsap.to(yAxisRef.current, {
+          duration: 1,
+          y: top * -1,
+          ease: 'expo.out',
+          overwrite: true,
+        });
+      }
+
+      if (layer2Ref.current) {
+        gsap.to(layer2Ref.current, {
+          duration: 1,
+          x: left / 24,
+          y: top / 12,
+          ease: 'expo.out',
+          overwrite: true,
+        });
+      }
+
+      if (layer1Ref.current) {
+        gsap.to(layer1Ref.current, {
+          duration: 1,
+          x: left / 8,
+          y: top / 4,
+          ease: 'expo.out',
+          overwrite: true,
+        });
+      }
+
+      if (layer0Ref.current) {
+        gsap.to(layer0Ref.current, {
+          duration: 10,
+          rotation: left / 200,
+          ease: 'expo.out',
+          overwrite: false,
+        });
       }
     };
 
-    window.addEventListener("scroll", onScroll, { passive: true });
-    handleScroll();
+    window.addEventListener('mousemove', handleMouseMove);
 
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
   }, []);
 
+  const handleScrollClick = () => {
+    window.scrollTo({
+      top: window.innerHeight,
+      behavior: 'smooth',
+    });
+  };
+
   return (
-    <section
-      ref={sectionRef}
-      className="relative h-screen overflow-hidden"
-    >
-      {/* Background parallax layer */}
-      <div ref={imageRef} className="parallax img1"></div>
-      
-      {/* Background overlay */}
-      <div className="absolute inset-0 bg-black/60 z-[1]"></div>
-      
-      {/* Content layer - stays fixed */}
-      <div className="relative z-10 h-full flex items-center justify-center">
-        <div className="par md:text-[30px] text-[20px] text-white">გამოიწერეთ ნივთები ჩვენთან ერთად</div>
-      </div>
-    </section>
+    <div ref={containerRef} className="hero-parallax-container">
+      <a
+        className="ca3-scroll-down-link ca3-scroll-down-arrow"
+        data-ca3_iconfont="ETmodules"
+        data-ca3_icon=""
+        onClick={handleScrollClick}
+        aria-label="Scroll down"
+      />
+      <div id="background" ref={layer0Ref} className="layer-0"></div>
+      <div id="x-axis" ref={xAxisRef} className="axis"></div>
+      <div id="y-axis" ref={yAxisRef} className="axis"></div>
+      <div id="planet-1" ref={layer1Ref} className="planet layer-1"></div>
+      <div id="planet-2" ref={layer2Ref} className="planet layer-2"></div>
+    </div>
   );
 };
 
