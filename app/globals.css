@@ -329,7 +329,7 @@ button:not(.mobile-menu-button):hover,
   top: 0;
   left: 0;
   width: 100%;
-  background-color: #347879;
+  background-color: #eb879c;
   backdrop-filter: blur(10px);
   z-index: 1000;
   
@@ -438,7 +438,7 @@ button:not(.mobile-menu-button):hover,
 }
 
 .auth-button {
-  background: #f0bc7e;
+  background: #eb879c;
   color: black;
   padding: 0.6rem 1.5rem;
   border-radius: 8px;
@@ -493,7 +493,7 @@ button:not(.mobile-menu-button):hover,
   align-items: center;
   width: 100%;
   text-decoration: none;
-  background: #f0bc7e;
+  background: #eb879c;
   border: none;
   cursor: pointer;
   color: #fff;
@@ -583,7 +583,7 @@ button:not(.mobile-menu-button):hover,
 }
 
 .auth-button-mobile {
-  background: #efa449;
+  background: #eb879c;
   color: #fff;
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
