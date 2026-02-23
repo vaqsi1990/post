@@ -1,12 +1,14 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { signOut, useSession } from 'next-auth/react';
 
 const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
+    const accountMenuRef = useRef<HTMLDivElement | null>(null);
     const { data: session, status } = useSession();
 
     const navLinks = [
@@ -21,6 +23,30 @@ const Header = () => {
     const role = session?.user?.role;
     const panelHref = role === 'ADMIN' ? '/admin' : '/dashboard';
     const panelLabel = role === 'ADMIN' ? 'Admin Panel' : 'ჩემი კაბინეტი';
+    const accountTriggerLabel = session?.user?.name?.trim() ? session.user.name : 'ანგარიში';
+
+    useEffect(() => {
+      if (!isAccountMenuOpen) return;
+
+      const onPointerDown = (e: MouseEvent | PointerEvent) => {
+        const el = accountMenuRef.current;
+        if (!el) return;
+        if (e.target instanceof Node && !el.contains(e.target)) {
+          setIsAccountMenuOpen(false);
+        }
+      };
+
+      const onKeyDown = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') setIsAccountMenuOpen(false);
+      };
+
+      document.addEventListener('pointerdown', onPointerDown);
+      document.addEventListener('keydown', onKeyDown);
+      return () => {
+        document.removeEventListener('pointerdown', onPointerDown);
+        document.removeEventListener('keydown', onKeyDown);
+      };
+    }, [isAccountMenuOpen]);
 
     return (
         <header className="header">
@@ -62,17 +88,42 @@ const Header = () => {
                 {/* Auth Button */}
                 <div className="header-actions">
                     {isAuthed ? (
-                      <div className="flex items-center gap-3">
-                        <Link href={panelHref} className="auth-button">
-                          {panelLabel}
-                        </Link>
+                      <div className="header-dropdown" ref={accountMenuRef}>
                         <button
                           type="button"
-                          className="auth-button"
-                          onClick={() => signOut({ callbackUrl: '/' })}
+                          className="auth-button header-dropdown-trigger"
+                          aria-haspopup="menu"
+                          aria-expanded={isAccountMenuOpen}
+                          onClick={() => setIsAccountMenuOpen((v) => !v)}
                         >
-                          გამოსვლა
+                          {accountTriggerLabel}
+                          <span className="header-dropdown-caret" aria-hidden="true">▾</span>
                         </button>
+
+                        <div
+                          className={`header-dropdown-menu ${isAccountMenuOpen ? 'open' : ''}`}
+                          role="menu"
+                        >
+                          <Link
+                            href={panelHref}
+                            className="header-dropdown-item"
+                            role="menuitem"
+                            onClick={() => setIsAccountMenuOpen(false)}
+                          >
+                            {panelLabel}
+                          </Link>
+                          <button
+                            type="button"
+                            className="header-dropdown-item"
+                            role="menuitem"
+                            onClick={async () => {
+                              setIsAccountMenuOpen(false);
+                              await signOut({ callbackUrl: '/' });
+                            }}
+                          >
+                            გამოსვლა
+                          </button>
+                        </div>
                       </div>
                     ) : (
                       <Link href="/login" className="auth-button">
