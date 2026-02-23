@@ -50,7 +50,12 @@ const RegisterPage = () => {
   }, [otpCooldown]);
 
   const handleSendOtp = async () => {
-    setErrors((prev) => ({ ...prev, phone: undefined, otpCode: undefined }));
+    setErrors((prev) => {
+      const next = { ...prev };
+      delete next.phone;
+      delete next.otpCode;
+      return next;
+    });
     setSubmitError('');
     const raw = formData.phone?.replace(/\D/g, '') ?? '';
     if (raw.length < 9) {
