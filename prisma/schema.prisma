@@ -23,6 +23,7 @@ model User {
   firstName         String?
   lastName          String?
   phone             String?
+  phoneVerified     Boolean  @default(false)
   personalIdNumber  String   @unique
   role              UserRole @default(USER)
   createdAt         DateTime @default(now())
@@ -34,6 +35,18 @@ model User {
   orders    Order[]
 
   @@map("users")
+}
+
+// Temporary OTP codes for phone verification (registration)
+model PhoneOtp {
+  id        String   @id @default(cuid())
+  phone     String   // normalized international format (e.g. 995599...)
+  code      String   // 4-digit OTP
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([phone])
+  @@map("phone_otps")
 }
 
 // Address model for shipping addresses

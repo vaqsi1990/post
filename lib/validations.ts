@@ -6,7 +6,8 @@ const registerBaseSchema = z.object({
   password: z.string().min(6, 'პაროლი უნდა იყოს მინიმუმ 6 სიმბოლო'),
   firstName: z.string().min(1, 'სახელი აუცილებელია').optional(),
   lastName: z.string().min(1, 'გვარი აუცილებელია').optional(),
-  phone: z.string().optional(),
+  phone: z.string().min(9, 'ტელეფონის ნომერი აუცილებელია'),
+  otpCode: z.string().length(4, 'კოდი უნდა იყოს 4 ციფრი').regex(/^\d{4}$/, 'მხოლოდ 4 ციფრი'),
   personalIdNumber: z
     .string()
     .min(11, 'პირადობის ნომერი უნდა იყოს 11 ციფრი')

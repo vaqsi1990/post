@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import { ZodError } from 'zod';
 import prisma from '../../../../lib/prisma';
 import { registerApiSchema } from '../../../../lib/validations';
+import { normalizePhone } from '../../../../lib/sms';
 
 export async function POST(request: NextRequest) {
   try {
@@ -10,6 +11,26 @@ export async function POST(request: NextRequest) {
 
     // Validate input with Zod (API schema doesn't include confirmPassword)
     const validatedData = registerApiSchema.parse(body);
+
+    // Verify OTP for phone
+    const normalizedPhone = normalizePhone(validatedData.phone);
+    const otpRecord = await prisma.phoneOtp.findFirst({
+      where: { phone: normalizedPhone, code: validatedData.otpCode },
+    });
+    if (!otpRecord) {
+      return NextResponse.json(
+        { error: 'არასწორი ან ვადაგასული კოდი' },
+        { status: 400 }
+      );
+    }
+    if (new Date() > otpRecord.expiresAt) {
+      await prisma.phoneOtp.delete({ where: { id: otpRecord.id } }).catch(() => {});
+      return NextResponse.json(
+        { error: 'კოდის ვადა გავიდა. გთხოვთ მოითხოვოთ ახალი.' },
+        { status: 400 }
+      );
+    }
+    await prisma.phoneOtp.delete({ where: { id: otpRecord.id } });
 
     // Check if user already exists by email
     const existingUserByEmail = await prisma.user.findUnique({
@@ -38,7 +59,7 @@ export async function POST(request: NextRequest) {
     // Hash password
     const hashedPassword = await bcrypt.hash(validatedData.password, 10);
 
-    // Create user
+    // Create user (phone verified via OTP)
     const user = await prisma.user.create({
       data: {
         email: validatedData.email,
@@ -46,6 +67,7 @@ export async function POST(request: NextRequest) {
         firstName: validatedData.firstName,
         lastName: validatedData.lastName,
         phone: validatedData.phone,
+        phoneVerified: true,
         personalIdNumber: validatedData.personalIdNumber,
         role: 'USER',
       },
@@ -77,7 +99,7 @@ export async function POST(request: NextRequest) {
       }));
 
       // Create a detailed error message
-      const errorMessages = formattedErrors.map((err: { field: string; message: string; code: string }) => {
+        const errorMessages = formattedErrors.map((err: { field: string; message: string; code: string }) => {
         const fieldName = err.field === 'email' ? 'ელფოსტა' :
                          err.field === 'password' ? 'პაროლი' :
                          err.field === 'confirmPassword' ? 'პაროლის დამოწმება' :
@@ -85,6 +107,7 @@ export async function POST(request: NextRequest) {
                          err.field === 'firstName' ? 'სახელი' :
                          err.field === 'lastName' ? 'გვარი' :
                          err.field === 'phone' ? 'ტელეფონი' :
+                         err.field === 'otpCode' ? 'სმს კოდი' :
                          err.field;
         return `${fieldName}: ${err.message}`;
       }).join('; ');

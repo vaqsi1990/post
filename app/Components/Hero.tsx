@@ -102,13 +102,7 @@ const Hero = () => {
       </div>
      
 
-      <a
-        className="ca3-scroll-down-link ca3-scroll-down-arrow"
-        data-ca3_iconfont="ETmodules"
-        data-ca3_icon=""
-        onClick={handleScrollClick}
-        aria-label="Scroll down"
-      />
+   
       <div id="background" ref={layer0Ref} className="layer-0"></div>
       <div id="x-axis" ref={xAxisRef} className="axis"></div>
       <div id="y-axis" ref={yAxisRef} className="axis"></div>

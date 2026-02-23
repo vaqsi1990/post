@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { registerSchema } from '../../lib/validations';
@@ -15,6 +15,7 @@ const RegisterPage = () => {
     firstName: '',
     lastName: '',
     phone: '',
+    otpCode: '',
     personalIdNumber: '',
   });
   const [showPassword, setShowPassword] = useState(false);
@@ -22,6 +23,8 @@ const RegisterPage = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [submitError, setSubmitError] = useState<string>('');
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpCooldown, setOtpCooldown] = useState(0);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -40,6 +43,38 @@ const RegisterPage = () => {
     setSubmitError('');
   };
 
+  useEffect(() => {
+    if (otpCooldown <= 0) return;
+    const t = setInterval(() => setOtpCooldown((c) => c - 1), 1000);
+    return () => clearInterval(t);
+  }, [otpCooldown]);
+
+  const handleSendOtp = async () => {
+    setErrors((prev) => ({ ...prev, phone: undefined, otpCode: undefined }));
+    setSubmitError('');
+    const raw = formData.phone?.replace(/\D/g, '') ?? '';
+    if (raw.length < 9) {
+      setErrors((prev) => ({ ...prev, phone: 'შეიყვანეთ ტელეფონის ნომერი' }));
+      return;
+    }
+    try {
+      const res = await fetch('/api/auth/send-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: formData.phone }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setSubmitError(data.error || 'კოდის გაგზავნა ვერ მოხერხდა');
+        return;
+      }
+      setOtpSent(true);
+      setOtpCooldown(60);
+    } catch {
+      setSubmitError('კოდის გაგზავნა ვერ მოხერხდა');
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitError('');
@@ -51,7 +86,7 @@ const RegisterPage = () => {
 
       setIsLoading(true);
 
-      // Remove confirmPassword before sending to API
+      // Remove confirmPassword before sending to API (otpCode is sent)
       const { confirmPassword, ...dataToSend } = validatedData;
 
       // Register user
@@ -322,21 +357,58 @@ const RegisterPage = () => {
               <label htmlFor="phone" className="block text-[16px] font-medium text-black mb-1">
                 ტელეფონი
               </label>
-              <input
-                id="phone"
-                name="phone"
-                type="tel"
-                value={formData.phone}
-                onChange={handleChange}
-                className={`appearance-none relative block w-full px-3 py-2 border ${
-                  errors.phone
-                    ? 'border-red-300 text-black'
-                    : 'border-gray-300 text-black'
+              <div className="flex gap-2">
+                <input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  required
+                  value={formData.phone}
+                  onChange={handleChange}
+                  className={`flex-1 appearance-none relative block w-full px-3 py-2 border ${
+                    errors.phone
+                      ? 'border-red-300 text-black'
+                      : 'border-gray-300 text-black'
                   } placeholder-gray-500 rounded-md focus:outline-none focus:ring-black focus:border-black sm:text-[16px]`}
-                placeholder="ტელეფონი"
-              />
+                  placeholder="5XX XXX XXX"
+                />
+                <button
+                  type="button"
+                  onClick={handleSendOtp}
+                  disabled={otpCooldown > 0}
+                  className="px-4 py-2 rounded-md text-[14px] font-medium bg-gray-800 text-white hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                >
+                  {otpCooldown > 0 ? `${otpCooldown} წამი` : 'კოდის გაგზავნა'}
+                </button>
+              </div>
               {errors.phone && (
                 <p className="mt-1 text-[16px] text-red-600">{errors.phone}</p>
+              )}
+            </div>
+            <div>
+              <label htmlFor="otpCode" className="block text-[16px] font-medium text-black mb-1">
+                SMS კოდი (4 ციფრი)
+              </label>
+              <input
+                id="otpCode"
+                name="otpCode"
+                type="text"
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                maxLength={4}
+                value={formData.otpCode}
+                onChange={(e) => {
+                  const v = e.target.value.replace(/\D/g, '').slice(0, 4);
+                  setFormData((prev) => ({ ...prev, otpCode: v }));
+                  if (errors.otpCode) setErrors((prev) => ({ ...prev, otpCode: '' }));
+                }}
+                className={`appearance-none relative block w-full px-3 py-2 border ${
+                  errors.otpCode ? 'border-red-300 text-black' : 'border-gray-300 text-black'
+                } placeholder-gray-500 rounded-md focus:outline-none focus:ring-black focus:border-black sm:text-[16px]`}
+                placeholder={otpSent ? 'შეიყვანეთ კოდი' : 'ჯერ დააჭირეთ „კოდის გაგზავნა“'}
+              />
+              {errors.otpCode && (
+                <p className="mt-1 text-[16px] text-red-600">{errors.otpCode}</p>
               )}
             </div>
           </div>
