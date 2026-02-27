@@ -15,6 +15,10 @@ const items: AdminNavItem[] = [
   { label: 'საწყობში', href: '/admin/warehouse' },
   { label: 'გაჩერებული', href: '/admin/stopped' },
   { label: 'გაცემული', href: '/admin/delivered' },
+  { label: 'გადახდები', href: '/admin/payments' },
+  { label: 'ტარიფები', href: '/admin/tariffs' },
+  { label: 'ჩათი', href: '/admin/chat' },
+  { label: 'რეგიონი', href: '/admin/regions' },
   { label: 'პარამეტრები', href: '/admin/settings' },
 ];
 

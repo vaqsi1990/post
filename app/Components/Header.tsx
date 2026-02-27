@@ -114,7 +114,7 @@ const Header = () => {
                           </Link>
                           <button
                             type="button"
-                            className="header-dropdown-item"
+                            className="header-dropdown-item text-white"
                             role="menuitem"
                             onClick={async () => {
                               setIsAccountMenuOpen(false);
@@ -169,7 +169,7 @@ const Header = () => {
                     </Link>
                     <button
                       type="button"
-                      className="auth-button-mobile"
+                      className="auth-button-mobile text-white"
                       onClick={async () => {
                         setIsMenuOpen(false);
                         await signOut({ callbackUrl: '/' });
@@ -181,7 +181,7 @@ const Header = () => {
                 ) : (
                   <Link 
                       href="/login" 
-                      className="auth-button-mobile"
+                      className="auth-button-mobile text-white"
                       onClick={() => setIsMenuOpen(false)}
                   >
                       ავტორიზაცია

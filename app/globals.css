@@ -44,7 +44,7 @@ h1 {
 p {
   font-size: 16px;
   font-weight: 500;
-  color: #555555;
+ 
   text-align: justify;
   line-height: 130%;
 }
@@ -304,8 +304,8 @@ img {
 /* Global Button Styles */
 button:not(.mobile-menu-button),
 .button {
-  background: #3A5BFF;
-  color: white;
+  border: 1px solid black !important;
+ 
   padding: 0.6rem 1.5rem;
   border-radius: 8px;
   font-size: 0.9rem;
@@ -315,6 +315,10 @@ button:not(.mobile-menu-button),
   cursor: pointer;
   text-decoration: none;
   display: inline-block;
+}
+
+.chatbutton{
+  padding: 0.6rem 3.5rem !important;
 }
 
 

@@ -1,18 +1,17 @@
 
-import React from 'react'
-import Hero from './Components/Hero'
-import Services from './Components/Services'
+import React from 'react';
+import Hero from './Components/Hero';
+import Services from './Components/Services';
+import ChatWidget from './Components/ChatWidget';
 
-
-const page = () => {
+const Page = () => {
   return (
     <div>
       <Hero />
       <Services />
-
-  
+      <ChatWidget />
     </div>
-  )
-}
+  );
+};
 
-export default page
+export default Page;

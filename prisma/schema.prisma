@@ -15,6 +15,11 @@ enum UserRole {
   ADMIN
 }
 
+enum ChatSender {
+  USER
+  ADMIN
+}
+
 // User model for authentication and user management
 model User {
   id               String   @id @default(cuid())
@@ -33,6 +38,7 @@ model User {
   parcels   Parcel[]
   payments  Payment[]
   orders    Order[]
+  chats     ChatThread[]
 
   @@map("users")
 }
@@ -205,4 +211,35 @@ model Branch {
   updatedAt   DateTime @updatedAt
 
   @@map("branches")
+}
+
+// Chat between external user and admin
+model ChatThread {
+  id        String   @id @default(cuid())
+  firstName String
+  lastName  String
+  email     String
+  phone     String
+  status    String   @default("open") // open | closed
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId    String? 
+  user      User?    @relation(fields: [userId], references: [id])
+
+  messages  ChatMessage[]
+
+  @@map("chat_threads")
+}
+
+model ChatMessage {
+  id        String      @id @default(cuid())
+  threadId  String
+  sender    ChatSender
+  text      String
+  createdAt DateTime    @default(now())
+
+  thread    ChatThread  @relation(fields: [threadId], references: [id], onDelete: Cascade)
+
+  @@map("chat_messages")
 }

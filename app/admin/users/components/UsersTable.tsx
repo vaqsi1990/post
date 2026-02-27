@@ -1,7 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
 
 type User = {
   id: string;
@@ -17,13 +16,10 @@ type UsersTableProps = {
 };
 
 export default function UsersTable({ users: initialUsers }: UsersTableProps) {
-  const router = useRouter();
   const [users, setUsers] = useState(initialUsers);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [error, setError] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const isInitialMount = useRef(true);
 
   const fetchUsers = async (showLoading = true) => {
     if (showLoading) {
@@ -51,46 +47,8 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
   };
 
   useEffect(() => {
-    // Fetch users immediately when component mounts (without loading on initial mount)
-    fetchUsers(!isInitialMount.current);
-    isInitialMount.current = false;
-
-    // Set up polling every 5 seconds, but only when page is visible
-    const startPolling = () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-      intervalRef.current = setInterval(() => {
-        if (!document.hidden) {
-          fetchUsers(true);
-        }
-      }, 5000);
-    };
-
-    startPolling();
-
-    // Handle page visibility changes
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        if (intervalRef.current) {
-          clearInterval(intervalRef.current);
-          intervalRef.current = null;
-        }
-      } else {
-        fetchUsers(true); // Fetch immediately when page becomes visible
-        startPolling();
-      }
-    };
-
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-
-    // Cleanup interval and event listener on unmount
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-    };
+    // ერთხელ ჩავიტვირთოთ მომხმარებლები კლიენტზე მOUNT-ისას
+    void fetchUsers(true);
   }, []);
 
   const handleDelete = async (userId: string, userEmail: string) => {
@@ -115,7 +73,6 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
 
       // Remove user from local state
       setUsers((prev) => prev.filter((u) => u.id !== userId));
-      router.refresh();
     } catch {
       setError('დაფიქსირდა შეცდომა. გთხოვთ სცადოთ თავიდან.');
     } finally {
