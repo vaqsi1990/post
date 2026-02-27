@@ -44,6 +44,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Check if user already exists by phone (unique per normalized number)
+    const existingUserByPhone = await prisma.user.findUnique({
+      where: { phone: normalizedPhone },
+    });
+    if (existingUserByPhone) {
+      return NextResponse.json(
+        { error: 'ეს ტელეფონის ნომერი უკვე გამოყენებულია' },
+        { status: 400 }
+      );
+    }
+
     // Check if user already exists by personal ID number
     const existingUserByIdNumber = await prisma.user.findFirst({
       where: { personalIdNumber: validatedData.personalIdNumber },
@@ -66,7 +77,7 @@ export async function POST(request: NextRequest) {
         password: hashedPassword,
         firstName: validatedData.firstName,
         lastName: validatedData.lastName,
-        phone: validatedData.phone,
+        phone: normalizedPhone,
         phoneVerified: true,
         personalIdNumber: validatedData.personalIdNumber,
         role: 'USER',

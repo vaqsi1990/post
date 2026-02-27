@@ -22,7 +22,7 @@ model User {
   password          String
   firstName         String?
   lastName          String?
-  phone             String?
+  phone             String?  @unique
   phoneVerified     Boolean  @default(false)
   personalIdNumber  String   @unique
   role              UserRole @default(USER)
