@@ -317,12 +317,6 @@ button:not(.mobile-menu-button),
   display: inline-block;
 }
 
-button:not(.mobile-menu-button):hover,
-.button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(239, 164, 73, 0.4);
-  background: #f5b85a;
-}
 
 /* Header Styles */
 .header {
@@ -590,10 +584,7 @@ button:not(.mobile-menu-button):hover,
   transition: transform 0.3s ease, background 0.3s ease;
 }
 
-.auth-button-mobile:hover {
-  transform: scale(1.05);
-  background: #f5b85a;
-}
+
 
 /* Responsive */
 @media (max-width: 900px) {
