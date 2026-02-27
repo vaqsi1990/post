@@ -58,7 +58,7 @@ const Header = () => {
                     alt="Logo" 
                     width={60} 
                     height={60}
-                    className="logo-image"
+                    className="logo-image rounded-full"
                     priority
                     unoptimized
                     style={{ 

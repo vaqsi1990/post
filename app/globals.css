@@ -76,6 +76,7 @@ img {
   height: 60px !important;
   object-fit: contain !important;
   position: relative !important;
+  border-radius: 50% !important;
 }
 
 .header .logo-image img {
@@ -303,8 +304,8 @@ img {
 /* Global Button Styles */
 button:not(.mobile-menu-button),
 .button {
-  background: #f0bc7e;
-  color: black;
+  background: #3A5BFF;
+  color: white;
   padding: 0.6rem 1.5rem;
   border-radius: 8px;
   font-size: 0.9rem;
@@ -329,7 +330,7 @@ button:not(.mobile-menu-button):hover,
   top: 0;
   left: 0;
   width: 100%;
-  background-color: #eb879c;
+  background: linear-gradient(90deg, #2DA7FF, #3A5BFF, #8A3CFF, #FF4FD8);
   backdrop-filter: blur(10px);
   z-index: 1000;
   
@@ -414,14 +415,11 @@ button:not(.mobile-menu-button):hover,
 }
 
 .nav-link {
-  color: #fff;
-  text-decoration: none;
-  font-size: 20px;
-  
+  color: rgba(255,255,255,0.9);
   font-weight: 500;
-  padding: 0.5rem 0;
-  position: relative;
-  transition: color 0.3s ease;
+  text-decoration: none;
+  padding: 8px 12px;
+  transition: 0.3s ease;
 }
 
 
@@ -438,16 +436,13 @@ button:not(.mobile-menu-button):hover,
 }
 
 .auth-button {
-  background: #eb879c;
-  color: black;
-  padding: 0.6rem 1.5rem;
-  border-radius: 8px;
-  text-decoration: none;
-  font-size: 20px;
-  font-weight: 600;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+  background: #3A5BFF;
+  color: white;
   border: none;
-  cursor: pointer;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: 0.3s ease;
 }
 
 .header-dropdown {
@@ -472,7 +467,7 @@ button:not(.mobile-menu-button):hover,
   right: 0;
   top: calc(100% + 10px);
   min-width: 220px;
-  background: #347879;
+  background: #FF4FD8;
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 12px;
@@ -493,7 +488,7 @@ button:not(.mobile-menu-button):hover,
   align-items: center;
   width: 100%;
   text-decoration: none;
-  background: #eb879c;
+  background: #3A5BFF;
   border: none;
   cursor: pointer;
   color: #fff;
