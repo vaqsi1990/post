@@ -2,13 +2,20 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import prisma from '@/lib/prisma';
 
-const webhookSchema = z.object({
+const baseSchema = z.object({
   threadId: z.string().optional(),
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+  email: z.string().optional(),
+  phone: z.string().optional(),
+  message: z.string().min(1),
+});
+
+const newThreadFieldsSchema = z.object({
   firstName: z.string().min(1),
   lastName: z.string().min(1),
   email: z.string().email(),
   phone: z.string().min(5),
-  message: z.string().min(1),
 });
 
 const corsHeaders = {
@@ -27,7 +34,7 @@ export async function OPTIONS() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const data = webhookSchema.parse(body);
+    const data = baseSchema.parse(body);
 
     let threadId = data.threadId;
 
@@ -43,13 +50,21 @@ export async function POST(request: NextRequest) {
         );
       }
     } else {
+      // Validate required fields for new thread
+      const info = newThreadFieldsSchema.parse({
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        phone: data.phone,
+      });
+
       // Create new thread
       const thread = await prisma.chatThread.create({
         data: {
-          firstName: data.firstName,
-          lastName: data.lastName,
-          email: data.email,
-          phone: data.phone,
+          firstName: info.firstName,
+          lastName: info.lastName,
+          email: info.email,
+          phone: info.phone,
           status: 'open',
         },
       });

@@ -45,8 +45,11 @@ export default function ChatAdmin() {
     }
   };
 
-  const loadMessages = async (id: string) => {
-    setLoadingMessages(true);
+  const loadMessages = async (id: string, opts?: { silent?: boolean }) => {
+    const silent = opts?.silent ?? false;
+    if (!silent) {
+      setLoadingMessages(true);
+    }
     setError('');
     try {
       const res = await fetch(`/api/admin/chat/threads/${id}`);
@@ -56,7 +59,9 @@ export default function ChatAdmin() {
     } catch (e) {
       setError(e instanceof Error ? e.message : 'დაფიქსირდა შეცდომა');
     } finally {
-      setLoadingMessages(false);
+      if (!silent) {
+        setLoadingMessages(false);
+      }
     }
   };
 
@@ -70,6 +75,18 @@ export default function ChatAdmin() {
     } else {
       setMessages([]);
     }
+  }, [selectedId]);
+
+  // ავტომატური განახლება არჩეული ჩათისთვის, რომ გვერდის refresh არ გახდეს საჭირო
+  useEffect(() => {
+    if (!selectedId) return;
+    const id = selectedId;
+
+    const interval = window.setInterval(() => {
+      void loadMessages(id, { silent: true });
+    }, 8000); // ყოველ 8 წამში ერთხელ
+
+    return () => window.clearInterval(interval);
   }, [selectedId]);
 
   const handleSend = async () => {

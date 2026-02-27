@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 
 type WebhookResponse = {
   threadId: string;
@@ -30,6 +30,7 @@ export default function ChatWidget() {
   const [success, setSuccess] = useState('');
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const pollRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -39,9 +40,12 @@ export default function ChatWidget() {
     }
   }, []);
 
-  const loadMessages = async (id: string) => {
+  const loadMessages = async (id: string, opts?: { withSpinner?: boolean }) => {
+    const withSpinner = opts?.withSpinner ?? false;
     try {
-      setLoadingMessages(true);
+      if (withSpinner) {
+        setLoadingMessages(true);
+      }
       const res = await fetch(`/api/chat/threads/${id}`);
       const data = await res.json();
       if (res.status === 404) {
@@ -58,12 +62,24 @@ export default function ChatWidget() {
       if (!res.ok) {
         throw new Error(data.error || 'შეტყობინებების წამოღება ვერ მოხერხდა');
       }
-      setMessages(Array.isArray(data.messages) ? data.messages : []);
+      const incoming: ChatMessage[] = Array.isArray(data.messages) ? data.messages : [];
+
+      // თუ არაფერი შეცვლილა, state არ განვაახლოთ რომ ზედმეტი რერენდერი არ იყოს
+      if (
+        messages.length === incoming.length &&
+        messages[messages.length - 1]?.id === incoming[incoming.length - 1]?.id
+      ) {
+        return;
+      }
+
+      setMessages(incoming);
     } catch (e) {
       // არ ვაჩვენებთ ცალკე ერორს, რომ ფორმა არ გადაიფაროს
       console.error(e);
     } finally {
-      setLoadingMessages(false);
+      if (withSpinner) {
+        setLoadingMessages(false);
+      }
     }
   };
 
@@ -71,18 +87,48 @@ export default function ChatWidget() {
     setOpen((prev) => {
       const next = !prev;
       if (!prev && next && threadId) {
-        void loadMessages(threadId);
+        void loadMessages(threadId, { withSpinner: true });
       }
       return next;
     });
   };
+
+  // მსუბუქი polling: როცა ჩათი ღიაა და არსებობს თრედი, მომხმარებელი ავტომატურად ხედავს ადმინის პასუხებს.
+  useEffect(() => {
+    if (!threadId || !open) {
+      if (pollRef.current) {
+        window.clearInterval(pollRef.current);
+        pollRef.current = null;
+      }
+      return;
+    }
+
+    void loadMessages(threadId, { withSpinner: false });
+
+    pollRef.current = window.setInterval(() => {
+      void loadMessages(threadId, { withSpinner: false });
+    }, 8000); // ყოველ 8 წამში ერთხელ
+
+    return () => {
+      if (pollRef.current) {
+        window.clearInterval(pollRef.current);
+        pollRef.current = null;
+      }
+    };
+  }, [threadId, open]);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
     setSuccess('');
 
-    if (!firstName || !lastName || !email || !phone || !message) {
+    if (!message) {
+      setError('გთხოვთ ჩაწეროთ შეტყობინება.');
+      return;
+    }
+
+    // ახალი ჩათის დაწყებისას სავალდებულო ველები
+    if (!threadId && (!firstName || !lastName || !email || !phone)) {
       setError('გთხოვთ შეავსოთ ყველა ველი.');
       return;
     }
@@ -101,8 +147,25 @@ export default function ChatWidget() {
           message,
         }),
       });
-      const data = (await res.json()) as Partial<WebhookResponse> & { error?: string };
+      const data = (await res.json()) as Partial<WebhookResponse> & {
+        error?: string;
+        details?: { field: string; message: string }[];
+      };
       if (!res.ok || !data.threadId) {
+        if (data.error === 'Validation error' && Array.isArray(data.details)) {
+          const first = data.details[0];
+          const fieldLabel =
+            first?.field === 'email'
+              ? 'ელფოსტა'
+              : first?.field === 'phone'
+              ? 'ტელეფონი'
+              : first?.field === 'firstName'
+              ? 'სახელი'
+              : first?.field === 'lastName'
+              ? 'გვარი'
+              : 'ველი';
+          throw new Error(`${fieldLabel}: ${first?.message || 'არასწორი მნიშვნელობა.'}`);
+        }
         throw new Error(data.error || 'შეტყობინება ვერ გაიგზავნა');
       }
       setThreadId(data.threadId);
@@ -112,9 +175,9 @@ export default function ChatWidget() {
       setMessage('');
       setSuccess('შეტყობინება გაიგზავნა. დიალოგი გრძელდება ამავე ფანჯარიდან.');
 
-      // თავიდან წამოიღე საუბარი
+      // თავიდან წამოიღე საუბარი (სპინერის გარეშე, რომ UI არ "გახტეს")
       if (data.threadId) {
-        void loadMessages(data.threadId);
+        void loadMessages(data.threadId, { withSpinner: false });
       }
     } catch (e) {
       setError(e instanceof Error ? e.message : 'დაფიქსირდა შეცდომა');
@@ -162,12 +225,8 @@ export default function ChatWidget() {
 
               {/* Messages from you and admin */}
               {threadId && (
-                <div className="h-48 space-y-2 overflow-y-auto rounded-2xl border border-gray-200 bg-white/70 p-3">
-                  {loadingMessages ? (
-                    <p className="text-[12px] text-gray-600">
-                      დიალოგი იტვირთება...
-                    </p>
-                  ) : messages.length === 0 ? (
+                <div className="h-[250px] space-y-2 overflow-y-auto rounded-2xl border border-gray-200 bg-white/70 p-3">
+                  {messages.length === 0 ? (
                     <p className="text-[12px] text-gray-600">
                       ჯერ პასუხი არ არის. როგორც კი ადმინი მოგწერს, აქ გამოჩნდება.
                     </p>
