@@ -341,16 +341,53 @@ export default function ChatWidget() {
                 </label>
 
                 <div className="flex items-center justify-between">
-                  <p className="text-[11px] text-gray-500">
-                    პასუხს მიიღებ რამდენიმე წუთში.
-                  </p>
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="inline-flex items-center gap-1 rounded-full bg-black px-4 py-1.5 text-[13px] font-semibold text-white shadow-sm transition hover:bg-gray-900 disabled:cursor-not-allowed disabled:opacity-60"
-                  >
-                    {loading ? 'იგზავნება...' : 'გაგზავნა'}
-                  </button>
+                 
+                  <div className="flex items-center gap-2">
+                    {threadId && (
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          try {
+                            const res = await fetch(`/api/chat/threads/${threadId}`, {
+                              method: 'PATCH',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify({ status: 'closed' }),
+                            });
+                            const data = await res.json();
+                            if (!res.ok) {
+                              throw new Error(
+                                data.error || 'დიალოგის დასრულება ვერ მოხერხდა'
+                              );
+                            }
+                            setSuccess(
+                              'დიალოგი დასრულდა. სურვილის შემთხვევაში ახალი ჩათი დაიწყე.'
+                            );
+                            setMessages([]);
+                            setThreadId(null);
+                            if (typeof window !== 'undefined') {
+                              window.localStorage.removeItem(STORAGE_KEY);
+                            }
+                          } catch (e) {
+                            setError(
+                              e instanceof Error
+                                ? e.message
+                                : 'დიალოგის დასრულება ვერ მოხერხდა'
+                            );
+                          }
+                        }}
+                        className="rounded-full border border-gray-300 bg-white px-3 py-1 text-[11px] font-medium text-gray-700 hover:bg-gray-50"
+                      >
+                        დასრულება
+                      </button>
+                    )}
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className="inline-flex items-center gap-1 rounded-full bg-black px-4 py-1.5 text-[13px] font-semibold text-white shadow-sm transition hover:bg-gray-900 disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      {loading ? 'იგზავნება...' : 'გაგზავნა'}
+                    </button>
+                  </div>
                 </div>
               </form>
             </div>

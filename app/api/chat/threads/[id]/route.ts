@@ -44,3 +44,42 @@ export async function GET(
   }
 }
 
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
+
+  if (!id) {
+    return NextResponse.json({ error: 'Invalid thread id' }, { status: 400 });
+  }
+
+  try {
+    const body = await request.json().catch(() => ({}));
+    const status =
+      typeof body.status === 'string' && body.status.length > 0
+        ? body.status
+        : 'closed';
+
+    const updated = await prisma.chatThread.update({
+      where: { id },
+      data: { status },
+    });
+
+    return NextResponse.json(
+      {
+        message: 'დიალოგი დასრულდა',
+        status: updated.status,
+      },
+      { status: 200 }
+    );
+  } catch (e) {
+    console.error('Public close chat error:', e);
+    return NextResponse.json(
+      { error: 'დიალოგის დასრულება ვერ მოხერხდა' },
+      { status: 500 }
+    );
+  }
+}
+
+
