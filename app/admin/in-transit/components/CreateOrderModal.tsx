@@ -17,7 +17,7 @@ export default function CreateOrderModal({ onOrderCreated }: CreateOrderModalPro
         onClick={() => setIsOpen(true)}
         className="rounded-md bg-black px-4 py-2 text-[16px] font-semibold text-white hover:bg-gray-800"
       >
-        + ახალი Order-ის დამატება
+        + ახალი ამანათის დამატება
       </button>
 
       <CreateOrderForm
