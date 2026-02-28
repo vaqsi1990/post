@@ -1,10 +1,24 @@
 
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 
+const HERO_TEXTS = [
+  {
+    line1: 'გამოიწერე მარტივად,',
+    line2: 'მიიღე სწრაფად',
+    line3: 'ნუ გადაიხდი ზედმეტს',
+  },
+  {
+    line1: 'მიიღე ამანათი ოფისში მოუსვლელად!!!',
+    line2: 'თქვენს ამანათს მისამართზე, მთელი საქართველოს მასშტაბით უფასოდ მოგიტანთ!!!',
+    line3: null,
+  },
+];
+
 const Hero = () => {
+  const [textIndex, setTextIndex] = useState(0);
   const layer0Ref = useRef<HTMLDivElement>(null);
   const layer1Ref = useRef<HTMLDivElement>(null);
   const layer2Ref = useRef<HTMLDivElement>(null);
@@ -82,6 +96,13 @@ const Hero = () => {
     };
   }, []);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTextIndex((i) => (i + 1) % HERO_TEXTS.length);
+    }, 10000);
+    return () => clearInterval(interval);
+  }, []);
+
   const handleScrollClick = () => {
     window.scrollTo({
       top: window.innerHeight,
@@ -94,11 +115,38 @@ const Hero = () => {
       {/* Dark Overlay */}
       <div className="absolute inset-0 bg-black/50 z-10"></div>
       
-      {/* Hero Text */}
-      <div className="absolute inset-0 z-20 flex items-center justify-center">
-        <h1 className="md:text-[25px] text-[18px] text-white font-medium text-center px-4 max-w-4xl">
-        გამოიწერე მარტივად,  <br/> <span className='inline-block md:text-[30px] text-[20px] space-x-2 mt-10 text-white tracking-[20px]'> მიიღე სწრაფად </span>  
-        </h1>
+      {/* Hero Text — იცვლება ყოველ 3 წამში */}
+      <div className="absolute inset-0 z-20 flex items-center justify-start -translate-y-12 md:-translate-y-16">
+        <div className="relative pl-6 md:pl-12 lg:pl-20 pr-4 max-w-4xl">
+          {HERO_TEXTS.map((text, i) => (
+            <h1
+              key={i}
+              className={`md:text-[25px] text-[18px] text-white font-medium text-left transition-opacity duration-500 ${
+                textIndex === i
+                  ? 'opacity-100 relative'
+                  : 'opacity-0 absolute left-6 md:left-12 lg:left-20 top-0 pointer-events-none'
+              }`}
+            >
+              {text.line1}
+              {text.line2 && (
+                <>
+                  <br />
+                  <span className="inline-block md:text-[30px] text-[20px] space-x-2 mt-5 text-white tracking-[5px]">
+                    {text.line2}
+                  </span>
+                </>
+              )}
+              {text.line3 && (
+                <>
+                  <br />
+                  <span className="inline-block mt-4 md:mt-5 text-white/90 text-[16px] md:text-[20px] font-normal tracking-wide">
+                    {text.line3}
+                  </span>
+                </>
+              )}
+            </h1>
+          ))}
+        </div>
       </div>
      
 
