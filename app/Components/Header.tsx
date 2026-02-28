@@ -12,10 +12,11 @@ const Header = () => {
     const { data: session, status } = useSession();
 
     const navLinks = [
-        { href: '/', label: 'მთავარი' },
-   
+        { href: '/', label: 'სერვისები' },
+        { href: '/stores', label: 'მაღაზიები' },
         { href: '/pricing', label: 'ტარიფები' },
         { href: '/faq', label: 'კითხვები' },
+        { href: '/help', label: 'დახმარება' },
         { href: '/contact', label: 'კონტაქტი' },
     ];
 

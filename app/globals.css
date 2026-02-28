@@ -72,11 +72,11 @@ img {
 }
 
 .header .logo-image {
-  width: 60px !important;
-  height: 60px !important;
+  width: 75px !important;
+  height: 75px !important;
   object-fit: contain !important;
   position: relative !important;
-  border-radius: 50% !important;
+  border-radius: 8px !important;
 }
 
 .header .logo-image img {
@@ -415,6 +415,7 @@ button:not(.mobile-menu-button),
 .nav-link {
   color: rgba(255,255,255,0.9);
   font-weight: 500;
+  font-size: 18px;
   text-decoration: none;
   padding: 8px 12px;
   transition: 0.3s ease;

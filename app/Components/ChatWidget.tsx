@@ -204,7 +204,7 @@ export default function ChatWidget() {
                   💬
                 </div>
                 <div>
-                  <h2 className="text-[15px] font-semibold text-white">ჩატი ადმინთან</h2>
+               
                   <p className="text-[12px] text-gray-200">
                     გიპასუხებთ რაც შეიძლება სწრაფად.
                   </p>
