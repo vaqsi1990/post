@@ -3,7 +3,6 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { authOptions } from '../../../lib/auth';
 import prisma from '../../../lib/prisma';
-import DashboardHeader from '../components/DashboardHeader';
 import SettingsProfileForm from './components/SettingsProfileForm';
 import SettingsPasswordForm from './components/SettingsPasswordForm';
 
@@ -42,16 +41,14 @@ export default async function DashboardSettingsPage() {
     <div className="min-h-[calc(100vh-120px)] bg-gray-100 py-8">
       <div className="mx-auto mt-24 w-full max-w-3xl px-4">
         <main className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <DashboardHeader />
-          <div className="border-t border-gray-200 pt-6 mt-6">
+          <div className="pb-6 border-b border-gray-200">
+            <Link href="/dashboard" className="text-[15px] font-medium text-gray-600 hover:text-black">
+              ← უკან დაბრუნება
+            </Link>
+          </div>
+          <div className="pt-6">
             <div className="flex items-center justify-between mb-6">
               <h1 className="text-xl font-semibold text-gray-900">პარამეტრები</h1>
-              <Link
-                href="/dashboard"
-                className="text-[15px] font-medium text-gray-600 hover:text-black"
-              >
-                ← უკან დაბრუნება
-              </Link>
             </div>
             <div className="space-y-8">
               <SettingsProfileForm initialProfile={profile} />

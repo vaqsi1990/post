@@ -34,11 +34,12 @@ model User {
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 
-  addresses Address[]
-  parcels   Parcel[]
-  payments  Payment[]
-  orders    Order[]
-  chats     ChatThread[]
+  addresses    Address[]
+  parcels      Parcel[]
+  payments     Payment[]
+  orders       Order[]
+  chats        ChatThread[]
+  declarations Declaration[]
 
   @@map("users")
 }
@@ -242,4 +243,23 @@ model ChatMessage {
   thread    ChatThread  @relation(fields: [threadId], references: [id], onDelete: Cascade)
 
   @@map("chat_messages")
+}
+
+// Customs declaration submitted by user
+model Declaration {
+  id            String   @id @default(cuid())
+  userId        String
+  firstName     String
+  lastName      String
+  trackingCode  String
+  price         Float
+  currency      String   @default("USD")
+  filePath      String   // stored path to uploaded PDF
+  status        String   @default("pending") // pending | processed | rejected
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("declarations")
 }

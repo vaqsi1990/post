@@ -61,8 +61,14 @@ export default function DashboardHeader() {
                 className="flex items-center gap-2 px-3 py-2.5 text-[15px] text-gray-700 hover:bg-gray-50"
                 onClick={() => setNavOpen(false)}
               >
-              
                 ბალანსის შევსება
+              </Link>
+              <Link
+                href="/dashboard/declaration"
+                className="flex items-center gap-2 px-3 py-2.5 text-[15px] text-gray-700 hover:bg-gray-50"
+                onClick={() => setNavOpen(false)}
+              >
+                დეკლარაცია
               </Link>
               <Link
                 href="/dashboard/settings"
@@ -100,6 +106,9 @@ export default function DashboardHeader() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a1.125 1.125 0 01-1.125-1.125v-9.75c0-.621.504-1.125 1.125-1.125H20.25M3.75 15h10.5a.75.75 0 00.75-.75v-9.75a.75.75 0 00-.75-.75H3.75a.75.75 0 00-.75.75v9.75c0 .414.336.75.75.75z" />
               </svg>
               ბალანსის შევსება
+            </Link>
+            <Link href="/dashboard/declaration" className="flex items-center gap-2 text-[15px] font-medium text-gray-700 hover:text-black">
+              დეკლარაცია
             </Link>
           </div>
           <Link href="/dashboard/settings" className="flex items-center gap-2 text-[15px] font-medium text-gray-700 hover:text-black">
