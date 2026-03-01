@@ -314,7 +314,7 @@ button:not(.mobile-menu-button),
   border: none;
   cursor: pointer;
   text-decoration: none;
-  display: inline-block;
+
 }
 
 .chatbutton{
