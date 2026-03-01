@@ -158,7 +158,7 @@ const RegisterPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
+      <div className="max-w-md w-full mt-14 space-y-8">
         <div className="text-center mx-auto gap-4 flex flex-col items-center justify-center">
           <h2 className="mt-6 text-center text-3xl font-bold text-black">
             რეგისტრაცია
@@ -183,6 +183,50 @@ const RegisterPage = () => {
 
           <div className="rounded-md  space-y-4">
             <div>
+              <label htmlFor="firstName" className="block text-[16px] font-medium text-black mb-1">
+                სახელი
+              </label>
+              <input
+                id="firstName"
+                name="firstName"
+                type="text"
+                value={formData.firstName}
+                onChange={handleChange}
+                className={`appearance-none relative block w-full px-3 py-2 border ${
+                  errors.firstName
+                    ? 'border-red-300 text-black'
+                    : 'border-gray-300 text-black'
+                } placeholder-gray-500 rounded-md focus:outline-none focus:ring-black focus:border-black sm:text-[16px]`}
+                placeholder="სახელი"
+              />
+              {errors.firstName && (
+                <p className="mt-1 text-[16px] text-red-600">{errors.firstName}</p>
+              )}
+            </div>
+
+            <div>
+              <label htmlFor="lastName" className="block text-[16px] font-medium text-black mb-1">
+                გვარი
+              </label>
+              <input
+                id="lastName"
+                name="lastName"
+                type="text"
+                value={formData.lastName}
+                onChange={handleChange}
+                className={`appearance-none relative block w-full px-3 py-2 border ${
+                  errors.lastName
+                    ? 'border-red-300 text-black'
+                    : 'border-gray-300 text-black'
+                } placeholder-gray-500 rounded-md focus:outline-none focus:ring-black focus:border-black sm:text-[16px]`}
+                placeholder="გვარი"
+              />
+              {errors.lastName && (
+                <p className="mt-1 text-[16px] text-red-600">{errors.lastName}</p>
+              )}
+            </div>
+
+            <div>
               <label htmlFor="email" className="block text-[16px] font-medium text-black mb-1">
                 ელფოსტა
               </label>
@@ -203,6 +247,89 @@ const RegisterPage = () => {
               />
               {errors.email && (
                 <p className="mt-1 text-[16px] text-red-600">{errors.email}</p>
+              )}
+            </div>
+
+            <div>
+              <label htmlFor="phone" className="block text-[16px] font-medium text-black mb-1">
+                ტელეფონი
+              </label>
+              <div className="flex gap-2">
+                <input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  required
+                  value={formData.phone}
+                  onChange={handleChange}
+                  className={`flex-1 appearance-none relative block w-full px-3 py-2 border ${
+                    errors.phone
+                      ? 'border-red-300 text-black'
+                      : 'border-gray-300 text-black'
+                  } placeholder-gray-500 rounded-md focus:outline-none focus:ring-black focus:border-black sm:text-[16px]`}
+                  placeholder="5XX XXX XXX"
+                />
+                <button
+                  type="button"
+                  onClick={handleSendOtp}
+                  disabled={otpCooldown > 0}
+                  className="px-4 py-2 rounded-md text-[14px] font-medium bg-gray-800 text-white hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                >
+                  {otpCooldown > 0 ? `${otpCooldown} წამი` : 'კოდის გაგზავნა'}
+                </button>
+              </div>
+              {errors.phone && (
+                <p className="mt-1 text-[16px] text-red-600">{errors.phone}</p>
+              )}
+            </div>
+            <div>
+              <label htmlFor="otpCode" className="block text-[16px] font-medium text-black mb-1">
+                SMS კოდი (4 ციფრი)
+              </label>
+              <input
+                id="otpCode"
+                name="otpCode"
+                type="text"
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                maxLength={4}
+                value={formData.otpCode}
+                onChange={(e) => {
+                  const v = e.target.value.replace(/\D/g, '').slice(0, 4);
+                  setFormData((prev) => ({ ...prev, otpCode: v }));
+                  if (errors.otpCode) setErrors((prev) => ({ ...prev, otpCode: '' }));
+                }}
+                className={`appearance-none relative block w-full px-3 py-2 border ${
+                  errors.otpCode ? 'border-red-300 text-black' : 'border-gray-300 text-black'
+                } placeholder-gray-500 rounded-md focus:outline-none focus:ring-black focus:border-black sm:text-[16px]`}
+                placeholder={otpSent ? 'შეიყვანეთ კოდი' : 'ჯერ დააჭირეთ „კოდის გაგზავნა“'}
+              />
+              {errors.otpCode && (
+                <p className="mt-1 text-[16px] text-red-600">{errors.otpCode}</p>
+              )}
+            </div>
+
+            <div>
+              <label htmlFor="personalIdNumber" className="block text-[16px] font-medium text-black mb-1">
+                პირადობის ნომერი
+              </label>
+              <input
+                id="personalIdNumber"
+                name="personalIdNumber"
+                type="text"
+                required
+                maxLength={11}
+                value={formData.personalIdNumber}
+                onChange={handleChange}
+                className={`appearance-none relative block w-full px-3 py-2 border ${
+                  errors.personalIdNumber
+                    ? 'border-red-300 text-black'
+                    : 'border-gray-300 text-black'
+                } placeholder-gray-500 rounded-md focus:outline-none focus:ring-black focus:border-black sm:text-[16px]`}
+                placeholder="00000000000"
+              />
+              {errors.personalIdNumber && (
+                <p className="mt-1 text-[16px] text-red-600">{errors.personalIdNumber}</p>
               )}
             </div>
 
@@ -287,133 +414,6 @@ const RegisterPage = () => {
               </div>
               {errors.confirmPassword && (
                 <p className="mt-1 text-[16px] text-red-600">{errors.confirmPassword}</p>
-              )}
-            </div>
-
-            <div>
-              <label htmlFor="personalIdNumber" className="block text-[16px] font-medium text-black mb-1">
-                პირადობის ნომერი
-              </label>
-              <input
-                id="personalIdNumber"
-                name="personalIdNumber"
-                type="text"
-                required
-                maxLength={11}
-                value={formData.personalIdNumber}
-                onChange={handleChange}
-                className={`appearance-none relative block w-full px-3 py-2 border ${
-                  errors.personalIdNumber
-                    ? 'border-red-300 text-black'
-                    : 'border-gray-300 text-black'
-                } placeholder-gray-500 rounded-md focus:outline-none focus:ring-black focus:border-black sm:text-[16px]`}
-                placeholder="00000000000"
-              />
-              {errors.personalIdNumber && (
-                <p className="mt-1 text-[16px] text-red-600">{errors.personalIdNumber}</p>
-              )}
-            </div>
-
-            <div>
-              <label htmlFor="firstName" className="block text-[16px] font-medium text-black mb-1">
-                სახელი
-              </label>
-              <input
-                id="firstName"
-                name="firstName"
-                type="text"
-                value={formData.firstName}
-                onChange={handleChange}
-                className={`appearance-none relative block w-full px-3 py-2 border ${
-                  errors.firstName
-                    ? 'border-red-300 text-black'
-                    : 'border-gray-300 text-black'
-                } placeholder-gray-500 rounded-md focus:outline-none focus:ring-black focus:border-black sm:text-[16px]`}
-                placeholder="სახელი"
-              />
-              {errors.firstName && (
-                <p className="mt-1 text-[16px] text-red-600">{errors.firstName}</p>
-              )}
-            </div>
-
-            <div>
-              <label htmlFor="lastName" className="block text-[16px] font-medium text-black mb-1">
-                გვარი
-              </label>
-              <input
-                id="lastName"
-                name="lastName"
-                type="text"
-                value={formData.lastName}
-                onChange={handleChange}
-                className={`appearance-none relative block w-full px-3 py-2 border ${
-                  errors.lastName
-                    ? 'border-red-300 text-black'
-                    : 'border-gray-300 text-black'
-                } placeholder-gray-500 rounded-md focus:outline-none focus:ring-black focus:border-black sm:text-[16px]`}
-                placeholder="გვარი"
-              />
-              {errors.lastName && (
-                <p className="mt-1 text-[16px] text-red-600">{errors.lastName}</p>
-              )}
-            </div>
-
-            <div>
-              <label htmlFor="phone" className="block text-[16px] font-medium text-black mb-1">
-                ტელეფონი
-              </label>
-              <div className="flex gap-2">
-                <input
-                  id="phone"
-                  name="phone"
-                  type="tel"
-                  required
-                  value={formData.phone}
-                  onChange={handleChange}
-                  className={`flex-1 appearance-none relative block w-full px-3 py-2 border ${
-                    errors.phone
-                      ? 'border-red-300 text-black'
-                      : 'border-gray-300 text-black'
-                  } placeholder-gray-500 rounded-md focus:outline-none focus:ring-black focus:border-black sm:text-[16px]`}
-                  placeholder="5XX XXX XXX"
-                />
-                <button
-                  type="button"
-                  onClick={handleSendOtp}
-                  disabled={otpCooldown > 0}
-                  className="px-4 py-2 rounded-md text-[14px] font-medium bg-gray-800 text-white hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
-                >
-                  {otpCooldown > 0 ? `${otpCooldown} წამი` : 'კოდის გაგზავნა'}
-                </button>
-              </div>
-              {errors.phone && (
-                <p className="mt-1 text-[16px] text-red-600">{errors.phone}</p>
-              )}
-            </div>
-            <div>
-              <label htmlFor="otpCode" className="block text-[16px] font-medium text-black mb-1">
-                SMS კოდი (4 ციფრი)
-              </label>
-              <input
-                id="otpCode"
-                name="otpCode"
-                type="text"
-                inputMode="numeric"
-                autoComplete="one-time-code"
-                maxLength={4}
-                value={formData.otpCode}
-                onChange={(e) => {
-                  const v = e.target.value.replace(/\D/g, '').slice(0, 4);
-                  setFormData((prev) => ({ ...prev, otpCode: v }));
-                  if (errors.otpCode) setErrors((prev) => ({ ...prev, otpCode: '' }));
-                }}
-                className={`appearance-none relative block w-full px-3 py-2 border ${
-                  errors.otpCode ? 'border-red-300 text-black' : 'border-gray-300 text-black'
-                } placeholder-gray-500 rounded-md focus:outline-none focus:ring-black focus:border-black sm:text-[16px]`}
-                placeholder={otpSent ? 'შეიყვანეთ კოდი' : 'ჯერ დააჭირეთ „კოდის გაგზავნა“'}
-              />
-              {errors.otpCode && (
-                <p className="mt-1 text-[16px] text-red-600">{errors.otpCode}</p>
               )}
             </div>
           </div>
