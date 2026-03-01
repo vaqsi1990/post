@@ -1,6 +1,8 @@
 "use client";
 
 import React from 'react';
+import { motion } from 'framer-motion';
+
 const Services = () => {
     const services = [
         {
@@ -30,21 +32,32 @@ const Services = () => {
             <section className="w-full pt-14  md:pt-20 pb-0  md:pb-14   bg-gray-100 flex items-center justify-center  overflow-visible">
                 <div className="max-w-7xl w-full  z-10 ">
                     {/* Category Title */}
-                    <div className="text-center mb-3 md:mb-4">
-                        
-                    </div>
+                   
 
                     {/* Main Heading */}
-                    <div className="text-center mb-8 md:mb-16">
+                    <motion.div
+                        initial={{ opacity: 0, y: -48 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, amount: 0.3 }}
+                        transition={{ duration: 0.55, ease: 'easeOut' }}
+                        className="text-center mb-8 md:mb-16"
+                    >
                         <h2 className="text-black md:text-[30px] text-[18px] font-bold">
                         ს ე რ ვ ი ს ე ბ ი
                         </h2>
-                    </div>
+                    </motion.div>
 
                     {/* Services Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-0">
                         {services.map((service, index) => (
-                            <div key={index} className="relative">
+                            <motion.div
+                                key={index}
+                                className="relative"
+                                initial={{ opacity: 0, x: index < 2 ? -56 : 56 }}
+                                whileInView={{ opacity: 1, x: 0 }}
+                                viewport={{ once: true, amount: 0.25 }}
+                                transition={{ duration: 0.5, delay: index * 0.08, ease: 'easeOut' }}
+                            >
                                 {/* Vertical separator */}
                                 {index > 0 && (
                                     <div className="hidden lg:block absolute left-0 top-0 bottom-0 w-px bg-gray-300"></div>
@@ -68,7 +81,7 @@ const Services = () => {
                                         {service.title}
                                     </h4>
                                 </div>
-                            </div>
+                            </motion.div>
                         ))}
                     </div>
                 </div>

@@ -6,9 +6,9 @@ import { gsap } from 'gsap';
 
 const HERO_TEXTS = [
   {
-    line1: 'გამოიწერე მარტივად,',
-    line2: 'მიიღე სწრაფად',
-    line3: 'ნუ გადაიხდი ზედმეტს',
+    line1: 'ნუ გადაიხდი ზედმეტს!!!',
+    line2: 'გამოიწერე მარტივად!!!',
+    line3: 'მიიღე სწრაფად!!!',
   },
   {
     line1: 'მიიღე ამანათი ოფისში მოუსვლელად!!!',
@@ -116,12 +116,12 @@ const Hero = () => {
   
       
       {/* Hero Text — იცვლება ყოველ 3 წამში */}
-      <div className="absolute inset-0 z-20 flex items-center justify-start -translate-y-12 md:-translate-y-16">
+      <div className="absolute inset-0 z-20 flex items-center justify-start -translate-y-32 md:-translate-y-16">
         <div className="relative pl-6 md:pl-12 lg:pl-20 pr-4 max-w-4xl">
           {HERO_TEXTS.map((text, i) => (
             <h1
               key={i}
-              className={`md:text-[25px] text-[18px] text-white font-medium text-left transition-opacity duration-500 ${
+              className={`md:text-[25px] text-[18px] text-white font-medium md:text-left text-center transition-opacity duration-500 ${
                 textIndex === i
                   ? 'opacity-100 relative'
                   : 'opacity-0 absolute left-6 md:left-12 lg:left-20 top-0 pointer-events-none'
@@ -139,7 +139,7 @@ const Hero = () => {
               {text.line3 && (
                 <>
                   <br />
-                  <span className="inline-block mt-4 md:mt-5 text-white/90 text-[16px] md:text-[20px] font-normal tracking-wide">
+                  <span className="inline-block md:text-[30px] text-[20px] space-x-2 mt-5 text-white tracking-[5px]">
                     {text.line3}
                   </span>
                 </>

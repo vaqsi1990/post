@@ -67,8 +67,8 @@ const Header = () => {
                       opacity: 1, 
                       display: 'block',
                       visibility: 'visible',
-                      width: '100px',
-                      height: '100px',
+                      width: '135px',
+                      height: '135px',
                       objectFit: 'contain'
                     }}
                   />
