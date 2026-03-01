@@ -1,12 +1,15 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 
 type Props = {
   initialBalance: number;
 };
 
 export default function BalanceTopUp({ initialBalance }: Props) {
+  const t = useTranslations('balance');
+  const tCommon = useTranslations('common');
   const [balance, setBalance] = useState(initialBalance);
   const [amount, setAmount] = useState('');
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
@@ -21,7 +24,7 @@ export default function BalanceTopUp({ initialBalance }: Props) {
     setMessage(null);
     const value = parseFloat(amount.replace(',', '.'));
     if (isNaN(value) || value < 0.01) {
-      setMessage({ type: 'error', text: 'შეიყვანეთ მინიმუმ 0.01' });
+      setMessage({ type: 'error', text: t('minAmount') });
       return;
     }
     setLoading(true);
@@ -33,7 +36,7 @@ export default function BalanceTopUp({ initialBalance }: Props) {
       });
       const data = await res.json();
       if (!res.ok) {
-        setMessage({ type: 'error', text: data.error || 'შეცდომა' });
+        setMessage({ type: 'error', text: data.error || tCommon('error') });
         setLoading(false);
         return;
       }
@@ -41,7 +44,7 @@ export default function BalanceTopUp({ initialBalance }: Props) {
       setAmount('');
       setMessage({ type: 'success', text: data.message });
     } catch {
-      setMessage({ type: 'error', text: 'შეცდომა ქსელში' });
+      setMessage({ type: 'error', text: tCommon('networkError') });
     } finally {
       setLoading(false);
     }
@@ -52,14 +55,14 @@ export default function BalanceTopUp({ initialBalance }: Props) {
   return (
     <div className="space-y-6">
       <section className="rounded-xl border border-gray-200 bg-gray-50/50 p-6">
-        <h2 className="text-[16px] font-semibold text-gray-900 mb-2">მიმდინარე ბალანსი</h2>
+        <h2 className="text-[16px] font-semibold text-gray-900 mb-2">{t('currentBalance')}</h2>
         <p className="text-2xl font-bold text-black">
           {balance.toFixed(2)} <span className="text-[18px] font-semibold text-gray-600">USD</span>
         </p>
       </section>
 
       <section className="rounded-xl border border-gray-200 bg-gray-50/50 p-6">
-        <h2 className="text-[16px] font-semibold text-gray-900 mb-4">ბალანსის შევსება</h2>
+        <h2 className="text-[16px] font-semibold text-gray-900 mb-4">{t('topUp')}</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           {message && (
             <div
@@ -74,7 +77,7 @@ export default function BalanceTopUp({ initialBalance }: Props) {
           )}
           <div>
             <label htmlFor="balance-amount" className="mb-1 block text-[14px] font-medium text-gray-700">
-              თანხა (USD)
+              {t('amount')}
             </label>
             <input
               id="balance-amount"
@@ -83,7 +86,7 @@ export default function BalanceTopUp({ initialBalance }: Props) {
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
               className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
-              placeholder="0.00"
+              placeholder={t('amountPlaceholder')}
             />
           </div>
           <div className="flex flex-wrap gap-2">
@@ -103,7 +106,7 @@ export default function BalanceTopUp({ initialBalance }: Props) {
             disabled={loading}
             className="rounded-lg bg-amber-400 px-5 py-2.5 text-[15px] font-semibold text-black hover:bg-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 disabled:opacity-70"
           >
-            {loading ? 'იგზავნება...' : 'შევსება'}
+            {loading ? tCommon('sending') : t('topUpButton')}
           </button>
         </form>
       </section>

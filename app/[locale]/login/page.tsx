@@ -2,13 +2,16 @@
 
 import React, { useState } from 'react';
 import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { loginSchema } from '../../lib/validations';
-import type { LoginInput } from '../../lib/validations';
+import { useRouter } from '@/i18n/navigation';
+import { Link } from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
+import { loginSchema } from '../../../lib/validations';
+import type { LoginInput } from '../../../lib/validations';
 
 const LoginPage = () => {
   const router = useRouter();
+  const t = useTranslations('login');
+  const tCommon = useTranslations('common');
   const [formData, setFormData] = useState<LoginInput>({
     email: '',
     password: '',
@@ -24,7 +27,6 @@ const LoginPage = () => {
       ...prev,
       [name]: value,
     }));
-    // Clear error when user starts typing
     if (errors[name]) {
       setErrors((prev) => {
         const newErrors = { ...prev };
@@ -41,12 +43,9 @@ const LoginPage = () => {
     setErrors({});
 
     try {
-      // Validate with Zod
       const validatedData = loginSchema.parse(formData);
-
       setIsLoading(true);
 
-      // Sign in with NextAuth
       const result = await signIn('credentials', {
         email: validatedData.email,
         password: validatedData.password,
@@ -54,24 +53,21 @@ const LoginPage = () => {
       });
 
       if (result?.error) {
-        setSubmitError('ელფოსტა ან პაროლი არასწორია');
+        setSubmitError(t('invalidCredentials'));
       } else if (result?.ok) {
-        // Redirect to home page or dashboard
         router.push('/');
         router.refresh();
       }
-    } catch (error: any) {
-      if (error.name === 'ZodError') {
-        // Handle Zod validation errors
+    } catch (error: unknown) {
+      const err = error as { name?: string; errors?: Array<{ path: string[]; message: string }> };
+      if (err.name === 'ZodError' && err.errors) {
         const fieldErrors: Record<string, string> = {};
-        error.errors.forEach((err: any) => {
-          if (err.path[0]) {
-            fieldErrors[err.path[0]] = err.message;
-          }
+        err.errors.forEach((e: { path: string[]; message: string }) => {
+          if (e.path[0]) fieldErrors[e.path[0]] = e.message;
         });
         setErrors(fieldErrors);
       } else {
-        setSubmitError('დაფიქსირდა შეცდომა. გთხოვთ სცადოთ თავიდან.');
+        setSubmitError(t('genericError'));
       }
     } finally {
       setIsLoading(false);
@@ -81,17 +77,14 @@ const LoginPage = () => {
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
-        <div className='text-center mx-auto gap-4 flex flex-col items-center justify-center'>
+        <div className="text-center mx-auto gap-4 flex flex-col items-center justify-center">
           <h2 className="mt-6 text-center text-3xl font-bold text-black">
-            ავტორიზაცია
+            {t('title')}
           </h2>
           <p className="mt-2 text-center text-[16px] text-black">
-            ან{' '}
-            <Link
-              href="/register"
-              className="font-medium text-black hover:underline"
-            >
-              შექმენი ახალი ანგარიში
+            {t('orCreateAccount')}
+            <Link href="/register" className="font-medium text-black hover:underline">
+              {t('createAccountLink')}
             </Link>
           </p>
         </div>
@@ -103,11 +96,9 @@ const LoginPage = () => {
             </div>
           )}
 
-          <div className="rounded-md  -space-y-px">
+          <div className="rounded-md -space-y-px">
             <div>
-              <label htmlFor="email" className="sr-only">
-                ელფოსტა
-              </label>
+              <label htmlFor="email" className="sr-only">{t('email')}</label>
               <input
                 id="email"
                 name="email"
@@ -117,11 +108,9 @@ const LoginPage = () => {
                 value={formData.email}
                 onChange={handleChange}
                 className={`appearance-none rounded-none relative block w-full px-3 py-2 border ${
-                  errors.email
-                    ? 'border-red-300 text-black'
-                    : 'border-gray-300 text-black'
+                  errors.email ? 'border-red-300 text-black' : 'border-gray-300 text-black'
                 } placeholder-gray-500 rounded-t-md focus:outline-none focus:ring-black focus:border-black focus:z-10 sm:text-sm`}
-                placeholder="ელფოსტა"
+                placeholder={t('email')}
               />
               {errors.email && (
                 <p className="mt-1 text-[16px] text-red-600">{errors.email}</p>
@@ -129,9 +118,7 @@ const LoginPage = () => {
             </div>
 
             <div className="relative">
-              <label htmlFor="password" className="sr-only">
-                პაროლი
-              </label>
+              <label htmlFor="password" className="sr-only">{t('password')}</label>
               <input
                 id="password"
                 name="password"
@@ -141,11 +128,9 @@ const LoginPage = () => {
                 value={formData.password}
                 onChange={handleChange}
                 className={`appearance-none rounded-none relative block w-full px-3 py-2 pr-10 border ${
-                  errors.password
-                    ? 'border-red-300 text-black'
-                    : 'border-gray-300 text-black'
+                  errors.password ? 'border-red-300 text-black' : 'border-gray-300 text-black'
                 } placeholder-gray-500 rounded-b-md focus:outline-none focus:ring-black focus:border-black focus:z-10 sm:text-[16px]`}
-                placeholder="პაროლი"
+                placeholder={t('password')}
               />
               <button
                 type="button"
@@ -175,7 +160,7 @@ const LoginPage = () => {
               disabled={isLoading}
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-[16px] font-medium rounded-md text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isLoading ? 'იტვირთება...' : 'შესვლა'}
+              {isLoading ? tCommon('loading') : t('signIn')}
             </button>
           </div>
         </form>

@@ -1,13 +1,16 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { useRouter } from '@/i18n/navigation';
+import { Link } from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
 import { registerSchema } from '../../lib/validations';
 import type { RegisterInput } from '../../lib/validations';
 
 const RegisterPage = () => {
   const router = useRouter();
+  const t = useTranslations('register');
+  const tCommon = useTranslations('common');
   const [formData, setFormData] = useState<RegisterInput & { confirmPassword: string }>({
     email: '',
     password: '',
@@ -59,7 +62,7 @@ const RegisterPage = () => {
     setSubmitError('');
     const raw = formData.phone?.replace(/\D/g, '') ?? '';
     if (raw.length < 9) {
-      setErrors((prev) => ({ ...prev, phone: 'შეიყვანეთ ტელეფონის ნომერი' }));
+      setErrors((prev) => ({ ...prev, phone: t('enterPhone') }));
       return;
     }
     try {
@@ -70,13 +73,13 @@ const RegisterPage = () => {
       });
       const data = await res.json();
       if (!res.ok) {
-        setSubmitError(data.error || 'კოდის გაგზავნა ვერ მოხერხდა');
+        setSubmitError(data.error || t('codeSentFailed'));
         return;
       }
       setOtpSent(true);
       setOtpCooldown(60);
     } catch {
-      setSubmitError('კოდის გაგზავნა ვერ მოხერხდა');
+      setSubmitError(t('codeSentFailed'));
     }
   };
 
@@ -132,24 +135,21 @@ const RegisterPage = () => {
             setSubmitError(data.error);
           }
         } else {
-          setSubmitError(data.error || data.message || 'რეგისტრაციისას მოხდა შეცდომა');
+          setSubmitError(data.error || data.message || t('registrationError'));
         }
       } else {
-        // Registration successful, redirect to login
         router.push('/login');
       }
-    } catch (error: any) {
-      if (error.name === 'ZodError') {
-        // Handle Zod validation errors
+    } catch (error: unknown) {
+      const err = error as { name?: string; errors?: Array<{ path: string[]; message: string }> };
+      if (err.name === 'ZodError' && err.errors) {
         const fieldErrors: Record<string, string> = {};
-        error.errors.forEach((err: any) => {
-          if (err.path[0]) {
-            fieldErrors[err.path[0]] = err.message;
-          }
+        err.errors.forEach((e: { path: string[]; message: string }) => {
+          if (e.path[0]) fieldErrors[e.path[0]] = e.message;
         });
         setErrors(fieldErrors);
       } else {
-        setSubmitError('დაფიქსირდა შეცდომა. გთხოვთ სცადოთ თავიდან.');
+        setSubmitError(t('genericError'));
       }
     } finally {
       setIsLoading(false);
@@ -161,15 +161,12 @@ const RegisterPage = () => {
       <div className="max-w-md w-full mt-14 space-y-8">
         <div className="text-center mx-auto gap-4 flex flex-col items-center justify-center">
           <h2 className="mt-6 text-center text-3xl font-bold text-black">
-            რეგისტრაცია
+            {t('title')}
           </h2>
           <p className="mt-2 text-center text-[16px] text-black">
-            ან{' '}
-            <Link
-              href="/login"
-              className="font-medium text-black hover:underline"
-            >
-              შედით თქვენს ანგარიშში
+            {t('orSignIn')}
+            <Link href="/login" className="font-medium text-black hover:underline">
+              {t('signInLink')}
             </Link>
           </p>
         </div>
@@ -184,7 +181,7 @@ const RegisterPage = () => {
           <div className="rounded-md  space-y-4">
             <div>
               <label htmlFor="firstName" className="block text-[16px] font-medium text-black mb-1">
-                სახელი
+                {t('firstName')}
               </label>
               <input
                 id="firstName"
@@ -197,7 +194,7 @@ const RegisterPage = () => {
                     ? 'border-red-300 text-black'
                     : 'border-gray-300 text-black'
                 } placeholder-gray-500 rounded-md focus:outline-none focus:ring-black focus:border-black sm:text-[16px]`}
-                placeholder="სახელი"
+                placeholder={t('firstName')}
               />
               {errors.firstName && (
                 <p className="mt-1 text-[16px] text-red-600">{errors.firstName}</p>
@@ -206,7 +203,7 @@ const RegisterPage = () => {
 
             <div>
               <label htmlFor="lastName" className="block text-[16px] font-medium text-black mb-1">
-                გვარი
+                {t('lastName')}
               </label>
               <input
                 id="lastName"
@@ -219,7 +216,7 @@ const RegisterPage = () => {
                     ? 'border-red-300 text-black'
                     : 'border-gray-300 text-black'
                 } placeholder-gray-500 rounded-md focus:outline-none focus:ring-black focus:border-black sm:text-[16px]`}
-                placeholder="გვარი"
+                placeholder={t('lastName')}
               />
               {errors.lastName && (
                 <p className="mt-1 text-[16px] text-red-600">{errors.lastName}</p>
@@ -228,7 +225,7 @@ const RegisterPage = () => {
 
             <div>
               <label htmlFor="email" className="block text-[16px] font-medium text-black mb-1">
-                ელფოსტა
+                {t('email')}
               </label>
               <input
                 id="email"
@@ -243,7 +240,7 @@ const RegisterPage = () => {
                     ? 'border-red-300 text-black'
                     : 'border-gray-300 text-black'
                 } placeholder-gray-500 rounded-md focus:outline-none focus:ring-black focus:border-black sm:text-sm`}
-                placeholder="ელფოსტა"
+                placeholder={t('email')}
               />
               {errors.email && (
                 <p className="mt-1 text-[16px] text-red-600">{errors.email}</p>
@@ -252,7 +249,7 @@ const RegisterPage = () => {
 
             <div>
               <label htmlFor="phone" className="block text-[16px] font-medium text-black mb-1">
-                ტელეფონი
+                {t('phone')}
               </label>
               <div className="flex gap-2">
                 <input
@@ -267,7 +264,7 @@ const RegisterPage = () => {
                       ? 'border-red-300 text-black'
                       : 'border-gray-300 text-black'
                   } placeholder-gray-500 rounded-md focus:outline-none focus:ring-black focus:border-black sm:text-[16px]`}
-                  placeholder="5XX XXX XXX"
+                  placeholder={t('phonePlaceholder')}
                 />
                 <button
                   type="button"
@@ -275,7 +272,7 @@ const RegisterPage = () => {
                   disabled={otpCooldown > 0}
                   className="px-4 py-2 rounded-md text-[14px] font-medium bg-gray-800 text-white hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
                 >
-                  {otpCooldown > 0 ? `${otpCooldown} წამი` : 'კოდის გაგზავნა'}
+                  {otpCooldown > 0 ? `${otpCooldown} ${t('seconds')}` : t('sendCode')}
                 </button>
               </div>
               {errors.phone && (
@@ -284,7 +281,7 @@ const RegisterPage = () => {
             </div>
             <div>
               <label htmlFor="otpCode" className="block text-[16px] font-medium text-black mb-1">
-                SMS კოდი (4 ციფრი)
+                {t('otpCode')}
               </label>
               <input
                 id="otpCode"
@@ -302,7 +299,7 @@ const RegisterPage = () => {
                 className={`appearance-none relative block w-full px-3 py-2 border ${
                   errors.otpCode ? 'border-red-300 text-black' : 'border-gray-300 text-black'
                 } placeholder-gray-500 rounded-md focus:outline-none focus:ring-black focus:border-black sm:text-[16px]`}
-                placeholder={otpSent ? 'შეიყვანეთ კოდი' : 'ჯერ დააჭირეთ „კოდის გაგზავნა“'}
+                placeholder={otpSent ? t('otpPlaceholder') : t('otpPlaceholderBefore')}
               />
               {errors.otpCode && (
                 <p className="mt-1 text-[16px] text-red-600">{errors.otpCode}</p>
@@ -311,7 +308,7 @@ const RegisterPage = () => {
 
             <div>
               <label htmlFor="personalIdNumber" className="block text-[16px] font-medium text-black mb-1">
-                პირადობის ნომერი
+                {t('personalIdNumber')}
               </label>
               <input
                 id="personalIdNumber"
@@ -326,7 +323,7 @@ const RegisterPage = () => {
                     ? 'border-red-300 text-black'
                     : 'border-gray-300 text-black'
                 } placeholder-gray-500 rounded-md focus:outline-none focus:ring-black focus:border-black sm:text-[16px]`}
-                placeholder="00000000000"
+                placeholder={t('personalIdPlaceholder')}
               />
               {errors.personalIdNumber && (
                 <p className="mt-1 text-[16px] text-red-600">{errors.personalIdNumber}</p>
@@ -335,7 +332,7 @@ const RegisterPage = () => {
 
             <div>
               <label htmlFor="password" className="block text-[16px] font-medium text-black mb-1">
-                პაროლი
+                {t('password')}
               </label>
               <div className="relative">
                 <input
@@ -351,7 +348,7 @@ const RegisterPage = () => {
                       ? 'border-red-300 text-black'
                       : 'border-gray-300 text-black'
                   } placeholder-gray-500 rounded-md focus:outline-none focus:ring-black focus:border-black sm:text-[16px]`}
-                  placeholder="პაროლი"
+                  placeholder={t('password')}
                 />
                 <button
                   type="button"
@@ -377,7 +374,7 @@ const RegisterPage = () => {
 
             <div>
               <label htmlFor="confirmPassword" className="block text-[16px] font-medium text-black mb-1">
-                გაიმეორეთ პაროლი
+                {t('repeatPassword')}
               </label>
               <div className="relative">
                 <input
@@ -393,7 +390,7 @@ const RegisterPage = () => {
                       ? 'border-red-300 text-black'
                       : 'border-gray-300 text-black'
                   } placeholder-gray-500 rounded-md focus:outline-none focus:ring-black focus:border-black sm:text-[16px]`}
-                  placeholder="გაიმეორეთ პაროლი"
+                  placeholder={t('repeatPassword')}
                 />
                 <button
                   type="button"
@@ -424,7 +421,7 @@ const RegisterPage = () => {
               disabled={isLoading}
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-[16px] font-medium rounded-md text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isLoading ? 'იტვირთება...' : 'რეგისტრაცია'}
+              {isLoading ? tCommon('loading') : t('registerButton')}
             </button>
           </div>
         </form>

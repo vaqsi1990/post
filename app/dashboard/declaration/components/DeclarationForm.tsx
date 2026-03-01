@@ -1,8 +1,11 @@
 'use client';
 
 import { useState, useRef } from 'react';
+import { useTranslations } from 'next-intl';
 
 export default function DeclarationForm() {
+  const t = useTranslations('declaration');
+  const tCommon = useTranslations('common');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [trackingCode, setTrackingCode] = useState('');
@@ -16,13 +19,13 @@ export default function DeclarationForm() {
     const f = e.target.files?.[0];
     if (f) {
       if (f.type !== 'application/pdf') {
-        setMessage({ type: 'error', text: 'მხოლოდ PDF ფორმატია დაშვებული' });
+        setMessage({ type: 'error', text: t('onlyPdf') });
         setFile(null);
         if (fileInputRef.current) fileInputRef.current.value = '';
         return;
       }
       if (f.size > 5 * 1024 * 1024) {
-        setMessage({ type: 'error', text: 'ფაილის ზომა არ უნდა აღემატებოდეს 5 MB-ს' });
+        setMessage({ type: 'error', text: t('maxSize') });
         setFile(null);
         if (fileInputRef.current) fileInputRef.current.value = '';
         return;
@@ -39,11 +42,11 @@ export default function DeclarationForm() {
     setMessage(null);
     const priceNum = parseFloat(price.replace(',', '.'));
     if (isNaN(priceNum) || priceNum < 0) {
-      setMessage({ type: 'error', text: 'ფასი უნდა იყოს დადებითი რიცხვი' });
+      setMessage({ type: 'error', text: t('pricePositive') });
       return;
     }
     if (!file) {
-      setMessage({ type: 'error', text: 'PDF ფაილის ატვირთვა აუცილებელია' });
+      setMessage({ type: 'error', text: t('fileRequired') });
       return;
     }
     setLoading(true);
@@ -60,7 +63,7 @@ export default function DeclarationForm() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setMessage({ type: 'error', text: data.error || 'შეცდომა' });
+        setMessage({ type: 'error', text: data.error || tCommon('error') });
         setLoading(false);
         return;
       }
@@ -72,7 +75,7 @@ export default function DeclarationForm() {
       setFile(null);
       if (fileInputRef.current) fileInputRef.current.value = '';
     } catch {
-      setMessage({ type: 'error', text: 'შეცდომა ქსელში' });
+      setMessage({ type: 'error', text: tCommon('networkError') });
     } finally {
       setLoading(false);
     }
@@ -80,7 +83,7 @@ export default function DeclarationForm() {
 
   return (
     <>
-      <h1 className="text-xl font-semibold text-gray-900 mb-2">დეკლარაციის გაგზავნა</h1>
+      <h1 className="text-xl font-semibold text-gray-900 mb-2">{t('title')}</h1>
       
       <form onSubmit={handleSubmit} className="space-y-4">
         {message && (
@@ -97,7 +100,7 @@ export default function DeclarationForm() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label htmlFor="decl-firstName" className="mb-1 block text-[14px] font-medium text-gray-700">
-              სახელი *
+              {t('firstName')} *
             </label>
             <input
               id="decl-firstName"
@@ -106,12 +109,12 @@ export default function DeclarationForm() {
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
               className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
-              placeholder="სახელი"
+              placeholder={t('firstName')}
             />
           </div>
           <div>
             <label htmlFor="decl-lastName" className="mb-1 block text-[14px] font-medium text-gray-700">
-              გვარი *
+              {t('lastName')} *
             </label>
             <input
               id="decl-lastName"
@@ -120,13 +123,13 @@ export default function DeclarationForm() {
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
               className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
-              placeholder="გვარი"
+              placeholder={t('lastName')}
             />
           </div>
         </div>
         <div>
           <label htmlFor="decl-trackingCode" className="mb-1 block text-[14px] font-medium text-gray-700">
-            თრექინგ კოდი *
+            {t('trackingCode')}
           </label>
           <input
             id="decl-trackingCode"
@@ -135,12 +138,12 @@ export default function DeclarationForm() {
             value={trackingCode}
             onChange={(e) => setTrackingCode(e.target.value)}
             className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
-            placeholder="მაგ. 1Z999AA10123456784"
+            placeholder={t('trackingPlaceholder')}
           />
         </div>
         <div>
           <label htmlFor="decl-price" className="mb-1 block text-[14px] font-medium text-gray-700">
-            ფასი (USD) *
+            {t('price')}
           </label>
           <input
             id="decl-price"
@@ -150,12 +153,12 @@ export default function DeclarationForm() {
             value={price}
             onChange={(e) => setPrice(e.target.value)}
             className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
-            placeholder="0.00"
+            placeholder={t('pricePlaceholder')}
           />
         </div>
         <div>
           <label htmlFor="decl-file" className="mb-1 block text-[14px] font-medium text-gray-700">
-            დეკლარაციის PDF ფაილი *
+            {t('pdfFile')}
           </label>
           <input
             ref={fileInputRef}
@@ -167,17 +170,17 @@ export default function DeclarationForm() {
           />
           {file && (
             <p className="mt-1 text-[13px] text-gray-500">
-              არჩეული: {file.name} ({(file.size / 1024).toFixed(1)} KB)
+              {t('selected')}: {file.name} ({(file.size / 1024).toFixed(1)} KB)
             </p>
           )}
-          <p className="mt-1 text-[13px] text-gray-500">მაქს. 5 MB, მხოლოდ PDF</p>
+          <p className="mt-1 text-[13px] text-gray-500">{t('maxFileSize')}</p>
         </div>
         <button
           type="submit"
           disabled={loading}
           className="w-full rounded-lg bg-amber-400 px-5 py-2.5 text-[15px] font-semibold text-black hover:bg-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 disabled:opacity-70"
         >
-          {loading ? 'იგზავნება...' : 'დეკლარაციის გაგზავნა'}
+          {loading ? tCommon('sending') : t('submit')}
         </button>
       </form>
     </>

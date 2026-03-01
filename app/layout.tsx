@@ -1,10 +1,7 @@
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import "./globals.css";
-import Header from "./Components/Header";
-import Footer from "./Components/Footer";
 import SessionProvider from "./providers/SessionProvider";
-import Loader from "./Components/Loader";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
@@ -23,15 +20,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${montserrat.variable} antialiased`}
-      >
-        <Loader />
+    <html lang="ka" suppressHydrationWarning>
+      <body className={`${montserrat.variable} antialiased`}>
         <SessionProvider>
-          <Header />
           {children}
-          <Footer />
         </SessionProvider>
       </body>
     </html>

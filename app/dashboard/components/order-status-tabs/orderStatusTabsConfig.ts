@@ -8,13 +8,12 @@ export const ORDER_STATUS_TAB_KEYS = [
 
 export type OrderStatusTabKey = (typeof ORDER_STATUS_TAB_KEYS)[number] | 'other';
 
-export const ORDER_STATUS_TABS: { key: OrderStatusTabKey; label: string }[] = [
-  { key: 'pending', label: 'მოლოდინში' },
-  { key: 'warehouse', label: 'საწყობში' },
-  { key: 'in_transit', label: 'გზაში' },
-  { key: 'stopped', label: 'ჩამოსული' },
-  { key: 'delivered', label: 'გატანილი' },
-
+export const ORDER_STATUS_TABS: { key: OrderStatusTabKey }[] = [
+  { key: 'pending' },
+  { key: 'warehouse' },
+  { key: 'in_transit' },
+  { key: 'stopped' },
+  { key: 'delivered' },
 ];
 
 export function normalizeOrderStatus(status: string): OrderStatusTabKey {

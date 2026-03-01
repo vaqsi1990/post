@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { ORDER_STATUS_TABS } from './orderStatusTabsConfig';
 
 type Props = {
@@ -9,11 +10,13 @@ type Props = {
 };
 
 export default function OrderStatusTabNav({ activeTab, onTabChange, getCount }: Props) {
+  const t = useTranslations('dashboard');
   return (
     <nav className="flex mb-3 flex-nowrap gap-4 lg:gap-6">
       {ORDER_STATUS_TABS.map((tab) => {
         const count = getCount(tab.key);
         const isActive = activeTab === tab.key;
+        const label = t(`orderStatus.${tab.key}`);
         return (
           <button
             key={tab.key}
@@ -25,7 +28,7 @@ export default function OrderStatusTabNav({ activeTab, onTabChange, getCount }: 
                 : 'border-transparent text-gray-600 hover:text-black hover:bg-gray-50'
             }`}
           >
-            <span className="whitespace-nowrap">{tab.label}</span>
+            <span className="whitespace-nowrap">{label}</span>
             <span
               className={`inline-flex min-w-[1.5rem] justify-center rounded-full px-2 py-0.5 text-[13px] font-bold shrink-0 ${
                 isActive ? 'bg-amber-400 text-black' : 'bg-gray-200 text-gray-600'

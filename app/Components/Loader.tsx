@@ -1,15 +1,12 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import './Loader.css';
 
-const loaderTexts = [
-  'შეუკვეთეთ მარტივად ჩვენთან',
-  'სწრაფი და უსაფრთხო მიწოდება',
-  'სანდო მომსახურება ყოველ ეტაპზე',
-];
-
 export default function Loader() {
+  const t = useTranslations('loader');
+  const loaderTexts = [t('line1'), t('line2'), t('line3')];
   const [isLoading, setIsLoading] = useState(true);
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
 

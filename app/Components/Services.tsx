@@ -2,29 +2,15 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 
 const Services = () => {
+    const t = useTranslations('home');
     const services = [
-        {
-            title: 'ამანათების ტრანსპორტირება ონლაინ შოპინგი',
-            src: '/airplane.png',
-            alt: 'ამანათების ტრანსპორტირება'
-        },
-        {
-            title: 'საბაჟო-საბროკერო მომსახურება',
-            src: '/customs.png',
-            alt: 'საბაჟო-საბროკერო მომსახურება'
-        },
-        {
-            title: 'კორპორატიული მომსახურება',
-            src: '/corporate.png',
-            alt: 'კორპორატიული მომსახურება'
-        },
-        {
-            title: 'საკურიერო მომსახურება',
-            src: '/express-delivery.png',
-            alt: 'საკურიერო მომსახურება'
-        }
+        { title: t('service1'), src: '/airplane.png', altKey: 'service1' as const },
+        { title: t('service2'), src: '/customs.png', altKey: 'service2' as const },
+        { title: t('service3'), src: '/corporate.png', altKey: 'service3' as const },
+        { title: t('service4'), src: '/express-delivery.png', altKey: 'service4' as const },
     ];
 
     return (
@@ -44,7 +30,7 @@ const Services = () => {
                         className="text-center mb-8 md:mb-16"
                     >
                         <h2 className="text-black md:text-[30px] text-[18px] font-bold">
-                        ს ე რ ვ ი ს ე ბ ი
+                        {t('servicesTitle')}
                         </h2>
                     </motion.div>
                     </div>
@@ -71,9 +57,9 @@ const Services = () => {
                                     <div className="mb-4 md:mb-6">
                                         <img
                                             src={service.src}
-                                            alt={service.alt} 
-                                            width={50} 
-                                            height={50} 
+                                            alt={t(service.altKey)}
+                                            width={50}
+                                            height={50}
                                             className="w-12 h-12 md:w-16 md:h-16 object-contain"
                                             style={{ opacity: 1 }}
                                         />

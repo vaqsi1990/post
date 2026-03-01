@@ -1,23 +1,26 @@
-
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import { gsap } from 'gsap';
-
-const HERO_TEXTS = [
-  {
-    line1: 'ნუ გადაიხდი ზედმეტს!!!',
-    line2: 'გამოიწერე მარტივად!!!',
-    line3: 'მიიღე სწრაფად!!!',
-  },
-  {
-    line1: 'მიიღე ამანათი ოფისში მოუსვლელად!!!',
-    line2: 'თქვენს ამანათს მისამართზე, მთელი საქართველოს მასშტაბით უფასოდ მოგიტანთ!!!',
-    line3: null,
-  },
-];
+import { useTranslations } from 'next-intl';
 
 const Hero = () => {
+  const t = useTranslations('home');
+  const HERO_TEXTS = useMemo(
+    () => [
+      {
+        line1: t('hero1Line1'),
+        line2: t('hero1Line2'),
+        line3: t('hero1Line3'),
+      },
+      {
+        line1: t('hero2Line1'),
+        line2: t('hero2Line2'),
+        line3: null as string | null,
+      },
+    ],
+    [t]
+  );
   const [textIndex, setTextIndex] = useState(0);
   const layer0Ref = useRef<HTMLDivElement>(null);
   const layer1Ref = useRef<HTMLDivElement>(null);

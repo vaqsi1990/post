@@ -1,10 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
+import { Link, useRouter } from '@/i18n/navigation';
 
 export default function NewParcelPage() {
+  const t = useTranslations('parcels');
+  const tCommon = useTranslations('common');
   const router = useRouter();
   const [trackingNumber, setTrackingNumber] = useState('');
   const [originCountry, setOriginCountry] = useState('US');
@@ -19,7 +21,7 @@ export default function NewParcelPage() {
     setError(null);
     const w = parseFloat(weight.replace(',', '.'));
     if (isNaN(w) || w < 0) {
-      setError('წონა უნდა იყოს დადებითი რიცხვი');
+      setError(t('weightError'));
       return;
     }
     setLoading(true);
@@ -37,14 +39,14 @@ export default function NewParcelPage() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error || 'შეცდომა');
+        setError(data.error || tCommon('error'));
         setLoading(false);
         return;
       }
-      router.push(`/dashboard/tracking?code=${encodeURIComponent(data.parcel.trackingNumber)}`);
+      router.push(`/dashboard/tracking?code=${encodeURIComponent(data.parcel.trackingNumber)}` as '/dashboard/tracking');
       router.refresh();
     } catch {
-      setError('შეცდომა ქსელში');
+      setError(tCommon('networkError'));
       setLoading(false);
     }
   }
@@ -54,12 +56,12 @@ export default function NewParcelPage() {
       <div className="mx-auto mt-24 w-full max-w-lg px-4">
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <div className="mb-6 flex items-center justify-between">
-            <h1 className="text-xl font-semibold text-gray-900">ამანათის დამატება</h1>
+            <h1 className="text-xl font-semibold text-gray-900">{t('title')}</h1>
             <Link
               href="/dashboard"
               className="text-[15px] font-medium text-gray-600 hover:text-black"
             >
-              ← დაბრუნება
+              ← {t('back')}
             </Link>
           </div>
 
@@ -71,7 +73,7 @@ export default function NewParcelPage() {
             )}
             <div>
               <label htmlFor="trackingNumber" className="mb-1 block text-[14px] font-medium text-gray-700">
-                თრექინგ კოდი *
+                {t('trackingCode')}
               </label>
               <input
                 id="trackingNumber"
@@ -80,12 +82,12 @@ export default function NewParcelPage() {
                 value={trackingNumber}
                 onChange={(e) => setTrackingNumber(e.target.value)}
                 className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400"
-                placeholder="მაგ. 1Z999AA10123456784"
+                placeholder={t('trackingPlaceholder')}
               />
             </div>
             <div>
               <label htmlFor="originCountry" className="mb-1 block text-[14px] font-medium text-gray-700">
-                ქვეყანა
+                {t('country')}
               </label>
               <input
                 id="originCountry"
@@ -93,12 +95,12 @@ export default function NewParcelPage() {
                 value={originCountry}
                 onChange={(e) => setOriginCountry(e.target.value)}
                 className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400"
-                placeholder="US"
+                placeholder={t('countryPlaceholder')}
               />
             </div>
             <div>
               <label htmlFor="originAddress" className="mb-1 block text-[14px] font-medium text-gray-700">
-                გამგზავნის მისამართი
+                {t('senderAddress')}
               </label>
               <input
                 id="originAddress"
@@ -106,12 +108,12 @@ export default function NewParcelPage() {
                 value={originAddress}
                 onChange={(e) => setOriginAddress(e.target.value)}
                 className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400"
-                placeholder="სრული მისამართი (არასავალდებულო)"
+                placeholder={t('senderAddressPlaceholder')}
               />
             </div>
             <div>
               <label htmlFor="weight" className="mb-1 block text-[14px] font-medium text-gray-700">
-                წონა (კგ)
+                {t('weight')}
               </label>
               <input
                 id="weight"
@@ -120,12 +122,12 @@ export default function NewParcelPage() {
                 value={weight}
                 onChange={(e) => setWeight(e.target.value)}
                 className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400"
-                placeholder="0"
+                placeholder={t('weightPlaceholder')}
               />
             </div>
             <div>
               <label htmlFor="description" className="mb-1 block text-[14px] font-medium text-gray-700">
-                აღწერა (არასავალდებულო)
+                {t('description')}
               </label>
               <input
                 id="description"
@@ -141,13 +143,13 @@ export default function NewParcelPage() {
                 disabled={loading}
                 className="rounded-lg bg-amber-400 px-5 py-2.5 text-[15px] font-semibold text-black hover:bg-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 disabled:opacity-70"
               >
-                {loading ? 'იგზავნება...' : 'დამატება'}
+                {loading ? tCommon('sending') : t('submit')}
               </button>
               <Link
                 href="/dashboard"
                 className="rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-[15px] font-medium text-gray-700 hover:bg-gray-50"
               >
-                გაუქმება
+                {tCommon('cancel')}
               </Link>
             </div>
           </form>

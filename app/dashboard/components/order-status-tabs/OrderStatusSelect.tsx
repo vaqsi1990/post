@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { ORDER_STATUS_TABS } from './orderStatusTabsConfig';
 
 type Props = {
@@ -16,10 +17,11 @@ const selectStyles = {
 };
 
 export default function OrderStatusSelect({ value, onChange, getCount }: Props) {
+  const t = useTranslations('dashboard');
   return (
     <div className="border-b border-gray-200 pb-px">
       <label htmlFor="status-select" className="sr-only">
-        სტატუსის არჩევა
+        {t('statusSelectLabel')}
       </label>
       <select
         id="status-select"
@@ -30,7 +32,7 @@ export default function OrderStatusSelect({ value, onChange, getCount }: Props) 
       >
         {ORDER_STATUS_TABS.map((tab) => (
           <option key={tab.key} value={tab.key} className="bg-white text-black">
-            {tab.label} ({getCount(tab.key)})
+            {t(`orderStatus.${tab.key}`)} ({getCount(tab.key)})
           </option>
         ))}
       </select>

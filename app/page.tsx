@@ -1,18 +1,6 @@
-import React from 'react';
-import Hero from './Components/Hero';
-import Services from './Components/Services';
-import Tariffs from './Components/Tariffs';
-import ChatWidget from './Components/ChatWidget';
+import { redirect } from 'next/navigation';
+import { routing } from '@/i18n/routing';
 
-const Page = () => {
-  return (
-    <div>
-      <Hero />
-      <Services />
-      <Tariffs />
-      <ChatWidget />
-    </div>
-  );
-};
-
-export default Page;
+export default function RootPage() {
+  redirect(`/${routing.defaultLocale}`);
+}
