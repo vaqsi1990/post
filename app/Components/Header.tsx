@@ -148,47 +148,71 @@ const Header = () => {
                 </button>
             </div>
 
-            {/* Mobile Navigation */}
+            {/* Mobile menu backdrop */}
+            {isMenuOpen && (
+              <div
+                className="nav-mobile-backdrop"
+                aria-hidden="true"
+                onClick={() => setIsMenuOpen(false)}
+              />
+            )}
+
+            {/* Mobile Navigation — slides in from right */}
             <nav className={`nav-mobile ${isMenuOpen ? 'open' : ''}`}>
-                {navLinks.map((link) => (
-                    <Link 
-                        key={link.href} 
-                        href={link.href}
-                        className="nav-link-mobile"
-                        onClick={() => setIsMenuOpen(false)}
+                <div className="nav-mobile-header">
+                  <span className="nav-mobile-title">მენიუ</span>
+                  <button
+                    type="button"
+                    className="nav-mobile-close"
+                    onClick={() => setIsMenuOpen(false)}
+                    aria-label="Close menu"
+                  >
+                    <span aria-hidden>×</span>
+                  </button>
+                </div>
+                <div className="nav-mobile-links">
+                  {navLinks.map((link) => (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      className="nav-link-mobile"
+                      onClick={() => setIsMenuOpen(false)}
                     >
-                        {link.label}
+                      {link.label}
                     </Link>
-                ))}
-                {isAuthed ? (
-                  <>
-                    <Link 
+                  ))}
+                </div>
+                <div className="nav-mobile-actions">
+                  {isAuthed ? (
+                    <>
+                      <Link
                         href={panelHref}
                         className="auth-button-mobile"
                         onClick={() => setIsMenuOpen(false)}
-                    >
+                      >
                         {panelLabel}
-                    </Link>
-                    <button
-                      type="button"
-                      className="auth-button-mobile text-white"
-                      onClick={async () => {
-                        setIsMenuOpen(false);
-                        await signOut({ callbackUrl: '/' });
-                      }}
-                    >
-                      გამოსვლა
-                    </button>
-                  </>
-                ) : (
-                  <Link 
-                      href="/login" 
-                      className="auth-button-mobile text-white"
+                      </Link>
+                      <button
+                        type="button"
+                        className="auth-button-mobile auth-button-mobile-outline"
+                        onClick={async () => {
+                          setIsMenuOpen(false);
+                          await signOut({ callbackUrl: '/' });
+                        }}
+                      >
+                        გამოსვლა
+                      </button>
+                    </>
+                  ) : (
+                    <Link
+                      href="/login"
+                      className="auth-button-mobile"
                       onClick={() => setIsMenuOpen(false)}
-                  >
+                    >
                       ავტორიზაცია
-                  </Link>
-                )}
+                    </Link>
+                  )}
+                </div>
             </nav>
         </header>
     );

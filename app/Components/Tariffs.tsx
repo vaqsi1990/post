@@ -54,9 +54,9 @@ export default function Tariffs() {
       whileInView={{ opacity: 1 }}
       viewport={viewport}
       transition={{ duration: 0.6 }}
-      className="w-full py-16 md:py-24 bg-gradient-to-b from-slate-50 to-slate-200 relative overflow-hidden"
+      className="w-full py-10 sm:py-14 md:py-24 bg-gradient-to-b from-slate-50 to-slate-200 relative overflow-hidden"
     >
-    <div className="max-w-3xl mx-auto w-full px-4 relative z-10">
+    <div className="max-w-3xl mx-auto w-full px-3 sm:px-4 relative z-10">
       
       {/* Header */}
       <motion.div
@@ -64,9 +64,9 @@ export default function Tariffs() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={viewport}
         transition={{ duration: 0.6, delay: 0.1 }}
-        className="text-center mb-10 md:mb-14"
+        className="text-center mb-6 sm:mb-8 md:mb-14"
       >
-        <h2 className="text-slate-900 md:text-[34px] text-[22px] font-extrabold tracking-tight">
+        <h2 className="text-slate-900 text-[20px] sm:text-[22px] md:text-[34px] font-extrabold tracking-tight">
           ტარიფები და ვადები
         </h2>
         
@@ -78,19 +78,19 @@ export default function Tariffs() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={viewport}
         transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
-        className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl"
+        className="overflow-hidden rounded-xl sm:rounded-2xl border border-slate-200 bg-white shadow-lg sm:shadow-2xl"
       >
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[320px]">
+        <div className="overflow-x-auto -mx-px">
+          <table className="w-full min-w-[280px]">
             <thead>
               <tr className="border-b border-slate-200 bg-slate-100">
-                <th className="text-left py-5 px-4 md:px-8 text-slate-800 font-semibold text-sm md:text-[18px]">
+                <th className="text-left py-3 px-3 sm:py-4 sm:px-4 md:py-5 md:px-8 text-slate-800 font-semibold text-xs sm:text-sm md:text-[18px]">
                   ქვეყანა
                 </th>
-                <th className="text-center py-5 px-4 md:px-8 text-slate-800 font-semibold text-sm md:text-[18px]">
+                <th className="text-center py-3 px-3 sm:py-4 sm:px-4 md:py-5 md:px-8 text-slate-800 font-semibold text-xs sm:text-sm md:text-[18px]">
                   ვადა
                 </th>
-                <th className="text-right py-5 px-4 md:px-8 text-slate-800 font-semibold text-sm md:text-[18px]">
+                <th className="text-right py-3 px-3 sm:py-4 sm:px-4 md:py-5 md:px-8 text-slate-800 font-semibold text-xs sm:text-sm md:text-[18px]">
                   ფასი
                 </th>
               </tr>
@@ -110,26 +110,26 @@ export default function Tariffs() {
                     i % 2 === 0 ? 'bg-white' : 'bg-slate-50/60'
                   }`}
                 >
-                  <td className="py-4 px-4 md:px-8 text-slate-800 text-sm md:text-[18px] font-medium">
-                    <span className="inline-flex items-center gap-3">
+                  <td className="py-2.5 px-3 sm:py-3 sm:px-4 md:py-4 md:px-8 text-slate-800 text-xs sm:text-sm md:text-[18px] font-medium">
+                    <span className="inline-flex items-center gap-2 sm:gap-3">
                       {(() => {
                         const Flag = FLAGS[row.countryCode];
                         return Flag ? (
                           <Flag
                             title={row.country}
-                            className="w-7 h-5 md:w-8 md:h-6 rounded object-cover shrink-0 shadow-sm"
+                            className="w-6 h-4 sm:w-7 sm:h-5 md:w-8 md:h-6 rounded object-cover shrink-0 shadow-sm"
                           />
                         ) : null;
                       })()}
-                      {row.country}
+                      <span className="whitespace-nowrap">{row.country}</span>
                     </span>
                   </td>
   
-                  <td className="py-4 px-4 md:px-8 text-center text-slate-700 text-sm md:text-[18px]">
+                  <td className="py-2.5 px-3 sm:py-3 sm:px-4 md:py-4 md:px-8 text-center text-slate-700 text-xs sm:text-sm md:text-[18px]">
                     {row.deliveryDays}
                   </td>
   
-                  <td className="py-4 px-4 md:px-8 text-right text-slate-900 text-sm md:text-[18px] font-semibold">
+                  <td className="py-2.5 px-3 sm:py-3 sm:px-4 md:py-4 md:px-8 text-right text-slate-900 text-xs sm:text-sm md:text-[18px] font-semibold whitespace-nowrap">
                     $ {row.pricePerKg.toFixed(2)}
                   </td>
                 </motion.tr>
