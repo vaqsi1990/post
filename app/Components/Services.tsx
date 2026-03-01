@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 const Services = () => {
     const services = [
         {
-            title: 'ამანათების ტრანსპორტირება',
+            title: 'ამანათების ტრანსპორტირება ონლაინ შოპინგი',
             src: '/airplane.png',
             alt: 'ამანათების ტრანსპორტირება'
         },
