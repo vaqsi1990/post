@@ -29,12 +29,13 @@ const Services = () => {
 
     return (
         <>
-            <section className="w-full pt-14  md:pt-20 pb-0  md:pb-14   bg-gray-100 flex items-center justify-center  overflow-visible">
-                <div className="max-w-7xl w-full  z-10 ">
+            <section className="w-full pt-14  md:pt-20 pb-0  md:pb-14   bg-gray-100 flex items-center justify-center overflow-x-hidden">
+                <div className="max-w-7xl w-full z-10 overflow-x-hidden min-w-0">
                     {/* Category Title */}
                    
 
-                    {/* Main Heading */}
+                    {/* Main Heading - wrapper clips initial y offset to prevent overflow on load */}
+                    <div className="overflow-hidden">
                     <motion.div
                         initial={{ opacity: 0, y: -48 }}
                         whileInView={{ opacity: 1, y: 0 }}
@@ -46,8 +47,10 @@ const Services = () => {
                         ს ე რ ვ ი ს ე ბ ი
                         </h2>
                     </motion.div>
+                    </div>
 
-                    {/* Services Grid */}
+                    {/* Services Grid - overflow-hidden clips initial x offset on load */}
+                    <div className="overflow-x-hidden min-w-0">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-0">
                         {services.map((service, index) => (
                             <motion.div
@@ -83,6 +86,7 @@ const Services = () => {
                                 </div>
                             </motion.div>
                         ))}
+                    </div>
                     </div>
                 </div>
             </section>
