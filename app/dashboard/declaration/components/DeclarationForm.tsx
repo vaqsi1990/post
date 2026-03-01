@@ -81,9 +81,7 @@ export default function DeclarationForm() {
   return (
     <>
       <h1 className="text-xl font-semibold text-gray-900 mb-2">დეკლარაციის გაგზავნა</h1>
-      <p className="mb-6 text-[14px] text-gray-600">
-        შეავსეთ სახელი, გვარი, თრექინგ კოდი, ფასი და ატვირთეთ დეკლარაციის PDF ფაილი.
-      </p>
+      
       <form onSubmit={handleSubmit} className="space-y-4">
         {message && (
           <div
