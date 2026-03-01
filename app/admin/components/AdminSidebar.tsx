@@ -26,10 +26,9 @@ export default function AdminSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-full  lg:w-56 shrink-0">
-      <div className="sticky top-4">
-      
-        <nav className="flex flex-col gap-0.5">
+    <aside className="w-full lg:w-56 shrink-0 min-w-0">
+      <div className="sticky top-4 max-h-[calc(100vh-7rem)] overflow-y-auto overflow-x-hidden">
+        <nav className="flex flex-col gap-0.5 py-1">
           {items.map((item) => {
             const isActive = pathname === item.href;
             return (
@@ -38,7 +37,7 @@ export default function AdminSidebar() {
                 href={item.href}
                 className={`block py-2.5 px-2 text-[15px] font-medium transition-colors rounded-lg border-l-2 ${
                   isActive
-                    ? 'border-black bg-gray-100 text-black'
+                    ? 'border-black bg-black text-white'
                     : 'border-transparent text-gray-700 hover:bg-gray-50 hover:text-black'
                 }`}
               >
