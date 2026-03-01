@@ -55,19 +55,20 @@ const Header = () => {
                 {/* Logo */}
                 <Link href="/" className="logo" style={{ display: 'flex', alignItems: 'center' }}>
                   <Image 
-                    src="/post.jpg" 
+                    src="/logo.jpg" 
                     alt="Logo" 
-                    width={60} 
-                    height={60}
-                    className="logo-image rounded-full"
+                    width={110} 
+                    height={110}
+                    className="
+                     rounded-full"
                     priority
                     unoptimized
                     style={{ 
                       opacity: 1, 
                       display: 'block',
                       visibility: 'visible',
-                      width: '60px',
-                      height: '60px',
+                      width: '100px',
+                      height: '100px',
                       objectFit: 'contain'
                     }}
                   />

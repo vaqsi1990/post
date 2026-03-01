@@ -9,9 +9,9 @@ const Services = () => {
             alt: 'ამანათების ტრანსპორტირება'
         },
         {
-            title: 'განბაჟების მომსახურება',
+            title: 'საბაჟო-საბროკერო მომსახურება',
             src: '/customs.png',
-            alt: 'განბაჟების მომსახურება'
+            alt: 'საბაჟო-საბროკერო მომსახურება'
         },
         {
             title: 'კორპორატიული მომსახურება',
@@ -31,15 +31,13 @@ const Services = () => {
                 <div className="max-w-7xl w-full  z-10 ">
                     {/* Category Title */}
                     <div className="text-center mb-3 md:mb-4">
-                        <h3 className="text-black md:text-[20px] text-[14px] uppercase tracking-widest font-medium">
-                            ს ე რ ვ ი ს ე ბ ი
-                        </h3>
+                        
                     </div>
 
                     {/* Main Heading */}
                     <div className="text-center mb-8 md:mb-16">
                         <h2 className="text-black md:text-[30px] text-[18px] font-bold">
-                            ჩ ვ ე ნ გ თ ა ვ ა ზ ო ბ თ
+                        ს ე რ ვ ი ს ე ბ ი
                         </h2>
                     </div>
 

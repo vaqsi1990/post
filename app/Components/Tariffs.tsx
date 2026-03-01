@@ -16,15 +16,15 @@ const FLAGS: Record<string, React.ComponentType<{ title?: string; className?: st
 };
 
 const TARIFFS = [
-  { country: 'დიდი ბრიტანეთი', countryCode: 'GB', pricePerKg: 4.5 },
-  { country: 'ამერიკა', countryCode: 'US', pricePerKg: 5.5 },
-  { country: 'ჩინეთი', countryCode: 'CN', pricePerKg: 3.2 },
-  { country: 'იტალია', countryCode: 'IT', pricePerKg: 4.0 },
-  { country: 'საბერძნეთი', countryCode: 'GR', pricePerKg: 3.8 },
-  { country: 'ესპანეთი', countryCode: 'ES', pricePerKg: 4.2 },
-  { country: 'საფრანგეთი', countryCode: 'FR', pricePerKg: 4.0 },
-  { country: 'გერმანია', countryCode: 'DE', pricePerKg: 3.9 },
-  { country: 'თურქეთი', countryCode: 'TR', pricePerKg: 2.8 },
+  { country: 'დიდი ბრიტანეთი', countryCode: 'GB', pricePerKg: 4.5, deliveryDays: '5-7 სამუშაო დღე' },
+  { country: 'ამერიკა', countryCode: 'US', pricePerKg: 5.5, deliveryDays: '7-10 სამუშაო დღე' },
+  { country: 'ჩინეთი', countryCode: 'CN', pricePerKg: 3.2, deliveryDays: '10-14 სამუშაო დღე' },
+  { country: 'იტალია', countryCode: 'IT', pricePerKg: 4.0, deliveryDays: '5-7 სამუშაო დღე' },
+  { country: 'საბერძნეთი', countryCode: 'GR', pricePerKg: 3.8, deliveryDays: '5-7 სამუშაო დღე' },
+  { country: 'ესპანეთი', countryCode: 'ES', pricePerKg: 4.2, deliveryDays: '5-7 სამუშაო დღე' },
+  { country: 'საფრანგეთი', countryCode: 'FR', pricePerKg: 4.0, deliveryDays: '5-7 სამუშაო დღე' },
+  { country: 'გერმანია', countryCode: 'DE', pricePerKg: 3.9, deliveryDays: '5-7 სამუშაო დღე' },
+  { country: 'თურქეთი', countryCode: 'TR', pricePerKg: 2.8, deliveryDays: '3-5 სამუშაო დღე' },
 ] as const;
 
 export default function Tariffs() {
@@ -36,7 +36,7 @@ export default function Tariffs() {
         </div>
         <div className="text-center mb-8 md:mb-12">
           <h2 className="text-black md:text-[30px] text-[18px] font-bold">
-            ტარიფები 
+            ტარიფები  და ვადები
           </h2>
          
         </div>
@@ -48,6 +48,9 @@ export default function Tariffs() {
                 <tr className="border-b border-gray-200 bg-gray-100">
                   <th className="text-left py-4 px-4 md:px-6 text-black font-semibold text-sm md:text-[18px]">
                     ქვეყანა
+                  </th>
+                  <th className="text-center py-4 px-4 md:px-6 text-black font-semibold text-sm md:text-[18px]">
+                    ვადები
                   </th>
                   <th className="text-right py-4 px-4 md:px-6 text-black font-semibold text-sm md:text-[18px]">
                     ფასი / კგ ($)
@@ -76,6 +79,9 @@ export default function Tariffs() {
                         {row.country}
                       </span>
                     </td>
+                    <td className="py-3 px-4 md:px-6 text-center text-gray-700 text-sm md:text-[18px]">
+                      {row.deliveryDays}
+                    </td>
                     <td className="py-3 px-4 md:px-6 text-right text-gray-900 text-sm md:text-[18px] font-semibold">
                       $ {row.pricePerKg.toFixed(2)}
                     </td>
@@ -86,9 +92,7 @@ export default function Tariffs() {
           </div>
         </div>
 
-        <p className="text-center text-gray-500 text-xs md:text-sm mt-4">
-          * ფასები შეიძლება შეიცვალოს. ზუსტი ღირებულებისთვის დაგვიკავშირდით.
-        </p>
+     
       </div>
     </section>
   );

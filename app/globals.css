@@ -328,7 +328,8 @@ button:not(.mobile-menu-button),
   top: 0;
   left: 0;
   width: 100%;
-  background: linear-gradient(90deg, #2DA7FF, #3A5BFF, #8A3CFF, #FF4FD8);
+
+  background: linear-gradient(90deg, #FF4FD8, #3A5BFF, #8A3CFF, #FF4FD8);
   backdrop-filter: blur(10px);
   z-index: 1000;
   
@@ -383,8 +384,8 @@ button:not(.mobile-menu-button),
 }
 
 .header .logo-image {
-  height: 60px;
-  width: 60px;
+  height: 80px;
+  width: 80px;
   object-fit: contain;
   display: block !important;
   opacity: 1 !important;

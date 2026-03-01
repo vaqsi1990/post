@@ -113,7 +113,7 @@ const Hero = () => {
   return (
     <div ref={containerRef} className="hero-parallax-container">
       {/* Dark Overlay */}
-      <div className="absolute inset-0 bg-black/50 z-10"></div>
+  
       
       {/* Hero Text — იცვლება ყოველ 3 წამში */}
       <div className="absolute inset-0 z-20 flex items-center justify-start -translate-y-12 md:-translate-y-16">
