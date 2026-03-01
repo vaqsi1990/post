@@ -5,20 +5,54 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { signOut, useSession } from 'next-auth/react';
 
+type NavLinkItem = { href: string; label: string };
+type NavItem =
+    | { type: 'link'; href: string; label: string }
+    | { type: 'dropdown'; href: string; label: string; children: NavLinkItem[] };
+
+const navLinks: NavItem[] = [
+    {
+        type: 'dropdown',
+        href: '/',
+        label: 'სერვისები',
+        children: [
+            { href: '/#online-shopping', label: 'ონლაინ შოპინგი' },
+            { href: '/#commercial-export', label: 'კომერციული ტვირთების ექსპორტი' },
+            { href: '/#customs-broker', label: 'საბაჟო-საბროკერო მომსახურება' },
+            { href: '/#courier', label: 'საკურიერო მომსახურება' },
+        ],
+    },
+    { type: 'link', href: '/stores', label: 'მაღაზიები' },
+    { type: 'link', href: '/pricing', label: 'ტარიფები' },
+    {
+        type: 'dropdown',
+        href: '/faq',
+        label: 'კითხვები',
+        children: [
+            { href: '/faq#subscribe', label: 'როგორ გამოვიწერო?' },
+            { href: '/faq#customs-rules', label: 'საბაჟო წესები' },
+            { href: '/faq#prohibited', label: 'აკრძალული ნივთები' },
+            { href: '/faq#faq', label: 'ხშირად დასმული კითხვები' },
+            { href: '/faq#about', label: 'ჩვენს შესახებ' },
+        ],
+    },
+    {
+        type: 'dropdown',
+        href: '/help',
+        label: 'დახმარება',
+        children: [
+            { href: '/help#guide', label: 'ონლაინ გიდი' },
+        ],
+    },
+    { type: 'link', href: '/contact', label: 'კონტაქტი' },
+];
+
 const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
+    const [openMobileDropdown, setOpenMobileDropdown] = useState<string | null>(null);
     const accountMenuRef = useRef<HTMLDivElement | null>(null);
     const { data: session, status } = useSession();
-
-    const navLinks = [
-        { href: '/', label: 'სერვისები' },
-        { href: '/stores', label: 'მაღაზიები' },
-        { href: '/pricing', label: 'ტარიფები' },
-        { href: '/faq', label: 'კითხვები' },
-        { href: '/help', label: 'დახმარება' },
-        { href: '/contact', label: 'კონტაქტი' },
-    ];
 
     const isAuthed = status === 'authenticated';
     const role = session?.user?.role;
@@ -74,17 +108,42 @@ const Header = () => {
                   />
                 </Link>
 
-                {/* Desktop Navigation */}
+                {/* Desktop Navigation - dropdowns open on hover */}
                 <nav className="nav-desktop">
-                    {navLinks.map((link) => (
-                        <Link 
-                            key={link.href} 
-                            href={link.href}
-                            className="nav-link text-white"
-                        >
-                            {link.label}
-                        </Link>
-                    ))}
+                    {navLinks.map((item) =>
+                        item.type === 'link' ? (
+                            <Link
+                                key={item.href}
+                                href={item.href}
+                                className="nav-link text-white"
+                            >
+                                {item.label}
+                            </Link>
+                        ) : (
+                            <div key={item.href + item.label} className="header-dropdown header-dropdown-nav">
+                                <Link
+                                    href={item.href}
+                                    className="nav-link header-dropdown-trigger text-white"
+                                    aria-haspopup="menu"
+                                >
+                                    {item.label}
+                                    <span className="header-dropdown-caret" aria-hidden="true">▾</span>
+                                </Link>
+                                <div className="header-dropdown-menu header-dropdown-menu-nav" role="menu">
+                                    {item.children.map((child) => (
+                                        <Link
+                                            key={child.href}
+                                            href={child.href}
+                                            className="header-dropdown-item header-dropdown-item-nav"
+                                            role="menuitem"
+                                        >
+                                            {child.label}
+                                        </Link>
+                                    ))}
+                                </div>
+                            </div>
+                        )
+                    )}
                 </nav>
 
                 {/* Auth Button */}
@@ -171,16 +230,46 @@ const Header = () => {
                   </button>
                 </div>
                 <div className="nav-mobile-links">
-                  {navLinks.map((link) => (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      className="nav-link-mobile"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      {link.label}
-                    </Link>
-                  ))}
+                  {navLinks.map((item) =>
+                    item.type === 'link' ? (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className="nav-link-mobile"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        {item.label}
+                      </Link>
+                    ) : (
+                      <div key={item.href + item.label} className="nav-mobile-dropdown">
+                        <button
+                          type="button"
+                          className="nav-link-mobile nav-mobile-dropdown-trigger"
+                          onClick={() => setOpenMobileDropdown((v) => (v === item.label ? null : item.label))}
+                          aria-expanded={openMobileDropdown === item.label}
+                        >
+                          {item.label}
+                          <span className="nav-mobile-dropdown-caret" aria-hidden="true">
+                            {openMobileDropdown === item.label ? '▴' : '▾'}
+                          </span>
+                        </button>
+                        {openMobileDropdown === item.label && (
+                          <div className="nav-mobile-dropdown-panel">
+                            {item.children.map((child) => (
+                              <Link
+                                key={child.href}
+                                href={child.href}
+                                className="nav-link-mobile nav-link-mobile-sub"
+                                onClick={() => { setIsMenuOpen(false); setOpenMobileDropdown(null); }}
+                              >
+                                {child.label}
+                              </Link>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )
+                  )}
                 </div>
                 <div className="nav-mobile-actions">
                   {isAuthed ? (

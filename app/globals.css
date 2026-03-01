@@ -457,6 +457,25 @@ button:not(.mobile-menu-button),
   gap: 0.5rem;
 }
 
+/* Nav dropdown trigger styled as nav link */
+nav.nav-desktop .header-dropdown-trigger.nav-link {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
+}
+
+/* სერვისები, კითხვები, დახმარება — solid white */
+.header-dropdown-nav .nav-link.header-dropdown-trigger {
+  color: #fff !important;
+}
+.header-dropdown-nav .nav-link.header-dropdown-trigger:hover {
+  color: #fff !important;
+}
+
 .header-dropdown-caret {
   font-size: 0.9em;
   line-height: 1;
@@ -483,6 +502,33 @@ button:not(.mobile-menu-button),
   gap: 0.25rem;
 }
 
+/* Nav dropdown: show on hover, black bg, white text */
+.header-dropdown-nav .header-dropdown-menu {
+  display: none;
+}
+.header-dropdown-nav:hover .header-dropdown-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.header-dropdown-nav .header-dropdown-menu.header-dropdown-menu-nav {
+  background: #000;
+  border-color: rgba(255, 255, 255, 0.15);
+  top: 100%;
+  right: -54px !important;
+  left: auto;
+  padding-top: 0.5rem;
+  margin-top: 2px;
+}
+.header-dropdown-nav .header-dropdown-item.header-dropdown-item-nav {
+  background: transparent;
+  color: #fff;
+}
+.header-dropdown-nav .header-dropdown-item.header-dropdown-item-nav:hover {
+  background: rgba(255, 255, 255, 0.12);
+  transform: none;
+}
+
 .header-dropdown-item {
   display: flex;
   align-items: center;
@@ -492,8 +538,8 @@ button:not(.mobile-menu-button),
   border: none;
   cursor: pointer;
   color: #fff;
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 17px;
+  font-weight: 400;
   padding: 0.75rem 0.9rem;
   border-radius: 10px;
   transition: background 0.2s ease, transform 0.2s ease;
@@ -598,6 +644,55 @@ button:not(.mobile-menu-button),
 }
 
 .nav-link-mobile:hover {
+  color: #a78bfa;
+}
+
+.nav-mobile-dropdown {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.nav-mobile-dropdown-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 20px;
+  font-weight: 500;
+  color: #fff;
+  padding: 0.75rem 0;
+  text-align: left;
+  transition: color 0.3s ease;
+}
+
+.nav-mobile-dropdown-trigger:hover {
+  color: #a78bfa;
+}
+
+.nav-mobile-dropdown-caret {
+  font-size: 0.85em;
+  opacity: 0.9;
+}
+
+.nav-mobile-dropdown-panel {
+  display: flex;
+  flex-direction: column;
+  padding-left: 1rem;
+  padding-bottom: 0.5rem;
+  gap: 0.25rem;
+}
+
+.nav-link-mobile-sub {
+  font-size: 17px;
+  padding: 0.5rem 0;
+  border-bottom: none;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.nav-link-mobile-sub:hover {
   color: #a78bfa;
 }
 
