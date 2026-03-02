@@ -12,7 +12,7 @@ const MAX_FILE_SIZE = 10 * 1024 * 1024; // 5MB
 const ALLOWED_TYPE = 'application/pdf';
 
 const ORIGIN_COUNTRY_CODES = ['uk', 'us', 'cn', 'it', 'gr', 'es', 'fr', 'de', 'tr'] as const;
-console.log(ORIGIN_COUNTRY_CODES);
+
 const createParcelSchema = z.object({
   customerName: z.string().min(1, 'მომხმარებლის სახელი აუცილებელია'),
   trackingNumber: z.string().min(1, 'თრექინგ კოდი აუცილებელია'),
