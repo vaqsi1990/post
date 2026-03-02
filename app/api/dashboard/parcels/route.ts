@@ -19,7 +19,7 @@ const createParcelSchema = z.object({
   price: z.number().min(0, 'ფასი აუცილებელია'),
   onlineShop: z.string().min(1, 'ონლაინ მაღაზია აუცილებელია'),
   quantity: z.number().int().min(1, 'ამანათის რაოდენობა აუცილებელია'),
-  originCountry: z.enum(ORIGIN_COUNTRY_CODES, { required_error: 'ქვეყანა აუცილებელია' }),
+  originCountry: z.enum(ORIGIN_COUNTRY_CODES, { message: 'ქვეყანა აუცილებელია' }),
   comment: z.string().optional(),
   weight: z.number().min(0).optional(),
   description: z.string().optional(),
