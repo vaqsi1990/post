@@ -272,6 +272,9 @@ const Header = () => {
           )}
         </div>
         <div className="nav-mobile-actions">
+          <div className="nav-mobile-locale">
+            <LocaleSwitcher />
+          </div>
           {isAuthed ? (
             <>
               <Link

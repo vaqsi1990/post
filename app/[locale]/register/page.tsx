@@ -19,6 +19,8 @@ const RegisterPage = () => {
     phone: '',
     otpCode: '',
     personalIdNumber: '',
+    city: '',
+    address: '',
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -226,27 +228,6 @@ const RegisterPage = () => {
             </div>
 
             <div>
-              <label htmlFor="otpCode" className="block text-[16px] font-medium text-black mb-1">{t('otpCode')}</label>
-              <input
-                id="otpCode"
-                name="otpCode"
-                type="text"
-                inputMode="numeric"
-                autoComplete="one-time-code"
-                maxLength={4}
-                value={formData.otpCode}
-                onChange={(e) => {
-                  const v = e.target.value.replace(/\D/g, '').slice(0, 4);
-                  setFormData((prev) => ({ ...prev, otpCode: v }));
-                  if (errors.otpCode) setErrors((prev) => ({ ...prev, otpCode: '' }));
-                }}
-                className={`appearance-none relative block w-full px-3 py-2 border ${errors.otpCode ? 'border-red-300 text-black' : 'border-gray-300 text-black'} placeholder-gray-500 rounded-md focus:outline-none focus:ring-black focus:border-black sm:text-[16px]`}
-                placeholder={otpSent ? t('otpPlaceholder') : t('otpPlaceholderBefore')}
-              />
-              {errors.otpCode && <p className="mt-1 text-[16px] text-red-600">{errors.otpCode}</p>}
-            </div>
-
-            <div>
               <label htmlFor="personalIdNumber" className="block text-[16px] font-medium text-black mb-1">{t('personalIdNumber')}</label>
               <input
                 id="personalIdNumber"
@@ -260,6 +241,36 @@ const RegisterPage = () => {
                 placeholder={t('personalIdPlaceholder')}
               />
               {errors.personalIdNumber && <p className="mt-1 text-[16px] text-red-600">{errors.personalIdNumber}</p>}
+            </div>
+
+            <div>
+              <label htmlFor="city" className="block text-[16px] font-medium text-black mb-1">{t('city')}</label>
+              <input
+                id="city"
+                name="city"
+                type="text"
+                required
+                value={formData.city}
+                onChange={handleChange}
+                className={`appearance-none relative block w-full px-3 py-2 border ${errors.city ? 'border-red-300 text-black' : 'border-gray-300 text-black'} placeholder-gray-500 rounded-md focus:outline-none focus:ring-black focus:border-black sm:text-[16px]`}
+                placeholder={t('cityPlaceholder')}
+              />
+              {errors.city && <p className="mt-1 text-[16px] text-red-600">{errors.city}</p>}
+            </div>
+
+            <div>
+              <label htmlFor="address" className="block text-[16px] font-medium text-black mb-1">{t('address')}</label>
+              <input
+                id="address"
+                name="address"
+                type="text"
+                required
+                value={formData.address}
+                onChange={handleChange}
+                className={`appearance-none relative block w-full px-3 py-2 border ${errors.address ? 'border-red-300 text-black' : 'border-gray-300 text-black'} placeholder-gray-500 rounded-md focus:outline-none focus:ring-black focus:border-black sm:text-[16px]`}
+                placeholder={t('addressPlaceholder')}
+              />
+              {errors.address && <p className="mt-1 text-[16px] text-red-600">{errors.address}</p>}
             </div>
 
             <div>
@@ -310,6 +321,27 @@ const RegisterPage = () => {
                 </button>
               </div>
               {errors.confirmPassword && <p className="mt-1 text-[16px] text-red-600">{errors.confirmPassword}</p>}
+            </div>
+
+            <div>
+              <label htmlFor="otpCode" className="block text-[16px] font-medium text-black mb-1">{t('otpCode')}</label>
+              <input
+                id="otpCode"
+                name="otpCode"
+                type="text"
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                maxLength={4}
+                value={formData.otpCode}
+                onChange={(e) => {
+                  const v = e.target.value.replace(/\D/g, '').slice(0, 4);
+                  setFormData((prev) => ({ ...prev, otpCode: v }));
+                  if (errors.otpCode) setErrors((prev) => ({ ...prev, otpCode: '' }));
+                }}
+                className={`appearance-none relative block w-full px-3 py-2 border ${errors.otpCode ? 'border-red-300 text-black' : 'border-gray-300 text-black'} placeholder-gray-500 rounded-md focus:outline-none focus:ring-black focus:border-black sm:text-[16px]`}
+                placeholder={otpSent ? t('otpPlaceholder') : t('otpPlaceholderBefore')}
+              />
+              {errors.otpCode && <p className="mt-1 text-[16px] text-red-600">{errors.otpCode}</p>}
             </div>
           </div>
 

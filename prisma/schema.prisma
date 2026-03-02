@@ -30,6 +30,8 @@ model User {
   phone             String?  @unique
   phoneVerified     Boolean  @default(false)
   personalIdNumber  String   @unique
+  city              String?
+  address           String?
   role              UserRole @default(USER)
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
@@ -83,30 +85,36 @@ model Parcel {
   userId          String
   trackingNumber  String   @unique
   status          String   @default("pending") // "pending" | "in_transit" | "arrived" | "ready_for_pickup" | "delivered" | "cancelled"
-  
+
+  // Required for creation
+  customerName    String   // მომხმარებლის სახელი
+  price           Float    // ფასი
+  onlineShop      String   // ონლაინ მაღაზია
+  quantity        Int      // ამანათის რაოდენობა
+  comment         String? // კომენტარი (optional)
+
   // Origin information
-  originCountry   String
-  originAddress   String
-  
+  originCountry   String?
+  originAddress   String?
+
   // Destination information
   destinationAddressId String?
-  
+
   // Package details
-  weight          Float    // in kg
+  weight          Float?   // in kg
   volumetricWeight Float?  // in kg
   length          Float?   // in cm
   width           Float?   // in cm
   height          Float?   // in cm
   description     String?
-  
+
   // Pricing
-  price           Float
   currency        String   @default("USD")
-  
+
   // Customs
   customsValue    Float?
   customsDeclared Boolean  @default(false)
-  
+
   // Dates
   shippedAt       DateTime?
   arrivedAt       DateTime?

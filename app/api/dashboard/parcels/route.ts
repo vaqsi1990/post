@@ -7,10 +7,15 @@ import prisma from '../../../../lib/prisma';
 export const dynamic = 'force-dynamic';
 
 const createParcelSchema = z.object({
+  customerName: z.string().min(1, 'მომხმარებლის სახელი აუცილებელია'),
   trackingNumber: z.string().min(1, 'თრექინგ კოდი აუცილებელია'),
-  originCountry: z.string().min(1, 'ქვეყანა აუცილებელია').default('US'),
-  originAddress: z.string().min(1, 'მისამართი აუცილებელია').default(''),
-  weight: z.number().min(0).default(0),
+  price: z.number().min(0, 'ფასი აუცილებელია'),
+  onlineShop: z.string().min(1, 'ონლაინ მაღაზია აუცილებელია'),
+  quantity: z.number().int().min(1, 'ამანათის რაოდენობა აუცილებელია'),
+  comment: z.string().optional(),
+  originCountry: z.string().optional(),
+  originAddress: z.string().optional(),
+  weight: z.number().min(0).optional(),
   description: z.string().optional(),
 });
 
@@ -49,12 +54,16 @@ export async function POST(request: NextRequest) {
     const parcel = await prisma.parcel.create({
       data: {
         userId,
+        customerName: data.customerName.trim(),
         trackingNumber: data.trackingNumber.trim(),
-        originCountry: data.originCountry,
-        originAddress: data.originAddress || '—',
-        weight: data.weight,
-        description: data.description ?? null,
-        price: 0,
+        price: data.price,
+        onlineShop: data.onlineShop.trim(),
+        quantity: data.quantity,
+        comment: data.comment?.trim() ?? null,
+        originCountry: data.originCountry?.trim() ?? null,
+        originAddress: data.originAddress?.trim() ?? null,
+        weight: data.weight ?? null,
+        description: data.description?.trim() ?? null,
         currency: 'USD',
       },
     });

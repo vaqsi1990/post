@@ -8,9 +8,12 @@ export default function NewParcelPage() {
   const t = useTranslations('parcels');
   const tCommon = useTranslations('common');
   const router = useRouter();
+  const [customerName, setCustomerName] = useState('');
   const [trackingNumber, setTrackingNumber] = useState('');
-  const [originCountry, setOriginCountry] = useState('US');
-  const [originAddress, setOriginAddress] = useState('');
+  const [price, setPrice] = useState('');
+  const [onlineShop, setOnlineShop] = useState('');
+  const [quantity, setQuantity] = useState('1');
+  const [comment, setComment] = useState('');
   const [weight, setWeight] = useState('');
   const [description, setDescription] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -19,8 +22,18 @@ export default function NewParcelPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
-    const w = parseFloat(weight.replace(',', '.'));
-    if (isNaN(w) || w < 0) {
+    const priceNum = parseFloat(price.replace(',', '.'));
+    const quantityNum = parseInt(quantity, 10);
+    const w = weight ? parseFloat(weight.replace(',', '.')) : undefined;
+    if (isNaN(priceNum) || priceNum < 0) {
+      setError(t('priceError'));
+      return;
+    }
+    if (!Number.isInteger(quantityNum) || quantityNum < 1) {
+      setError(t('quantityError'));
+      return;
+    }
+    if (w !== undefined && (isNaN(w) || w < 0)) {
       setError(t('weightError'));
       return;
     }
@@ -30,9 +43,12 @@ export default function NewParcelPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          customerName: customerName.trim(),
           trackingNumber: trackingNumber.trim(),
-          originCountry: originCountry.trim() || 'US',
-          originAddress: originAddress.trim() || '—',
+          price: priceNum,
+          onlineShop: onlineShop.trim(),
+          quantity: quantityNum,
+          comment: comment.trim() || undefined,
           weight: w,
           description: description.trim() || undefined,
         }),
@@ -72,6 +88,20 @@ export default function NewParcelPage() {
               </div>
             )}
             <div>
+              <label htmlFor="customerName" className="mb-1 block text-[14px] font-medium text-gray-700">
+                {t('customerName')}
+              </label>
+              <input
+                id="customerName"
+                type="text"
+                required
+                value={customerName}
+                onChange={(e) => setCustomerName(e.target.value)}
+                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                placeholder={t('customerNamePlaceholder')}
+              />
+            </div>
+            <div>
               <label htmlFor="trackingNumber" className="mb-1 block text-[14px] font-medium text-gray-700">
                 {t('trackingCode')}
               </label>
@@ -86,29 +116,47 @@ export default function NewParcelPage() {
               />
             </div>
             <div>
-              <label htmlFor="originCountry" className="mb-1 block text-[14px] font-medium text-gray-700">
-                {t('country')}
+              <label htmlFor="price" className="mb-1 block text-[14px] font-medium text-gray-700">
+                {t('price')}
               </label>
               <input
-                id="originCountry"
+                id="price"
                 type="text"
-                value={originCountry}
-                onChange={(e) => setOriginCountry(e.target.value)}
+                inputMode="decimal"
+                required
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
                 className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400"
-                placeholder={t('countryPlaceholder')}
+                placeholder={t('pricePlaceholder')}
               />
             </div>
             <div>
-              <label htmlFor="originAddress" className="mb-1 block text-[14px] font-medium text-gray-700">
-                {t('senderAddress')}
+              <label htmlFor="onlineShop" className="mb-1 block text-[14px] font-medium text-gray-700">
+                {t('onlineShop')}
               </label>
               <input
-                id="originAddress"
+                id="onlineShop"
                 type="text"
-                value={originAddress}
-                onChange={(e) => setOriginAddress(e.target.value)}
+                required
+                value={onlineShop}
+                onChange={(e) => setOnlineShop(e.target.value)}
                 className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400"
-                placeholder={t('senderAddressPlaceholder')}
+                placeholder={t('onlineShopPlaceholder')}
+              />
+            </div>
+            <div>
+              <label htmlFor="quantity" className="mb-1 block text-[14px] font-medium text-gray-700">
+                {t('quantity')}
+              </label>
+              <input
+                id="quantity"
+                type="number"
+                min={1}
+                required
+                value={quantity}
+                onChange={(e) => setQuantity(e.target.value)}
+                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                placeholder={t('quantityPlaceholder')}
               />
             </div>
             <div>
@@ -123,6 +171,19 @@ export default function NewParcelPage() {
                 onChange={(e) => setWeight(e.target.value)}
                 className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400"
                 placeholder={t('weightPlaceholder')}
+              />
+            </div>
+            <div>
+              <label htmlFor="comment" className="mb-1 block text-[14px] font-medium text-gray-700">
+                {t('comment')}
+              </label>
+              <input
+                id="comment"
+                type="text"
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                placeholder={t('commentPlaceholder')}
               />
             </div>
             <div>

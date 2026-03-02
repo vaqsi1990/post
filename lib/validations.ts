@@ -13,6 +13,8 @@ const registerBaseSchema = z.object({
     .min(11, 'პირადობის ნომერი უნდა იყოს 11 ციფრი')
     .max(11, 'პირადობის ნომერი უნდა იყოს 11 ციფრი')
     .regex(/^\d+$/, 'პირადობის ნომერი უნდა შეიცავდეს მხოლოდ ციფრებს'),
+  city: z.string().min(1, 'ქალაქი აუცილებელია'),
+  address: z.string().min(1, 'მისამართი აუცილებელია'),
 });
 
 // Registration schema for frontend (with confirmPassword)

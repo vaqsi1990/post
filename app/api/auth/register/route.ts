@@ -80,6 +80,8 @@ export async function POST(request: NextRequest) {
         phone: normalizedPhone,
         phoneVerified: true,
         personalIdNumber: validatedData.personalIdNumber,
+        city: validatedData.city,
+        address: validatedData.address,
         role: 'USER',
       },
       select: {
@@ -89,6 +91,18 @@ export async function POST(request: NextRequest) {
         lastName: true,
         role: true,
         createdAt: true,
+      },
+    });
+
+    // Create default shipping address from registration (city + address)
+    await prisma.address.create({
+      data: {
+        userId: user.id,
+        type: 'shipping',
+        country: 'GE',
+        city: validatedData.city,
+        street: validatedData.address,
+        isDefault: true,
       },
     });
 
@@ -119,6 +133,8 @@ export async function POST(request: NextRequest) {
                          err.field === 'lastName' ? 'გვარი' :
                          err.field === 'phone' ? 'ტელეფონი' :
                          err.field === 'otpCode' ? 'სმს კოდი' :
+                         err.field === 'city' ? 'ქალაქი' :
+                         err.field === 'address' ? 'მისამართი' :
                          err.field;
         return `${fieldName}: ${err.message}`;
       }).join('; ');
