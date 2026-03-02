@@ -31,7 +31,7 @@ export default function OrderStatusTabNav({ activeTab, onTabChange, getCount }: 
             <span className="whitespace-nowrap">{label}</span>
             <span
               className={`inline-flex min-w-[1.5rem] justify-center rounded-full px-2 py-0.5 text-[13px] font-bold shrink-0 ${
-                isActive ? 'bg-amber-400 text-black' : 'bg-gray-200 text-gray-600'
+                isActive ? 'bg-[#3a5bff] text-white' : 'bg-gray-200 text-gray-600'
               }`}
             >
               {count}

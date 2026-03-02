@@ -104,7 +104,7 @@ export default function BalanceTopUp({ initialBalance }: Props) {
           <button
             type="submit"
             disabled={loading}
-            className="rounded-lg bg-amber-400 px-5 py-2.5 text-[15px] font-semibold text-black hover:bg-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 disabled:opacity-70"
+            className="rounded-lg bg-[#3a5bff] text-white px-5 py-2.5 text-[15px] font-semibold   focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-70"
           >
             {loading ? tCommon('sending') : t('topUpButton')}
           </button>

@@ -110,13 +110,13 @@ export default function DashboardHeader() {
           onClick={() => {
             if (trackingCode.trim()) router.push(`/dashboard/tracking?code=${encodeURIComponent(trackingCode.trim())}`);
           }}
-          className="w-full sm:w-auto rounded-lg bg-amber-400 px-5 py-2.5 text-[15px] font-semibold text-black hover:bg-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 shrink-0"
+          className="w-full sm:w-auto rounded-lg bg-[#3a5bff] text-white px-5 py-2.5 text-[15px] font-semibold   focus:outline-none focus:ring-2  focus:ring-offset-2 shrink-0"
         >
           {tCommon('search')}
         </button>
         <Link
           href="/dashboard/parcels/new"
-          className="w-full sm:w-auto rounded-lg bg-amber-400 px-5 py-2.5 text-[15px] font-semibold text-black hover:bg-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 shrink-0 text-center"
+          className="w-full sm:w-auto rounded-lg bg-[#3a5bff] text-white px-5 py-2.5 text-[15px] font-semibold   focus:outline-none focus:ring-2  focus:ring-offset-2 shrink-0 text-center"
         >
           {t('addParcel')}
         </Link>
