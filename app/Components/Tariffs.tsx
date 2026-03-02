@@ -3,18 +3,28 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
-import GB from 'country-flag-icons/react/3x2/GB';
-import US from 'country-flag-icons/react/3x2/US';
-import CN from 'country-flag-icons/react/3x2/CN';
-import IT from 'country-flag-icons/react/3x2/IT';
-import GR from 'country-flag-icons/react/3x2/GR';
-import ES from 'country-flag-icons/react/3x2/ES';
-import FR from 'country-flag-icons/react/3x2/FR';
-import DE from 'country-flag-icons/react/3x2/DE';
-import TR from 'country-flag-icons/react/3x2/TR';
+import {
+  GB,
+  US,
+  CN,
+  IT,
+  GR,
+  ES,
+  FR,
+  DE,
+  TR,
+} from 'country-flag-icons/react/3x2';
 
 const FLAGS: Record<string, React.ComponentType<{ title?: string; className?: string }>> = {
-  GB, US, CN, IT, GR, ES, FR, DE, TR,
+  GB,
+  US,
+  CN,
+  IT,
+  GR,
+  ES,
+  FR,
+  DE,
+  TR,
 };
 
 const TARIFF_ROWS = [

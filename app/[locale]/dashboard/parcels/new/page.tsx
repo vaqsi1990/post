@@ -1,13 +1,62 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link, useRouter } from '@/i18n/navigation';
+import {
+  GB,
+  US,
+  CN,
+  IT,
+  GR,
+  ES,
+  FR,
+  DE,
+  TR,
+} from 'country-flag-icons/react/3x2';
+
+const FLAGS: Record<string, React.ComponentType<{ title?: string; className?: string }>> = {
+  GB,
+  US,
+  CN,
+  IT,
+  GR,
+  ES,
+  FR,
+  DE,
+  TR,
+};
+
+/** Map form country code (uk, us, ...) to flag component key (GB, US, ...) */
+const CODE_TO_FLAG: Record<string, string> = {
+  uk: 'GB',
+  us: 'US',
+  cn: 'CN',
+  it: 'IT',
+  gr: 'GR',
+  es: 'ES',
+  fr: 'FR',
+  de: 'DE',
+  tr: 'TR',
+};
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
+const ORIGIN_COUNTRIES: { code: string }[] = [
+  { code: 'uk' },
+  { code: 'us' },
+  { code: 'cn' },
+  { code: 'it' },
+  { code: 'gr' },
+  { code: 'es' },
+  { code: 'fr' },
+  { code: 'de' },
+  { code: 'tr' },
+];
+
 export default function NewParcelPage() {
   const t = useTranslations('parcels');
+  const tAddresses = useTranslations('addresses');
   const tCommon = useTranslations('common');
   const tDeclaration = useTranslations('declaration');
   const router = useRouter();
@@ -16,17 +65,36 @@ export default function NewParcelPage() {
   const [price, setPrice] = useState('');
   const [onlineShop, setOnlineShop] = useState('');
   const [quantity, setQuantity] = useState('1');
+  const [originCountry, setOriginCountry] = useState('');
   const [comment, setComment] = useState('');
   const [weight, setWeight] = useState('');
   const [description, setDescription] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [countryOpen, setCountryOpen] = useState(false);
+  const countryRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (countryRef.current && !countryRef.current.contains(e.target as Node)) {
+        setCountryOpen(false);
+      }
+    }
+    if (countryOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [countryOpen]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
 
+    if (!originCountry.trim()) {
+      setError(t('countryRequired'));
+      return;
+    }
     if (!file) {
       setError(tDeclaration('fileRequired'));
       return;
@@ -64,6 +132,7 @@ export default function NewParcelPage() {
       formData.append('price', String(priceNum));
       formData.append('onlineShop', onlineShop.trim());
       formData.append('quantity', String(quantityNum));
+      formData.append('originCountry', originCountry.trim());
       if (comment.trim()) formData.append('comment', comment.trim());
       if (weight.trim()) formData.append('weight', String(w));
       if (description.trim()) formData.append('description', description.trim());
@@ -187,6 +256,71 @@ export default function NewParcelPage() {
                 placeholder={t('quantityPlaceholder')}
                 suppressHydrationWarning
               />
+            </div>
+            <div ref={countryRef} className="relative">
+              <label htmlFor="originCountry" className="mb-1 block text-[14px] font-medium text-gray-700">
+                {t('country')}
+              </label>
+              <input
+                id="originCountry"
+                type="text"
+                readOnly
+                required
+                value={originCountry}
+                className="hidden"
+                tabIndex={-1}
+                aria-hidden
+              />
+              <button
+                type="button"
+                onClick={() => setCountryOpen((o) => !o)}
+                className="flex w-full items-center gap-3 rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-left text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
+                aria-expanded={countryOpen}
+                aria-haspopup="listbox"
+                aria-label={t('country')}
+              >
+                {originCountry ? (
+                  <>
+                    {(() => {
+                      const FlagComp = FLAGS[CODE_TO_FLAG[originCountry]];
+                      return FlagComp ? (
+                        <FlagComp className="h-5 w-8 shrink-0 rounded object-cover" title={originCountry} />
+                      ) : null;
+                    })()}
+                    <span>{tAddresses(originCountry as 'uk')}</span>
+                  </>
+                ) : (
+                  <span className="text-gray-500">{t('countryPlaceholder')}</span>
+                )}
+                <span className="ml-auto text-gray-400">{countryOpen ? '▲' : '▼'}</span>
+              </button>
+              {countryOpen && (
+                <ul
+                  className="absolute left-0 right-0 z-10 mt-1 max-h-60 overflow-auto rounded-lg border border-gray-200 bg-white py-1 shadow-lg"
+                  role="listbox"
+                >
+                  {ORIGIN_COUNTRIES.map(({ code }) => {
+                    const FlagComp = FLAGS[CODE_TO_FLAG[code]];
+                    return (
+                      <li
+                        key={code}
+                        role="option"
+                        aria-selected={originCountry === code}
+                        onClick={() => {
+                          setOriginCountry(code);
+                          setCountryOpen(false);
+                        }}
+                        className="flex cursor-pointer items-center gap-3 px-3 py-2.5 text-[15px] text-black hover:bg-gray-100"
+                      >
+                        {FlagComp && (
+                          <FlagComp className="h-5 w-8 shrink-0 rounded object-cover" title={code} />
+                        )}
+                        <span>{tAddresses(code as 'uk')}</span>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
             </div>
             <div>
               <label htmlFor="weight" className="mb-1 block text-[14px] font-medium text-gray-700">

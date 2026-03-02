@@ -11,12 +11,15 @@ export const dynamic = 'force-dynamic';
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 5MB
 const ALLOWED_TYPE = 'application/pdf';
 
+const ORIGIN_COUNTRY_CODES = ['uk', 'us', 'cn', 'it', 'gr', 'es', 'fr', 'de', 'tr'] as const;
+
 const createParcelSchema = z.object({
   customerName: z.string().min(1, 'მომხმარებლის სახელი აუცილებელია'),
   trackingNumber: z.string().min(1, 'თრექინგ კოდი აუცილებელია'),
   price: z.number().min(0, 'ფასი აუცილებელია'),
   onlineShop: z.string().min(1, 'ონლაინ მაღაზია აუცილებელია'),
   quantity: z.number().int().min(1, 'ამანათის რაოდენობა აუცილებელია'),
+  originCountry: z.enum(ORIGIN_COUNTRY_CODES, { required_error: 'ქვეყანა აუცილებელია' }),
   comment: z.string().optional(),
   weight: z.number().min(0).optional(),
   description: z.string().optional(),
@@ -41,6 +44,7 @@ export async function POST(request: NextRequest) {
     const priceStr = formData.get('price')?.toString().trim() ?? '';
     const onlineShop = formData.get('onlineShop')?.toString().trim() ?? '';
     const quantityStr = formData.get('quantity')?.toString().trim() ?? '';
+    const originCountry = formData.get('originCountry')?.toString().trim() ?? '';
     const comment = formData.get('comment')?.toString().trim() ?? '';
     const weightStr = formData.get('weight')?.toString().trim() ?? '';
     const description = formData.get('description')?.toString().trim() ?? '';
@@ -75,6 +79,7 @@ export async function POST(request: NextRequest) {
       price,
       onlineShop,
       quantity,
+      originCountry: originCountry || undefined,
       comment: comment || undefined,
       weight: Number.isNaN(weight) ? undefined : weight,
       description: description || undefined,
@@ -117,6 +122,7 @@ export async function POST(request: NextRequest) {
         price: parsed.price,
         onlineShop: parsed.onlineShop.trim(),
         quantity: parsed.quantity,
+        originCountry: parsed.originCountry,
         comment: parsed.comment?.trim() ?? null,
         weight: parsed.weight ?? null,
         description: parsed.description?.trim() ?? null,
