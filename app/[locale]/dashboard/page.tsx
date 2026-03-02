@@ -21,23 +21,18 @@ export default async function DashboardPage({ params }: Props) {
 
   const userId = session.user.id;
 
-  const [orders, balanceResult] = await Promise.all([
+  const [orders, user] = await Promise.all([
     prisma.order.findMany({
       where: { userId },
       orderBy: { createdAt: 'desc' },
     }),
-    prisma.payment.aggregate({
-      where: {
-        userId,
-        parcelId: null,
-        orderId: null,
-        status: 'completed',
-      },
-      _sum: { amount: true },
+    prisma.user.findUnique({
+      where: { id: userId },
+      select: { balance: true },
     }),
   ]);
 
-  const balance = balanceResult._sum.amount ?? 0;
+  const balance = user?.balance ?? 0;
 
   const formattedOrders = orders.map((order) => ({
     id: order.id,

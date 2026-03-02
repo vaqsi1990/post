@@ -32,6 +32,7 @@ model User {
   personalIdNumber  String   @unique
   city              String?
   address           String?
+  balance           Float    @default(0)  // მომხმარებლის ბალანსი (GEL)
   role              UserRole @default(USER)
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt

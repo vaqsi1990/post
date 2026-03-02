@@ -24,17 +24,11 @@ export async function GET() {
 
   const userId = session.user.id;
 
-  const result = await prisma.payment.aggregate({
-    where: {
-      userId,
-      parcelId: null,
-      orderId: null,
-      status: 'completed',
-    },
-    _sum: { amount: true },
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { balance: true },
   });
-
-  const balance = result._sum.amount ?? 0;
+  const balance = user?.balance ?? 0;
 
   return NextResponse.json(
     { balance, currency: 'GEL' },
@@ -58,29 +52,30 @@ export async function POST(request: NextRequest) {
     const data = topUpSchema.parse(body);
     const userId = session.user.id;
 
-    await prisma.payment.create({
-      data: {
-        userId,
-        amount: data.amount,
-        currency: data.currency,
-        status: 'completed',
-        paymentMethod: 'card',
-        parcelId: null,
-        orderId: null,
-        transactionId: `topup-${Date.now()}-${userId.slice(0, 8)}`,
-      },
-    });
+    await prisma.$transaction([
+      prisma.payment.create({
+        data: {
+          userId,
+          amount: data.amount,
+          currency: data.currency,
+          status: 'completed',
+          paymentMethod: 'card',
+          parcelId: null,
+          orderId: null,
+          transactionId: `topup-${Date.now()}-${userId.slice(0, 8)}`,
+        },
+      }),
+      prisma.user.update({
+        where: { id: userId },
+        data: { balance: { increment: data.amount } },
+      }),
+    ]);
 
-    const result = await prisma.payment.aggregate({
-      where: {
-        userId,
-        parcelId: null,
-        orderId: null,
-        status: 'completed',
-      },
-      _sum: { amount: true },
+    const updated = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { balance: true },
     });
-    const newBalance = result._sum.amount ?? 0;
+    const newBalance = updated?.balance ?? 0;
 
     return NextResponse.json(
       {

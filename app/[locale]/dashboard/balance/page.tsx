@@ -20,17 +20,12 @@ export default async function DashboardBalancePage({ params }: Props) {
   if (session.user.role === 'ADMIN') redirect(`/${locale}/admin`);
 
   const userId = session.user.id;
-  const result = await prisma.payment.aggregate({
-    where: {
-      userId,
-      parcelId: null,
-      orderId: null,
-      status: 'completed',
-    },
-    _sum: { amount: true },
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { balance: true },
   });
 
-  const balance = result._sum.amount ?? 0;
+  const balance = user?.balance ?? 0;
 
   return (
     <div className="min-h-[calc(100vh-120px)] bg-gray-100 py-8">
