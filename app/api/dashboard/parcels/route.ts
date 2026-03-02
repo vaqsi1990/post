@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
         originAddress: data.originAddress?.trim() ?? null,
         weight: data.weight ?? null,
         description: data.description?.trim() ?? null,
-        currency: 'USD',
+        currency: 'GEL',
       },
     });
 

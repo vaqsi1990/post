@@ -49,7 +49,7 @@ export default function EditOrderModal({ isOpen, onClose, order, onOrderUpdated 
     type: 'forwarding',
     status: 'in_transit',
     totalAmount: '',
-    currency: 'USD',
+    currency: 'GEL',
     weight: '',
     notes: '',
   });
@@ -61,7 +61,7 @@ export default function EditOrderModal({ isOpen, onClose, order, onOrderUpdated 
         type: order.type,
         status: order.status,
         totalAmount: order.totalAmount.toString(),
-        currency: order.currency || 'USD',
+        currency: order.currency || 'GEL',
         weight: order.weight || '',
         notes: order.notes || '',
       });
@@ -117,7 +117,7 @@ export default function EditOrderModal({ isOpen, onClose, order, onOrderUpdated 
       const formattedOrder = {
         ...data.order,
         createdAt: new Date(data.order.createdAt).toLocaleDateString('ka-GE'),
-        currency: data.order.currency || 'USD',
+        currency: data.order.currency || 'GEL',
       };
 
       // Notify parent component about updated order

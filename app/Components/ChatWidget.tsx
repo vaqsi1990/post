@@ -402,7 +402,7 @@ export default function ChatWidget() {
         className="pointer-events-auto chatbutton p-12 inline-flex h-12 items-center justify-center gap-2 whitespace-nowrap rounded-full bg-black px-4 text-[14px] text-white shadow-xl shadow-black/20 transition hover:bg-gray-900 md:h-12 md:px-6 md:text-[15px]"
         aria-label="ჩათი ადმინისტრატორთან"
       >
-        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/10 text-[15px]">
+        <span className="flex h-7 w-7 items-center justify-center rounded-full  text-[15px]">
           💬 {open ? 'დახურვა' : 'ჩათის დაწყება'}
         </span>
         

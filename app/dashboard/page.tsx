@@ -24,7 +24,7 @@ export default async function DashboardPage() {
     type: order.type,
     status: order.status,
     totalAmount: order.totalAmount,
-    currency: order.currency || 'USD',
+    currency: order.currency || 'GEL',
     weight: order.weight || '',
     notes: order.notes,
     createdAt: new Date(order.createdAt).toLocaleDateString('ka-GE'),

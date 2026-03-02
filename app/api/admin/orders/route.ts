@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
       orders: orders.map((o) => ({
         ...o,
         createdAt: new Date(o.createdAt).toLocaleDateString('ka-GE'),
-        currency: o.currency || 'USD',
+        currency: o.currency || 'GEL',
       })),
     },
     {
@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
         status: 'in_transit',
         type: 'forwarding',
         totalAmount: data.totalAmount,
-        currency: 'USD',
+        currency: 'GEL',
         weight: data.weight ?? '',
         smsSent: false,
         notes: data.notes,
@@ -104,7 +104,7 @@ export async function POST(request: NextRequest) {
       order: {
         ...order,
         createdAt: new Date(order.createdAt).toLocaleDateString('ka-GE'),
-        currency: order.currency || 'USD',
+        currency: order.currency || 'GEL',
       },
     }, { status: 201 });
   } catch (error) {

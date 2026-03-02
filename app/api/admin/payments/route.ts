@@ -36,7 +36,7 @@ export async function GET() {
         payments: payments.map((p) => ({
           ...p,
           createdAt: new Date(p.createdAt).toLocaleString('ka-GE'),
-          currency: p.currency || 'USD',
+          currency: p.currency || 'GEL',
         })),
       },
       {

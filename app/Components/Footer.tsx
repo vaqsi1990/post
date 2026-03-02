@@ -12,7 +12,7 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="text-black text-[16px]">
-            <p>© {currentYear} {t('rights')}</p>
+            <p suppressHydrationWarning>© {currentYear} {t('rights')}</p>
           </div>
           <div className="text-black text-[16px]">
             <p>{t('madeWith')}</p>

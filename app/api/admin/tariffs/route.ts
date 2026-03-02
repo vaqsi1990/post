@@ -39,7 +39,7 @@ export async function GET() {
       {
         tariffs: tariffs.map((t) => ({
           ...t,
-          currency: t.currency || 'USD',
+          currency: t.currency || 'GEL',
         })),
       },
       {

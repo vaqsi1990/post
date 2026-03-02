@@ -109,7 +109,7 @@ model Parcel {
   description     String?
 
   // Pricing
-  currency        String   @default("USD")
+  currency        String   @default("GEL")
 
   // Customs
   customsValue    Float?
@@ -153,7 +153,7 @@ model Payment {
   parcelId      String?
   orderId       String?
   amount        Float
-  currency      String   @default("USD")
+  currency      String   @default("GEL")
   status        String   @default("pending") // "pending" | "completed" | "failed" | "refunded"
   paymentMethod String   // "card" | "bank_transfer" | "balance"
   transactionId String?
@@ -174,7 +174,7 @@ model Order {
   type          String   // "forwarding" | "customs" | "courier" | "corporate"
   status        String   @default("pending") // "pending" | "processing" | "completed" | "cancelled"
   totalAmount   Float
-  currency      String   @default("USD")
+  currency      String   @default("GEL")
   weight        String   @default("") // წონა (kg)
   smsSent       Boolean  @default(false)
   notes         String?
@@ -195,7 +195,7 @@ model Tariff {
   minWeight     Float    @default(0)
   maxWeight     Float?
   pricePerKg    Float
-  currency      String   @default("USD")
+  currency      String   @default("GEL")
   isActive      Boolean  @default(true)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -261,7 +261,7 @@ model Declaration {
   lastName      String
   trackingCode  String
   price         Float
-  currency      String   @default("USD")
+  currency      String   @default("GEL")
   filePath      String   // stored path to uploaded PDF
   status        String   @default("pending") // pending | processed | rejected
   createdAt     DateTime @default(now())

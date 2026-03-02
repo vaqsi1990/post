@@ -183,7 +183,7 @@
     "title": "Top up balance",
     "currentBalance": "Current balance",
     "topUp": "Top up balance",
-    "amount": "Amount (USD)",
+    "amount": "Amount (GEL)",
     "amountPlaceholder": "0.00",
     "topUpButton": "Top up",
     "minAmount": "Enter at least 0.01"
@@ -194,7 +194,7 @@
     "lastName": "Last name",
     "trackingCode": "Tracking code *",
     "trackingPlaceholder": "e.g. 1Z999AA10123456784",
-    "price": "Price (USD) *",
+    "price": "Price (GEL) *",
     "pricePlaceholder": "0.00",
     "pdfFile": "Declaration PDF file *",
     "selected": "Selected",

@@ -21,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ka" suppressHydrationWarning>
-      <body className={`${montserrat.variable} antialiased`}>
+      <body className={`${montserrat.variable} antialiased`} suppressHydrationWarning>
         <SessionProvider>
           {children}
         </SessionProvider>

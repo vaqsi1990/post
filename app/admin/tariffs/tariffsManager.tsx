@@ -88,7 +88,7 @@ export default function TariffsManager() {
           minWeight: 0,
           maxWeight: null,
           pricePerKg: 0,
-          currency: 'USD',
+          currency: 'GEL',
           isActive: true,
         }),
       });

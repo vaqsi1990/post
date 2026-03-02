@@ -32,7 +32,7 @@ export default function BalanceTopUp({ initialBalance }: Props) {
       const res = await fetch('/api/dashboard/balance', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: value, currency: 'USD' }),
+        body: JSON.stringify({ amount: value, currency: 'GEL' }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -57,7 +57,7 @@ export default function BalanceTopUp({ initialBalance }: Props) {
       <section className="rounded-xl border border-gray-200 bg-gray-50/50 p-6">
         <h2 className="text-[16px] font-semibold text-gray-900 mb-2">{t('currentBalance')}</h2>
         <p className="text-2xl font-bold text-black">
-          {balance.toFixed(2)} <span className="text-[18px] font-semibold text-gray-600">USD</span>
+          {balance.toFixed(2)} <span className="text-[18px] font-semibold text-gray-600">GEL</span>
         </p>
       </section>
 
@@ -97,7 +97,7 @@ export default function BalanceTopUp({ initialBalance }: Props) {
                 onClick={() => setAmount(String(q))}
                 className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-[14px] font-medium text-gray-700 hover:bg-gray-50"
               >
-                {q} USD
+                {q} GEL
               </button>
             ))}
           </div>

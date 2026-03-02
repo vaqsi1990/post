@@ -86,7 +86,7 @@ export async function POST(request: NextRequest) {
         lastName,
         trackingCode,
         price,
-        currency: 'USD',
+        currency: 'GEL',
         filePath: relativePath,
       },
     });

@@ -183,7 +183,7 @@
     "title": "ბალანსის შევსება",
     "currentBalance": "მიმდინარე ბალანსი",
     "topUp": "ბალანსის შევსება",
-    "amount": "თანხა (USD)",
+    "amount": "თანხა (GEL)",
     "amountPlaceholder": "0.00",
     "topUpButton": "შევსება",
     "minAmount": "შეიყვანეთ მინიმუმ 0.01"
@@ -194,7 +194,7 @@
     "lastName": "გვარი",
     "trackingCode": "თრექინგ კოდი *",
     "trackingPlaceholder": "მაგ. 1Z999AA10123456784",
-    "price": "ფასი (USD) *",
+    "price": "ფასი (GEL) *",
     "pricePlaceholder": "0.00",
     "pdfFile": "დეკლარაციის PDF ფაილი *",
     "selected": "არჩეული",

@@ -24,7 +24,7 @@ export default async function AdminStoppedPage() {
   const formattedOrders = orders.map((order) => ({
     ...order,
     createdAt: new Date(order.createdAt).toLocaleDateString('ka-GE'),
-    currency: order.currency || 'USD',
+    currency: order.currency || 'GEL',
   }));
 
   return (

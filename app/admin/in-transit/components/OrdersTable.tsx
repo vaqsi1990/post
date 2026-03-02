@@ -174,7 +174,7 @@ export default function OrdersTable({ orders: initialOrders, onOrderRemoved, onO
                     </select>
                   </td>
                   <td className="px-4 py-2 text-[16px] text-black">
-                    {order.totalAmount.toFixed(2)} {order.currency || 'USD'}
+                    {order.totalAmount.toFixed(2)} {order.currency || 'GEL'}
                   </td>
                   <td className="px-4 py-2 text-[16px] text-black">{order.createdAt}</td>
                   <td className="px-4 py-2 text-[16px]">

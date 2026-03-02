@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic';
 
 const topUpSchema = z.object({
   amount: z.number().min(0.01, 'მინიმუმ 0.01'),
-  currency: z.string().length(3).optional().default('USD'),
+  currency: z.string().length(3).optional().default('GEL'),
 });
 
 export async function GET() {
@@ -37,7 +37,7 @@ export async function GET() {
   const balance = result._sum.amount ?? 0;
 
   return NextResponse.json(
-    { balance, currency: 'USD' },
+    { balance, currency: 'GEL' },
     { headers: { 'Cache-Control': 'no-store, max-age=0' } }
   );
 }
