@@ -12,6 +12,7 @@ export default async function AdminUsersPage() {
       lastName: true,
       role: true,
       createdAt: true,
+      poNumber: true,
     },
   });
 

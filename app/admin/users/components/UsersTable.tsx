@@ -9,6 +9,7 @@ type User = {
   lastName: string | null;
   role: string;
   createdAt: string; // Formatted date string from server
+  poNumber?: number;
 };
 
 type UsersTableProps = {
@@ -101,6 +102,7 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
             <tr>
               <th className="px-4 py-2 text-left text-[16px] font-semibold text-gray-700">ელფოსტა</th>
               <th className="px-4 py-2 text-left text-[16px] font-semibold text-gray-700">სახელი</th>
+              <th className="px-4 py-2 text-left text-[16px] font-semibold text-gray-700">PO</th>
               <th className="px-4 py-2 text-left text-[16px] font-semibold text-gray-700">როლი</th>
               <th className="px-4 py-2 text-left text-[16px] font-semibold text-gray-700">რეგისტრაცია</th>
               <th className="px-4 py-2 text-left text-[16px] font-semibold text-gray-700">მოქმედება</th>
@@ -109,7 +111,7 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
           <tbody className="divide-y divide-gray-100 bg-white">
             {users.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-4 py-6 text-center text-[16px] text-gray-600">
+                <td colSpan={6} className="px-4 py-6 text-center text-[16px] text-gray-600">
                   ჯერ არცერთი მომხმარებელი არ არის.
                 </td>
               </tr>
@@ -121,6 +123,9 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
                     {(user.firstName || user.lastName)
                       ? `${user.firstName ?? ''} ${user.lastName ?? ''}`.trim()
                       : '—'}
+                  </td>
+                  <td className="px-4 py-2 text-[16px] text-black">
+                    {user.poNumber !== undefined ? `PO${user.poNumber}` : '—'}
                   </td>
                   <td className="px-4 py-2 text-[16px] text-black">
                     {user.role === 'ADMIN' ? 'ადმინი' : 'მომხმარებელი'}

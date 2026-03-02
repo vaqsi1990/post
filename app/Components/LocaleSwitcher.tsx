@@ -44,6 +44,7 @@ export default function LocaleSwitcher() {
         aria-expanded={open}
         aria-haspopup="listbox"
         aria-label="Switch language"
+        suppressHydrationWarning
       >
         <current.Flag className="w-5 h-[10px] object-cover rounded-sm shrink-0" title={current.label} />
         <span>{current.label}</span>

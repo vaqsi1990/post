@@ -122,6 +122,7 @@
   },
   "dashboard": {
     "home": "Home",
+    "roomNumber": "Room number:",
     "addresses": "Addresses",
     "balanceTopUp": "Top up balance",
     "declaration": "Declaration",

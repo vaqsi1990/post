@@ -122,6 +122,7 @@
   },
   "dashboard": {
     "home": "მთავარი გვერდი",
+    "roomNumber": "ოთახის ნომერი:",
     "addresses": "მისამართები",
     "balanceTopUp": "ბალანსის შევსება",
     "declaration": "დეკლარაცია",

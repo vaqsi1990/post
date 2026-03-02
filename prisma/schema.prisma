@@ -33,6 +33,7 @@ model User {
   city              String?
   address           String?
   balance           Float    @default(0)  // მომხმარებლის ბალანსი (GEL)
+  poNumber          Int      @default(autoincrement()) @unique // მომხმარებლის PO ნომერი (დარეგისტრირების რიგითობა)
   role              UserRole @default(USER)
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
@@ -98,6 +99,7 @@ model Parcel {
   originCountry   String?
   originAddress   String?
 
+
   // Destination information
   destinationAddressId String?
 
@@ -111,6 +113,7 @@ model Parcel {
 
   // Pricing
   currency        String   @default("GEL")
+  filePath        String   // stored path to uploaded declaration PDF
 
   // Customs
   customsValue    Float?

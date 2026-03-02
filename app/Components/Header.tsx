@@ -61,6 +61,8 @@ const Header = () => {
   const role = session?.user?.role;
   const panelHref = role === 'ADMIN' ? '/admin' : '/dashboard';
   const panelLabel = role === 'ADMIN' ? t('common.adminPanel') : t('common.myCabinet');
+  // @ts-expect-error custom field added in auth callbacks
+  const poNumber = session?.user?.poNumber as number | undefined;
   const accountTriggerLabel = session?.user?.name?.trim() ? session.user.name : t('common.account');
 
   useEffect(() => {
@@ -156,7 +158,10 @@ const Header = () => {
                 aria-expanded={isAccountMenuOpen}
                 onClick={() => setIsAccountMenuOpen((v) => !v)}
               >
-                {accountTriggerLabel}
+                <span className="flex flex-col items-start">
+                  <span>{accountTriggerLabel}</span>
+                
+                </span>
                 <span className="header-dropdown-caret" aria-hidden="true">▾</span>
               </button>
               <div
