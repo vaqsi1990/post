@@ -405,9 +405,8 @@ button:not(.mobile-menu-button),
 .nav-desktop {
   display: flex;
   align-items: center;
-  gap: 2rem;
-  flex: 1;
   justify-content: center;
+  gap: 5px;
 }
 
 .nav-link {
@@ -417,6 +416,7 @@ button:not(.mobile-menu-button),
   text-decoration: none;
   padding: 8px 12px;
   transition: 0.3s ease;
+  
 }
 
 

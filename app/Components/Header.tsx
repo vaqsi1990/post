@@ -29,6 +29,12 @@ const conditionsLinks: NavLinkItem[] = [
   { href: '/conditions#declarant-service', labelKey: 'header.declarantService' },
 ];
 
+const ourLinks: NavLinkItem[] = [
+  { href: '/about', labelKey: 'header.ourStory' },
+  { href: '/contact', labelKey: 'header.contact' },
+  { href: '/stores', labelKey: 'header.stores' },
+];
+
 const faqLinks: NavLinkItem[] = [
   { href: '/faq', labelKey: 'header.faq' },
 
@@ -37,14 +43,15 @@ const faqLinks: NavLinkItem[] = [
 
 
 const navStructure: NavItem[] = [
-  { type: 'link', href: '/about', labelKey: 'header.about' },
+  {
+     type: 'dropdown',  href: '/our',  labelKey: 'header.about', children: ourLinks },
   {
     type: 'dropdown',
     href: '/',
     labelKey: 'header.services',
     children: servicesLinks,
   },
-  { type: 'link', href: '/stores', labelKey: 'header.stores' },
+  
   {
     type: 'dropdown',
     href: '/conditions',
@@ -52,7 +59,7 @@ const navStructure: NavItem[] = [
     children: conditionsLinks,
   },
 
-  { type: 'link', href: '/contact', labelKey: 'header.contact' },
+ 
   {
     type: 'dropdown',
     href: '/faq',
@@ -129,7 +136,7 @@ const Header = () => {
       >
         <Link
           href={item.href}
-          className="nav-link header-dropdown-trigger text-white"
+          className="nav-link  header-dropdown-trigger text-white"
           aria-haspopup="menu"
         >
           {getLabel(item.labelKey)}
