@@ -20,7 +20,7 @@ const STATUS_LABELS: Record<string, string> = {
   pending: 'მოლოდინში',
   in_transit: 'გზაში',
   arrived: 'ჩამოსული',
-  ready_for_pickup: 'მზადაა გატანისთვის',
+  region: 'რეგიონში',
   delivered: 'გატანილი',
   cancelled: 'გაუქმებული',
 };

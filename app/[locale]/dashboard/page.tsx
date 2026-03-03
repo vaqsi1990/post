@@ -3,8 +3,8 @@ import { redirect } from 'next/navigation';
 import { Link } from '@/i18n/navigation';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
-import UserOrdersTabs from '@/app/dashboard/components/UserOrdersTabs';
 import DashboardHeader from '@/app/dashboard/components/DashboardHeader';
+import UserParcelsTabs, { UserParcel } from '@/app/dashboard/components/UserParcelsTabs';
 import { getTranslations } from 'next-intl/server';
 
 export const dynamic = 'force-dynamic';
@@ -21,8 +21,8 @@ export default async function DashboardPage({ params }: Props) {
 
   const userId = session.user.id;
 
-  const [orders, user] = await Promise.all([
-    prisma.order.findMany({
+  const [parcels, user] = await Promise.all([
+    prisma.parcel.findMany({
       where: { userId },
       orderBy: { createdAt: 'desc' },
     }),
@@ -34,15 +34,17 @@ export default async function DashboardPage({ params }: Props) {
 
   const balance = user?.balance ?? 0;
 
-  const formattedOrders = orders.map((order) => ({
-    id: order.id,
-    type: order.type,
-    status: order.status,
-    totalAmount: order.totalAmount,
-    currency: order.currency || 'GEL',
-    weight: order.weight || '',
-    notes: order.notes,
-    createdAt: new Date(order.createdAt).toLocaleDateString('ka-GE'),
+  const formattedParcels: UserParcel[] = parcels.map((parcel) => ({
+    id: parcel.id,
+    trackingNumber: parcel.trackingNumber,
+    status: parcel.status,
+    price: parcel.price,
+    currency: parcel.currency || 'GEL',
+    weight: parcel.weight != null ? `${parcel.weight} kg` : '',
+    originCountry: parcel.originCountry || null,
+    quantity: parcel.quantity,
+    customerName: parcel.customerName,
+    createdAt: new Date(parcel.createdAt).toLocaleDateString('ka-GE'),
   }));
 
   return (
@@ -61,7 +63,7 @@ export default async function DashboardPage({ params }: Props) {
               {balance.toFixed(2)} <span className="text-base font-medium text-black sm:text-lg">GEL</span>
             </span>
           </Link>
-          <UserOrdersTabs orders={formattedOrders} />
+          <UserParcelsTabs parcels={formattedParcels} />
         </main>
       </div>
     </div>

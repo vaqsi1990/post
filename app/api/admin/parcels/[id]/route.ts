@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 
-const allowedStatuses = ['pending', 'in_transit', 'arrived', 'ready_for_pickup', 'delivered', 'cancelled'] as const;
+const allowedStatuses = ['pending', 'in_transit', 'arrived', 'region', 'delivered', 'cancelled'] as const;
 
 const updateParcelStatusSchema = z.object({
   status: z.enum(allowedStatuses),

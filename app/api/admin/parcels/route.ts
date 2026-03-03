@@ -6,7 +6,7 @@ import prisma from '@/lib/prisma';
 
 export const dynamic = 'force-dynamic';
 
-const allowedStatuses = ['pending', 'in_transit', 'arrived', 'ready_for_pickup', 'delivered', 'cancelled'] as const;
+const allowedStatuses = ['pending', 'in_transit', 'arrived', 'region', 'delivered', 'cancelled'] as const;
 
 const updateParcelStatusSchema = z.object({
   status: z.enum(allowedStatuses),

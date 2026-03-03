@@ -35,7 +35,7 @@ const STATUS_OPTIONS = [
   { value: 'pending', label: 'მოლოდინში' },
   { value: 'in_transit', label: 'გზაში' },
   { value: 'arrived', label: 'ჩამოსული' },
-  { value: 'ready_for_pickup', label: 'მზად გატანისთვის' },
+  { value: 'region', label: 'რეგიონი' },
   { value: 'delivered', label: 'გატანილი' },
   { value: 'cancelled', label: 'გაუქმებული' },
 ];

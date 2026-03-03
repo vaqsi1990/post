@@ -1,11 +1,11 @@
 import AdminShell from '../components/AdminShell';
 import prisma from '../../../lib/prisma';
-import OrdersManager from '../components/OrdersManager';
+import ParcelsManager from '../components/ParcelsManager';
 
-export default async function AdminStoppedPage() {
-  const orders = await prisma.order.findMany({
+export default async function AdminRegionsPage() {
+  const parcels = await prisma.parcel.findMany({
     where: {
-      status: 'regions',
+      status: 'region',
     },
     orderBy: { createdAt: 'desc' },
     include: {
@@ -15,25 +15,29 @@ export default async function AdminStoppedPage() {
           email: true,
           firstName: true,
           lastName: true,
+          phone: true,
+          city: true,
+          address: true,
         },
       },
     },
   });
 
-  // Format dates on server side
-  const formattedOrders = orders.map((order) => ({
-    ...order,
-    createdAt: new Date(order.createdAt).toLocaleDateString('ka-GE'),
-    currency: order.currency || 'GEL',
+  const formattedParcels = parcels.map((parcel) => ({
+    ...parcel,
+    createdAt: new Date(parcel.createdAt).toLocaleDateString('ka-GE'),
   }));
 
   return (
     <AdminShell
-      title="გაჩერებული"
-      description="გაჩერებული Order-ების მართვა."
+      title="რეგიონი"
+      description="რეგიონებში/ფილიალებში მყოფი ამანათების მართვა."
     >
       <div className="space-y-6">
-        <OrdersManager initialOrders={formattedOrders} currentStatus="regions" />
+        <ParcelsManager
+          initialParcels={formattedParcels}
+          currentStatus="region"
+        />
       </div>
     </AdminShell>
   );
