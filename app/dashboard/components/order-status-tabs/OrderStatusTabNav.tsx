@@ -12,7 +12,7 @@ type Props = {
 export default function OrderStatusTabNav({ activeTab, onTabChange, getCount }: Props) {
   const t = useTranslations('dashboard');
   return (
-    <nav className="flex mb-3 flex-nowrap gap-4 lg:gap-6">
+    <nav className="flex mb-3 flex-wrap gap-4 lg:gap-6">
       {ORDER_STATUS_TABS.map((tab) => {
         const count = getCount(tab.key);
         const isActive = activeTab === tab.key;

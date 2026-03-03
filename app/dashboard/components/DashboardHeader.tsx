@@ -40,7 +40,7 @@ export default function DashboardHeader() {
           <button
             type="button"
             onClick={() => setNavOpen((o) => !o)}
-            className="flex flex-nowrap items-center justify-between gap-2 w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-[15px] font-medium text-gray-800 shadow-sm hover:bg-gray-50"
+            className="flex flex-wrap items-center justify-between gap-2 w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-[15px] font-medium text-gray-800 shadow-sm hover:bg-gray-50"
             aria-expanded={navOpen}
             aria-haspopup="true"
           >

@@ -39,7 +39,7 @@ export default function How({ isKa }: Props) {
     <div className="min-h-screen bg-gray-50">
       <section
         id="subscribe"
-        className="w-full pt-14 mt-14 md:pt-20 pb-16 md:pb-24 px-4"
+        className="w-full pt-14  md:pt-20 pb-16 md:pb-24 px-4"
       >
         <HowToSubscribeSection
           isKa={isKa}
