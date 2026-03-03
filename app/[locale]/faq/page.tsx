@@ -20,6 +20,7 @@ export default async function FaqSubscribePage({ params }: Props) {
         ' გამოწერიდან რამოდენიმე დღეში კურიერი მაღაზიიდან მიიტანს თქვენს ნივთს ჩვენს ოფისში.',
         ' თქვენ ელ-ფოსტაზე მიიღებთ თქვენი ამანათის "თრექინგ კოდს", რის შემდეგაც თქვენ უნდა დაადეკლარიროთ ამანათი ჩვენს საიტზე;',
         ' დეკლარირების შემდეგ დაელოდოთ თქვენს ამანათს, როგორც ჩამოვა მიიღებთ შეტყობინებას.',
+        ' ჩამოსულ ამანათს მისამართზე კურიერი უფასოდ მოგიტანთ.',
       ]
     : [
         ' Register on the website from which you want to order the desired item;',
@@ -29,6 +30,7 @@ export default async function FaqSubscribePage({ params }: Props) {
         ' A few days after placing the order, the courier from the shop will deliver your item to our office.',
         ' You will receive your parcel’s tracking code by email, after which you must declare the parcel on our website;',
         ' After declaration, wait for your parcel; once it arrives, you will receive a notification.',
+        ' The courier will deliver the arrived parcel to your address free of charge.',
       ];
 
   const thanks = isKa ? 'მადლობა ნდობისთვის💜' : 'Thank you for your trust💜';

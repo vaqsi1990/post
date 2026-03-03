@@ -35,11 +35,9 @@ const faqLinks: NavLinkItem[] = [
   { href: '/faq#how-weight', labelKey: 'header.howWeightCalculated' },
   { href: '/faq#when-customs', labelKey: 'header.whenSubjectToCustoms' },
   { href: '/faq#why-declaration', labelKey: 'header.whyDeclarationImportant' },
-];
-
-const helpLinks: NavLinkItem[] = [
   { href: '/help#guide', labelKey: 'header.onlineGuide' },
 ];
+
 
 const navStructure: NavItem[] = [
   { type: 'link', href: '/about', labelKey: 'header.about' },
@@ -56,12 +54,7 @@ const navStructure: NavItem[] = [
     labelKey: 'header.conditions',
     children: conditionsLinks,
   },
-  {
-    type: 'dropdown',
-    href: '/help',
-    labelKey: 'header.help',
-    children: helpLinks,
-  },
+
   { type: 'link', href: '/contact', labelKey: 'header.contact' },
   {
     type: 'dropdown',
@@ -74,7 +67,6 @@ const navStructure: NavItem[] = [
 const Header = () => {
   const t = useTranslations();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isDesktopMenuOpen, setIsDesktopMenuOpen] = useState(false);
   const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
   const [openMobileDropdown, setOpenMobileDropdown] = useState<string | null>(null);
   const accountMenuRef = useRef<HTMLDivElement | null>(null);
@@ -221,6 +213,11 @@ const Header = () => {
           />
         </Link>
 
+        {/* Desktop nav in the top row */}
+        <nav className="nav-desktop">
+          {navStructure.map(renderNavItem)}
+        </nav>
+
         <div className="header-actions">
           <LocaleSwitcher />
           {isAuthed ? (
@@ -268,20 +265,6 @@ const Header = () => {
               {t('header.login')}
             </Link>
           )}
-
-          {/* Desktop burger menu */}
-          <button
-            type="button"
-            className="desktop-menu-button"
-            onClick={() => setIsDesktopMenuOpen((v) => !v)}
-            aria-label={t('header.toggleMenu')}
-          >
-            <span className={`hamburger ${isDesktopMenuOpen ? 'active' : ''}`}>
-              <span></span>
-              <span></span>
-              <span></span>
-            </span>
-          </button>
         </div>
 
         <button
@@ -296,13 +279,6 @@ const Header = () => {
           </span>
         </button>
       </div>
-
-      {/* Desktop dropdown nav under header */}
-      {isDesktopMenuOpen && (
-        <nav className="nav-desktop">
-          {navStructure.map(renderNavItem)}
-        </nav>
-      )}
 
       {isMenuOpen && (
         <div

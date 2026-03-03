@@ -338,29 +338,33 @@ export default function NewParcelPage() {
               />
             </div>
             <div>
-              <label htmlFor="comment" className="mb-1 block text-[15px] md:text-[18px] font-bold text-black">
+              <label
+                htmlFor="comment"
+                className="mb-1 block text-[15px] md:text-[18px] font-bold text-black"
+              >
                 {t('comment')}
               </label>
-              <input
+              <textarea
                 id="comment"
-                type="text"
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
-                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400 min-h-[90px]"
                 placeholder={t('commentPlaceholder')}
                 suppressHydrationWarning
               />
             </div>
             <div>
-              <label htmlFor="description" className="mb-1 block text-[15px] md:text-[18px] font-bold text-black">
+              <label
+                htmlFor="description"
+                className="mb-1 block text-[15px] md:text-[18px] font-bold text-black"
+              >
                 {t('description')}
               </label>
-              <input
+              <textarea
                 id="description"
-                type="text"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400 min-h-[90px]"
                 suppressHydrationWarning
               />
             </div>
