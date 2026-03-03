@@ -12,11 +12,13 @@ const Hero = () => {
         line1: t('hero1Line1'),
         line2: t('hero1Line2'),
         line3: t('hero1Line3'),
+        line4: t('hero1Line4'),
       },
       {
         line1: t('hero2Line1'),
         line2: t('hero2Line2'),
         line3: null as string | null,
+        line4: null as string | null,
       },
     ],
     [t]
@@ -144,6 +146,14 @@ const Hero = () => {
                   <br />
                   <span className="inline-block md:text-[30px] text-[20px] space-x-2 mt-5 text-white tracking-[5px]">
                     {text.line3}
+                  </span>
+                </>
+              )}
+              {text.line4 && (
+                <>
+                  <br />
+                  <span className="inline-block md:text-[30px] text-[20px] space-x-2 mt-5 text-white tracking-[5px]">
+                    {text.line4}
                   </span>
                 </>
               )}
