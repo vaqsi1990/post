@@ -148,11 +148,7 @@ export default function NewParcelPage() {
         setLoading(false);
         return;
       }
-      router.push(
-        `/dashboard/tracking?code=${encodeURIComponent(
-          data.parcel.trackingNumber,
-        )}` as '/dashboard/tracking',
-      );
+      router.push('/dashboard');
       router.refresh();
     } catch {
       setError(tCommon('networkError'));

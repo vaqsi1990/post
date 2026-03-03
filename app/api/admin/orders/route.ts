@@ -79,7 +79,7 @@ export async function POST(request: NextRequest) {
     const order = await prisma.order.create({
       data: {
         userId: data.userId,
-        status: 'in_transit',
+        status: 'pending',
         type: 'forwarding',
         totalAmount: data.totalAmount,
         currency: 'GEL',
