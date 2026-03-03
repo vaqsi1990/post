@@ -207,7 +207,7 @@
     "trackingPlaceholder": "მაგ. 1Z999AA10123456784",
     "price": "ფასი (GEL) *",
     "pricePlaceholder": "0.00",
-    "pdfFile": "დეკლარაციის PDF ფაილი *",
+    "pdfFile": "ინვოისის PDF ფაილი *",
     "selected": "არჩეული",
     "maxFileSize": "მაქს. 5 MB, მხოლოდ PDF",
     "submit": "დეკლარაციის გაგზავნა",

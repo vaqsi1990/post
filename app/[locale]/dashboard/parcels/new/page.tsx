@@ -161,7 +161,7 @@ export default function NewParcelPage() {
   }
 
   return (
-    <div className="min-h-[calc(100vh-120px)] bg-gray-100 py-8">
+    <div className=" bg-gray-100 py-8">
       <div className="mx-auto mt-24 w-full max-w-lg px-4">
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <div className="mb-6 flex items-center justify-between">
@@ -181,7 +181,7 @@ export default function NewParcelPage() {
               </div>
             )}
             <div>
-              <label htmlFor="customerName" className="mb-1 block text-[15px] md:text-[18px] font-medium text-black">
+              <label htmlFor="customerName" className="mb-1 block text-[15px] md:text-[18px] font-bold text-black">
                 {t('customerName')}
               </label>
               <input
@@ -196,7 +196,7 @@ export default function NewParcelPage() {
               />
             </div>
             <div>
-              <label htmlFor="trackingNumber" className="mb-1 block text-[15px] md:text-[18px] font-medium text-black">
+              <label htmlFor="trackingNumber" className="mb-1 block text-[15px] md:text-[18px] font-bold text-black">
                 {t('trackingCode')}
               </label>
               <input
@@ -375,6 +375,13 @@ export default function NewParcelPage() {
                 required
                 onChange={(e) => {
                   const f = e.target.files?.[0] ?? null;
+                  if (f && f.type !== 'application/pdf') {
+                    setError(tDeclaration('onlyPdf'));
+                    setFile(null);
+                    e.target.value = '';
+                    return;
+                  }
+                  setError(null);
                   setFile(f);
                 }}
                 className="block w-full text-[15px] md:text-[18px] text-black file:mr-3 file:rounded-md file:border file:border-gray-300 file:bg-white file:px-3 file:py-1.5 file:text-[15px] md:text-[18px] file:font-medium file:text-black hover:file:bg-gray-50"

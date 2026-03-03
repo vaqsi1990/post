@@ -62,7 +62,7 @@ function TrackingContent() {
   }, [code, fetchTracking]);
 
   return (
-    <div className="min-h-[calc(100vh-120px)] bg-gray-100 py-8">
+    <div className=" bg-gray-100 py-8">
       <div className="mx-auto mt-24 w-full max-w-2xl px-4">
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <div className="mb-6 flex items-center justify-between">
@@ -137,7 +137,7 @@ function TrackingContent() {
 
 export default function DashboardTrackingPage() {
   return (
-    <Suspense fallback={<div className="min-h-[calc(100vh-120px)] bg-gray-100 py-8 flex items-center justify-center"><p className="text-gray-500">იტვირთება...</p></div>}>
+    <Suspense fallback={<div className=" bg-gray-100 py-8 flex items-center justify-center"><p className="text-gray-500">იტვირთება...</p></div>}>
       <TrackingContent />
     </Suspense>
   );

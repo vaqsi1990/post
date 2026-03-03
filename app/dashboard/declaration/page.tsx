@@ -13,7 +13,7 @@ export default async function DeclarationPage() {
   if (session.user.role === 'ADMIN') redirect('/admin');
 
   return (
-    <div className="min-h-[calc(100vh-120px)] bg-gray-100 py-8">
+    <div className=" bg-gray-100 py-8">
       <div className="mx-auto mt-24 w-full max-w-lg px-4">
         <main className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <div className="pb-6 border-b border-gray-200">

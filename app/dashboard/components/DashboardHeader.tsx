@@ -79,7 +79,7 @@ export default function DashboardHeader() {
             <Link href="/dashboard/balance" className="flex items-center gap-2 text-[16px] md:text-[18px] font-bold text-black hover:text-black">{t('balanceTopUp')}</Link>
           
           </div>
-          <Link href="/dashboard/settings" className="flex items-center gap-2 text-[15px] font-medium text-black hover:text-black">{t('settings')}</Link>
+          <Link href="/dashboard/settings" className="flex items-center gap-2 text-[15px] md:text-[18px] font-bold text-black hover:text-black">{t('settings')}</Link>
         </div>
       </div>
 

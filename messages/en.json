@@ -207,7 +207,7 @@
     "trackingPlaceholder": "e.g. 1Z999AA10123456784",
     "price": "Price (GEL) *",
     "pricePlaceholder": "0.00",
-    "pdfFile": "Declaration PDF file *",
+    "pdfFile": "Invoice PDF file *",
     "selected": "Selected",
     "maxFileSize": "Max. 5 MB, PDF only",
     "submit": "Submit declaration",

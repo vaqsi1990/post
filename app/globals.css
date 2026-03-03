@@ -428,7 +428,7 @@ button:not(.mobile-menu-button),
 .nav-link {
   color: rgba(255,255,255,0.9);
   font-weight: 500;
-  font-size: 20px;
+  font-size: 18px;
   text-decoration: none;
   padding: 8px 12px;
   transition: 0.3s ease;

@@ -63,7 +63,16 @@ const Header = () => {
   const panelLabel = role === 'ADMIN' ? t('common.adminPanel') : t('common.myCabinet');
   // @ts-expect-error custom field added in auth callbacks
   const poNumber = session?.user?.poNumber as number | undefined;
-  const accountTriggerLabel = session?.user?.name?.trim() ? session.user.name : t('common.account');
+
+  const rawName = session?.user?.name?.trim();
+  const accountTriggerLabel = rawName
+    ? rawName
+        .split(/\s+/)
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((part) => part[0]?.toUpperCase() ?? '')
+        .join('')
+    : t('common.account');
 
   useEffect(() => {
     if (!isAccountMenuOpen) return;
@@ -103,8 +112,8 @@ const Header = () => {
               opacity: 1,
               display: 'block',
               visibility: 'visible',
-              width: '135px',
-              height: '135px',
+              width: '100px',
+              height: '100px',
               objectFit: 'contain',
             }}
           />

@@ -44,7 +44,7 @@ export default async function DashboardAddressesPage({ params }: Props) {
   }));
 
   return (
-    <div className="min-h-[calc(100vh-120px)] bg-gray-100 py-4 sm:py-8">
+    <div className=" bg-gray-100 py-4 sm:py-8">
       <div className="mx-auto mt-16 sm:mt-20 md:mt-24 w-full max-w-3xl px-3 sm:px-4">
         <main className="rounded-xl sm:rounded-2xl border border-gray-200 bg-white p-4 sm:p-6 shadow-sm">
           <div className="pb-4 sm:pb-6 border-b border-gray-200">
