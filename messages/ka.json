@@ -40,6 +40,7 @@
     "stores": "მაღაზიები",
     "pricing": "ტარიფები",
     "faq": "კითხვები",
+    "conditions": "პირობები",
     "howToSubscribe": "როგორ გამოვიწერო?",
     "customsRules": "საბაჟო წესები",
     "prohibited": "აკრძალული ნივთები",
@@ -50,7 +51,18 @@
     "contact": "კონტაქტი",
     "login": "ავტორიზაცია",
     "logout": "გამოსვლა",
-    "toggleMenu": "მენიუ"
+    "toggleMenu": "მენიუ",
+    "providerDuties": "შემსრულებლის უფლება-მოვალეობები",
+    "customerDuties": "დამკვეთის უფლება-მოვალეობები",
+    "calculationRules": "დაანგარიშების წესი",
+    "declarationService": "დეკლარირება და განბაჟების მომსახურება",
+    "thirdPartyPickup": "ამანათის გაცემა მესამე პირზე",
+    "confidentiality": "კონფიდენციალურობა",
+    "declarantService": "დეკლარანტის მომსახურება",
+    "whyPostify": "რატომ Postify?",
+    "howWeightCalculated": "როგორ ითვლება ამანათის წონა?",
+    "whenSubjectToCustoms": "რა შემთხვევაში ექვემდებარება განბაჟებას გზავნილი?",
+    "whyDeclarationImportant": "რატომ არის მნიშვნელოვანი ამანათის დეკლარირება?"
   },
   "footer": {
     "rights": "All rights reserved",

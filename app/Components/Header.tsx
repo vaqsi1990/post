@@ -12,46 +12,69 @@ type NavItem =
   | { type: 'link'; href: string; labelKey: string }
   | { type: 'dropdown'; href: string; labelKey: string; children: NavLinkItem[] };
 
+const servicesLinks: NavLinkItem[] = [
+  { href: '/#online-shopping', labelKey: 'header.onlineShopping' },
+  { href: '/#commercial-export', labelKey: 'header.commercialExport' },
+  { href: '/#customs-broker', labelKey: 'header.customsBroker' },
+  { href: '/#courier', labelKey: 'header.courier' },
+];
+
+const conditionsLinks: NavLinkItem[] = [
+  { href: '/conditions#provider-duties', labelKey: 'header.providerDuties' },
+  { href: '/conditions#customer-duties', labelKey: 'header.customerDuties' },
+  { href: '/conditions#calculation-rules', labelKey: 'header.calculationRules' },
+  { href: '/conditions#declaration-service', labelKey: 'header.declarationService' },
+  { href: '/conditions#third-party-pickup', labelKey: 'header.thirdPartyPickup' },
+  { href: '/conditions#confidentiality', labelKey: 'header.confidentiality' },
+  { href: '/conditions#declarant-service', labelKey: 'header.declarantService' },
+];
+
+const faqLinks: NavLinkItem[] = [
+  { href: '/faq#why-postify', labelKey: 'header.whyPostify' },
+  { href: '/faq#how-to-subscribe', labelKey: 'header.howToSubscribe' },
+  { href: '/faq#how-weight', labelKey: 'header.howWeightCalculated' },
+  { href: '/faq#when-customs', labelKey: 'header.whenSubjectToCustoms' },
+  { href: '/faq#why-declaration', labelKey: 'header.whyDeclarationImportant' },
+];
+
+const helpLinks: NavLinkItem[] = [
+  { href: '/help#guide', labelKey: 'header.onlineGuide' },
+];
+
 const navStructure: NavItem[] = [
+  { type: 'link', href: '/about', labelKey: 'header.about' },
   {
     type: 'dropdown',
     href: '/',
     labelKey: 'header.services',
-    children: [
-      { href: '/#online-shopping', labelKey: 'header.onlineShopping' },
-      { href: '/#commercial-export', labelKey: 'header.commercialExport' },
-      { href: '/#customs-broker', labelKey: 'header.customsBroker' },
-      { href: '/#courier', labelKey: 'header.courier' },
-    ],
+    children: servicesLinks,
   },
   { type: 'link', href: '/stores', labelKey: 'header.stores' },
-  { type: 'link', href: '/pricing', labelKey: 'header.pricing' },
   {
     type: 'dropdown',
-    href: '/faq',
-    labelKey: 'header.faq',
-    children: [
-      { href: '/faq#subscribe', labelKey: 'header.howToSubscribe' },
-      { href: '/faq#customs-rules', labelKey: 'header.customsRules' },
-      { href: '/faq#prohibited', labelKey: 'header.prohibited' },
-      { href: '/faq#faq', labelKey: 'header.faqTitle' },
-      { href: '/faq#about', labelKey: 'header.about' },
-    ],
+    href: '/conditions',
+    labelKey: 'header.conditions',
+    children: conditionsLinks,
   },
   {
     type: 'dropdown',
     href: '/help',
     labelKey: 'header.help',
-    children: [
-      { href: '/help#guide', labelKey: 'header.onlineGuide' },
-    ],
+    children: helpLinks,
   },
   { type: 'link', href: '/contact', labelKey: 'header.contact' },
+  {
+    type: 'dropdown',
+    href: '/faq',
+    labelKey: 'header.faq',
+    children: faqLinks,
+  },
 ];
 
 const Header = () => {
   const t = useTranslations();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isDesktopMenuOpen, setIsDesktopMenuOpen] = useState(false);
   const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
   const [openMobileDropdown, setOpenMobileDropdown] = useState<string | null>(null);
   const accountMenuRef = useRef<HTMLDivElement | null>(null);
@@ -96,6 +119,85 @@ const Header = () => {
 
   const getLabel = (labelKey: string) => t(labelKey);
 
+  const renderNavItem = (item: NavItem) => {
+    if (item.type === 'link') {
+      return (
+        <Link key={item.href} href={item.href} className="nav-link text-white">
+          {getLabel(item.labelKey)}
+        </Link>
+      );
+    }
+
+    const isConditionsDropdown = item.labelKey === 'header.conditions';
+    const half = isConditionsDropdown ? Math.ceil(item.children.length / 2) : 0;
+    const firstCol = isConditionsDropdown ? item.children.slice(0, half) : [];
+    const secondCol = isConditionsDropdown ? item.children.slice(half) : [];
+
+    return (
+      <div
+        key={item.href + item.labelKey}
+        className="header-dropdown header-dropdown-nav"
+      >
+        <Link
+          href={item.href}
+          className="nav-link header-dropdown-trigger text-white"
+          aria-haspopup="menu"
+        >
+          {getLabel(item.labelKey)}
+          <span className="header-dropdown-caret" aria-hidden="true">
+            ▾
+          </span>
+        </Link>
+        <div
+          className={`header-dropdown-menu header-dropdown-menu-nav ${
+            isConditionsDropdown ? 'header-dropdown-menu-two-col' : ''
+          }`}
+          role="menu"
+        >
+          {isConditionsDropdown ? (
+            <div className="header-dropdown-columns">
+              <div className="header-dropdown-col">
+                {firstCol.map((child) => (
+                  <Link
+                    key={child.href}
+                    href={child.href}
+                    className="header-dropdown-item header-dropdown-item-nav"
+                    role="menuitem"
+                  >
+                    {getLabel(child.labelKey)}
+                  </Link>
+                ))}
+              </div>
+              <div className="header-dropdown-col">
+                {secondCol.map((child) => (
+                  <Link
+                    key={child.href}
+                    href={child.href}
+                    className="header-dropdown-item header-dropdown-item-nav"
+                    role="menuitem"
+                  >
+                    {getLabel(child.labelKey)}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          ) : (
+            item.children.map((child) => (
+              <Link
+                key={child.href}
+                href={child.href}
+                className="header-dropdown-item header-dropdown-item-nav"
+                role="menuitem"
+              >
+                {getLabel(child.labelKey)}
+              </Link>
+            ))
+          )}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <header className="header">
       <div className="header-container">
@@ -118,43 +220,6 @@ const Header = () => {
             }}
           />
         </Link>
-
-        <nav className="nav-desktop">
-          {navStructure.map((item) =>
-            item.type === 'link' ? (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="nav-link text-white"
-              >
-                {getLabel(item.labelKey)}
-              </Link>
-            ) : (
-              <div key={item.href + item.labelKey} className="header-dropdown header-dropdown-nav">
-                <Link
-                  href={item.href}
-                  className="nav-link header-dropdown-trigger text-white"
-                  aria-haspopup="menu"
-                >
-                  {getLabel(item.labelKey)}
-                  <span className="header-dropdown-caret" aria-hidden="true">▾</span>
-                </Link>
-                <div className="header-dropdown-menu header-dropdown-menu-nav" role="menu">
-                  {item.children.map((child) => (
-                    <Link
-                      key={child.href}
-                      href={child.href}
-                      className="header-dropdown-item header-dropdown-item-nav"
-                      role="menuitem"
-                    >
-                      {getLabel(child.labelKey)}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            )
-          )}
-        </nav>
 
         <div className="header-actions">
           <LocaleSwitcher />
@@ -203,6 +268,20 @@ const Header = () => {
               {t('header.login')}
             </Link>
           )}
+
+          {/* Desktop burger menu */}
+          <button
+            type="button"
+            className="desktop-menu-button"
+            onClick={() => setIsDesktopMenuOpen((v) => !v)}
+            aria-label={t('header.toggleMenu')}
+          >
+            <span className={`hamburger ${isDesktopMenuOpen ? 'active' : ''}`}>
+              <span></span>
+              <span></span>
+              <span></span>
+            </span>
+          </button>
         </div>
 
         <button
@@ -217,6 +296,13 @@ const Header = () => {
           </span>
         </button>
       </div>
+
+      {/* Desktop dropdown nav under header */}
+      {isDesktopMenuOpen && (
+        <nav className="nav-desktop">
+          {navStructure.map(renderNavItem)}
+        </nav>
+      )}
 
       {isMenuOpen && (
         <div

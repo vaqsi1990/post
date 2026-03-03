@@ -40,6 +40,7 @@
     "stores": "Stores",
     "pricing": "Pricing",
     "faq": "FAQ",
+    "conditions": "Conditions",
     "howToSubscribe": "How to subscribe?",
     "customsRules": "Customs rules",
     "prohibited": "Prohibited items",
@@ -50,7 +51,18 @@
     "contact": "Contact",
     "login": "Login",
     "logout": "Log out",
-    "toggleMenu": "Menu"
+    "toggleMenu": "Menu",
+    "providerDuties": "Provider rights and obligations",
+    "customerDuties": "Customer rights and obligations",
+    "calculationRules": "Calculation rules",
+    "declarationService": "Declaration and customs clearance service",
+    "thirdPartyPickup": "Parcel release to third party",
+    "confidentiality": "Confidentiality",
+    "declarantService": "Declarant service",
+    "whyPostify": "Why Postify?",
+    "howWeightCalculated": "How is parcel weight calculated?",
+    "whenSubjectToCustoms": "When is a shipment subject to customs?",
+    "whyDeclarationImportant": "Why is parcel declaration important?"
   },
   "footer": {
     "rights": "All rights reserved",

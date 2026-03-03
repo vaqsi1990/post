@@ -42,22 +42,6 @@ body {
 
 
 
-h1 {
-  font-size: 30px;
-  font-weight: 500;
-  letter-spacing: -0.01em;
-}
-
-
-
-p {
- 
-  font-weight: 500;
- 
-  text-align: justify;
-  line-height: 130%;
-}
-
 @media (max-width: 900px) {
   p {
     text-align: center;
@@ -66,7 +50,8 @@ p {
 
 img {
   object-fit: cover;
-  opacity: 0;
+
+  
   display: block;
 }
 
@@ -447,6 +432,27 @@ button:not(.mobile-menu-button),
   gap: 1rem;
 }
 
+.desktop-menu-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.12);
+  border: none;
+  border-radius: 999px;
+  padding: 0.35rem 0.55rem;
+  cursor: pointer;
+}
+
+.desktop-menu-button .hamburger span {
+  height: 2px;
+}
+
+@media (max-width: 900px) {
+  .desktop-menu-button {
+    display: none;
+  }
+}
+
 .auth-button {
   background: #3A5BFF;
   color: white;
@@ -531,6 +537,19 @@ nav.nav-desktop .header-dropdown-trigger.nav-link {
   left: auto;
   padding-top: 0.5rem;
   margin-top: 2px;
+}
+.header-dropdown-menu-two-col {
+  min-width: 550px;
+}
+.header-dropdown-menu-two-col .header-dropdown-columns {
+  display: flex;
+  gap: 0.5rem;
+}
+.header-dropdown-menu-two-col .header-dropdown-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
 }
 .header-dropdown-nav .header-dropdown-item.header-dropdown-item-nav {
   background: transparent;

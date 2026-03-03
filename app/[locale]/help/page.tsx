@@ -1,4 +1,5 @@
 import React from 'react';
+import GuideSection from './GuideSection';
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -20,14 +21,7 @@ export default async function HelpGuidePage({ params }: Props) {
         id="guide"
         className="w-full pt-14 mt-14 md:pt-20 pb-16 md:pb-24 px-4"
       >
-        <div className="max-w-3xl mx-auto">
-          <h1 className="text-center text-black md:text-[32px] text-[22px] font-bold mb-8">
-            {title}
-          </h1>
-          <p className="text-black md:text-[16px] text-[14px] leading-relaxed">
-            {text}
-          </p>
-        </div>
+        <GuideSection isKa={isKa} title={title} text={text} />
       </section>
     </div>
   );
