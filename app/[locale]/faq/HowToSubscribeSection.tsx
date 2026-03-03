@@ -6,23 +6,20 @@ import { motion } from "framer-motion";
 
 type Props = {
   isKa: boolean;
-  title: string;
+
   steps: string[];
   thanks: string;
 };
 
 export default function HowToSubscribeSection({
   isKa,
-  title,
+ 
   steps,
   thanks,
 }: Props) {
   return (
     <div className="max-w-5xl mx-auto">
-      <h1 className="text-center text-black md:text-[32px] text-[22px] font-bold mb-6 md:mb-8">
-        {title}
-      </h1>
-
+    
       <motion.div
         className="mb-8 md:mb-10 flex justify-center"
         initial={{ opacity: 0, y: 30 }}

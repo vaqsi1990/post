@@ -30,11 +30,8 @@ const conditionsLinks: NavLinkItem[] = [
 ];
 
 const faqLinks: NavLinkItem[] = [
-  { href: '/faq#why-postify', labelKey: 'header.whyPostify' },
-  { href: '/faq#how-to-subscribe', labelKey: 'header.howToSubscribe' },
-  { href: '/faq#how-weight', labelKey: 'header.howWeightCalculated' },
-  { href: '/faq#when-customs', labelKey: 'header.whenSubjectToCustoms' },
-  { href: '/faq#why-declaration', labelKey: 'header.whyDeclarationImportant' },
+  { href: '/faq', labelKey: 'header.faq' },
+
   { href: '/help#guide', labelKey: 'header.onlineGuide' },
 ];
 
@@ -59,7 +56,7 @@ const navStructure: NavItem[] = [
   {
     type: 'dropdown',
     href: '/faq',
-    labelKey: 'header.faq',
+    labelKey: 'header.help',
     children: faqLinks,
   },
 ];
