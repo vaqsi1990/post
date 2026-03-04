@@ -21,7 +21,7 @@ export default function FaqAccordion({ isKa }: Props) {
         {
           question: "რატომ Postify?",
           answer:
-            "Postify გთავაზობთ სწრაფ, უსაფრთხო და გამჭვირვალე სერვისს: კომფორტულ ონლაინ კაბინეტს, მრავალ ქვეყანაზე განთავსებულ მისამართებს, ამანათების სტატუსების მუდმივ განახლებას და უფასო საკურიერო მიტანას საქართველოს მასშტაბით განსაზღვრულ პირობებში.",
+            "გთავაზობთ სწრაფ, უსაფრთხო და გამჭირვალე მომსახურებას; კომფორტულ ონლაინ კაბინეტს; 9 ქვეყანაში შოპინგის შესაძლებლობას; ამანათების სტატუსების მუდმივ განახლებას; ონლაინ გიდის დახმარებას, რომელიც გაგიმარტივებთ შოპინგს; უფასო საკურიერო მომსახურებას მთელი საქართველოს მასშტაბით.",
         },
         {
           question: "როგორ გამოვიწეროთ?",
@@ -30,44 +30,43 @@ export default function FaqAccordion({ isKa }: Props) {
         {
           question: "როგორ ითვლება ამანათის წონა?",
           answer:
-            "ამანათის საფოსტო ტარიფი, როგორც წესი, ითვლება ფაქტიური ან მოცულობითი წონის მიხედვით — გამოიყენება ის მნიშვნელობა, რომელიც მეტია. მოცულობითი წონა გამოითვლება ამანათის სიგრძე, სიგანე და სიმაღლე სანტიმეტრებში ნამრავლის სპეციალურ კოეფიციენტზე გაყოფით.",
+            "ამანათის ტრანსპორტირების ღირებულება გამოითვლება ამანათის რეალური წონის მიხედვით. წონის დამრგვალება ხდება 100 გრამამდე, მინიმალური წონა შეადგენს 100 გრამს.კომპანია Postify მოცულობით ითვლის მხოლოდ განსაკუთრებული გაბარიტების მქონე ნივთებს და ღირებულების განსაზღვრა მოხდება შეთანხმებით."
         },
         {
           question: "რა შემთხვევაში ექვემდებარება განბაჟებას გზავნილი?",
           answer:
-            "გზავნილი განბაჟებას ექვემდებარება, როდესაც მისი ღირებულება ან/და წონა აღემატება კანონით დადგენილ შეღავათურ ლიმიტებს, ან ტვირთი მიიჩნევა კომერციულად. ზუსტი ზღვარი და წესები რეგულირდება საბაჟო კოდექსით და შესაძლოა იცვლებოდეს, ამიტომ რეკომენდებულია წინასწარ გაეცნოთ მოქმედ რეგულაციებს.",
+            "საქართველოს მოქმედი კანონმდებლობით, განბაჟებას ექვემდებარება თუ ამანათის ღირებულება შეადგენს ან აღემატება 300 ლარს; ერთ რეისზე, ერთი ონლაინ მაღაზიიდან გამოგზავნილი ამანათები, რომელთა ჯამური ღირებულება შეადგენს ან აღემატება 300 ლარს;  ამანათები, რომელთა ფასი არაა 300 ლარზე მეტი, მაგრამ რეალური წონა 29 კილოზე მეტია. დეკლარირების დროს ატვირთული ინვოისის საფუძველზე, ამანათის ჩამოსვლის შემდეგ ავტომატურად იბეჭდება საბაჟო დეკლარაცია (ფორმა 4). დეკლარაციის დასრულების შემდეგ შესაძლებელია ამანათის გატანა.",
         },
         {
           question: "რატომ არის მნიშვნელოვანი ამანათის დეკლარირება?",
           answer:
-            "დეკლარირება უზრუნველყოფს, რომ თქვენი ამანათი გაივლის საბაჟო კონტროლს სწორად, თავიდან აიცილებს დაყოვნებებსა და ჯარიმებს, საშუალებას იძლევა სწორად განისაზღვროს გადასახადი (თუ არსებობს) და ამავდროულად պաշտულობს როგორც თქვენი, ისე კომპანიის კანონიერ ინტერესებს.",
+            "წინასწარი დეკლარირება აუცილებელია ამანათის საქართველოში ჩამოსვლამდე. დაუდეკლარირებელი ამანათი შეფერხდება საბაჟოზე. დეკლარაციაში მითითებულ ნებისმიერ ინფორმაციაზე პასუხისმგებელი პირი არის მომხმარებელი. გთხოვთ, სწორად დაადეკლარიროთ ამანათი, შემდგომი გაუგებრობის თავიდან აცილების მიზნით.",
         },
       ]
     : [
         {
           question: "Why Postify?",
           answer:
-            "Postify offers fast, secure and transparent service: a convenient online cabinet, shipping addresses in multiple countries, live parcel status updates and free courier delivery within Georgia under defined conditions.",
+            "We offer fast, safe and transparent service; a convenient online cabinet; the opportunity to shop in 9 countries; constant updates of parcel statuses; the help of an online guide that makes shopping easier; and free courier service throughout Georgia.",
         },
         {
-          question: "How to subscribe/order?",
-          answer:
-            "Choose the online shop you prefer, register on our website and copy the address of the corresponding country from your cabinet. Use that address when placing your order, receive the tracking code, add the parcel in our system and wait for a notification when it arrives.",
+          question: "How to order?",
+          answer: <How isKa={isKa} />,
         },
         {
-          question: "How is parcel weight calculated?",
+          question: "How is the parcel weight calculated?",
           answer:
-            "Shipping tariffs are usually based on either actual or volumetric weight – whichever is higher. Volumetric weight is calculated using the parcel’s length, width and height in centimeters divided by a specific coefficient.",
+            "The transportation cost of a parcel is calculated according to its actual weight. The weight is rounded to the nearest 100 grams, with a minimum chargeable weight of 100 grams. Postify calculates volumetric weight only for items with exceptional dimensions, and in such cases the price is determined by mutual agreement.",
         },
         {
-          question: "When is a shipment subject to customs duties?",
+          question: "When is a shipment subject to customs clearance?",
           answer:
-            "A shipment becomes subject to customs clearance when its value and/or weight exceed the legal exemption thresholds or when the goods are considered commercial. Exact limits and rules are defined by customs regulations and may change over time.",
+            "According to Georgian legislation, a shipment is subject to customs clearance if its value is equal to or exceeds 300 GEL; if, within a single flight, several parcels from the same online shop have a total value equal to or exceeding 300 GEL; or if the parcel’s value is under 300 GEL but its actual weight exceeds 29 kilograms. Based on the invoice uploaded during declaration, a customs declaration (Form 4) is printed automatically after the parcel arrives, and once the declaration is completed, the parcel can be released.",
         },
         {
-          question: "Why is parcel declaration important?",
+          question: "Why is it important to declare a parcel?",
           answer:
-            "Proper declaration ensures that your parcel passes customs control correctly, helps avoid delays and penalties, allows correct calculation of any applicable duties, and protects both your rights and the company’s legal obligations.",
+            "Pre‑declaration of the parcel before its arrival in Georgia is mandatory. An undeclared parcel will be delayed at customs. The customer is responsible for all information indicated in the declaration, so please declare your parcel correctly to avoid any misunderstandings later.",
         },
       ];
 
@@ -78,10 +77,17 @@ export default function FaqAccordion({ isKa }: Props) {
   const pageTitle = isKa ? "ხშირად დასმული კითხვები" : "Frequently Asked Questions";
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <h1 className="text-center text-black md:text-[32px] text-[22px] font-bold mb-8 md:mb-10">
-        {pageTitle}
-      </h1>
+    <div className="max-w-4xl mx-auto px-4 md:px-0">
+      <div className="relative mb-8 md:mb-10">
+        <div className="absolute -inset-x-10 -inset-y-4 bg-gradient-to-r from-[#7C3AED]/5 via-[#EC4899]/5 to-[#22C55E]/5 blur-3xl pointer-events-none" />
+        <div className="relative flex flex-col items-center gap-2">
+         
+          <h1 className="text-center text-black md:text-[32px] text-[24px] font-extrabold tracking-tight">
+            {pageTitle}
+          </h1>
+          
+        </div>
+      </div>
 
       <div className="space-y-3 md:space-y-4">
         {faqs.map((item, index) => {
@@ -90,8 +96,8 @@ export default function FaqAccordion({ isKa }: Props) {
           return (
             <motion.div
               key={item.question}
-              className="rounded-xl bg-white border border-gray-200 shadow-sm overflow-hidden"
-              initial={{ opacity: 0, y: 15 }}
+              className="group rounded-2xl bg-white/90 border border-gray-200/80 shadow-sm hover:shadow-md hover:border-purple-200 transition-all duration-200 overflow-hidden backdrop-blur-sm"
+              initial={{ opacity: 0, y: 18 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
@@ -99,14 +105,28 @@ export default function FaqAccordion({ isKa }: Props) {
               <button
                 type="button"
                 onClick={() => handleToggle(index)}
-                className="w-full flex items-center justify-between gap-3 px-4 md:px-5 py-3 md:py-4 text-left"
+                className="w-full flex items-center justify-between gap-3 px-4 md:px-6 py-3.5 md:py-4 text-left"
               >
-                <span className="text-black md:text-[18px] text-[15px] font-semibold">
-                  {item.question}
-                </span>
+                <div className="flex items-center gap-3">
+                  <span
+                    className={`flex h-9 w-9 items-center justify-center rounded-full text-sm font-semibold text-white shadow-sm transition-all duration-200 ${
+                      isOpen
+                        ? "bg-gradient-to-br from-purple-600 to-pink-500 scale-105"
+                        : "bg-gradient-to-br from-purple-500 to-indigo-500 group-hover:scale-105"
+                    }`}
+                    aria-hidden="true"
+                  >
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <span className="text-black md:text-[18px] text-[15px] font-semibold group-hover:text-purple-700 transition-colors duration-150">
+                    {item.question}
+                  </span>
+                </div>
                 <span
-                  className={`flex h-8 w-8 items-center justify-center rounded-full border text-sm font-bold transition-transform duration-200 ${
-                    isOpen ? "bg-black text-white rotate-180" : "bg-white text-black"
+                  className={`flex h-8 w-8 items-center justify-center rounded-full border text-sm font-bold transition-all duration-200 ${
+                    isOpen
+                      ? "bg-black text-white rotate-180 border-black"
+                      : "bg-white text-black group-hover:border-purple-400 group-hover:text-purple-700"
                   }`}
                   aria-hidden="true"
                 >
@@ -122,7 +142,7 @@ export default function FaqAccordion({ isKa }: Props) {
                     exit={{ height: 0, opacity: 0 }}
                     transition={{ duration: 0.2, ease: "easeOut" }}
                   >
-                    <div className="px-4 md:px-5 pb-4 md:pb-5 pt-0 md:pt-1 text-black/80 md:text-[16px] text-[14px] leading-relaxed border-t border-gray-100">
+                    <div className="px-4 md:px-6 pb-4 md:pb-5 pt-0 md:pt-2 text-black/80 md:text-[16px] text-[14px] leading-relaxed border-t border-gray-100 bg-gradient-to-b from-white to-purple-50/40">
                       {item.answer}
                     </div>
                   </motion.div>
