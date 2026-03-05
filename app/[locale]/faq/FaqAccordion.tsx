@@ -96,7 +96,7 @@ export default function FaqAccordion({ isKa }: Props) {
           return (
             <motion.div
               key={item.question}
-              className="group rounded-2xl bg-white/90 border border-gray-200/80 shadow-sm hover:shadow-md hover:border-purple-200 transition-all duration-200 overflow-hidden backdrop-blur-sm"
+              className="relative overflow-hidden rounded-3xl border border-pink-200/60 bg-gradient-to-br from-white via-pink-50 to-indigo-50 shadow-xl p-5 md:p-8"
               initial={{ opacity: 0, y: 18 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
@@ -116,7 +116,7 @@ export default function FaqAccordion({ isKa }: Props) {
                     }`}
                     aria-hidden="true"
                   >
-                    {String(index + 1).padStart(2, "0")}
+                    {index + 1}
                   </span>
                   <span className="text-black md:text-[18px] text-[15px] font-semibold group-hover:text-purple-700 transition-colors duration-150">
                     {item.question}
@@ -125,7 +125,7 @@ export default function FaqAccordion({ isKa }: Props) {
                 <span
                   className={`flex h-8 w-8 items-center justify-center rounded-full border text-sm font-bold transition-all duration-200 ${
                     isOpen
-                      ? "bg-black text-white rotate-180 border-black"
+                      ? "bg-[#3A5BFF] text-white rotate-180 border-black"
                       : "bg-white text-black group-hover:border-purple-400 group-hover:text-purple-700"
                   }`}
                   aria-hidden="true"

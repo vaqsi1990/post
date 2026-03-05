@@ -69,6 +69,16 @@
     "rights": "All rights reserved",
     "madeWith": "Made with care"
   },
+  "about": {
+    "title": "About us",
+    "intro1": "Postify is a brand of LLC “Express Logistic Service”, which transports parcels from the following countries: United Kingdom, United States, China, Italy, Greece, Spain, France, Germany and Turkey.",
+    "intro2": "With the help of the company’s online guide, customers can get information about discounts and simplify the process of finding and purchasing desired items.",
+    "intro3": "Our goal is to deliver parcels to Georgia quickly and to maintain the best service quality on the market.",
+    "intro4": "With us, shopping is cheap, simple and comfortable!!!",
+    "intro5": "We wish you pleasant shopping!!!",
+    "requisitesTitle": "Requisites",
+    "requisitesContent": "Brand name: Postify\nCompany name: LLC “Express Logistic Service”\nIdentification code: 436258381\nAddress: Tbilisi, Gagarin 4-4 A\n\nTBC Bank\nBank code: TBCBGE22\nAccount: GE47TB7653936080100018\n\nBank of Georgia\nBank code: BAGAGE22\nAccount: GE56BGOOOOOOO549889504"
+  },
   "home": {
     "hero1Line1": "Price is calculated by actual weight!!!",
     "hero1Line2": "Don't overpay!!!",
@@ -77,10 +87,14 @@
     "hero2Line1": "Receive your parcel at the office hassle-free!!!",
     "hero2Line2": "We deliver your parcel to your address free of charge across Georgia!!!",
     "servicesTitle": "S E R V I C E S",
-    "service1": "Parcel transport – Online shopping",
+    "service1": " Online shopping",
+    "service1Content": " Postify offers online shopping in 9 countries: the United Kingdom, the United States, China, Italy, Greece, Spain, France, Germany, and Turkey.\n\nSimplify your shopping with Postify's online guide. Use the Online Guide service to purchase your desired items with big discounts. The Online Guide service is free of charge.\n\nWith us, shopping is cheap, simple, and comfortable!!!\n\nWe wish you pleasant shopping!!!",
     "service2": "Customs brokerage service",
-    "service3": "Corporate service",
+    "service2Content": "Customs brokerage service: Postify offers customs brokerage services for both individuals and legal entities; preparation of all necessary documentation; full logistics services throughout the territory of Georgia; fast and safe delivery.\n\nThank you for your trust.",
+    "service3": "Corporate cargo export",
+    "service3Content": "Corporate services include:\n\n1. International air freight from airport to airport: export, import, transit;\n2. Air freight of special cargo (perishable, dangerous, high-value);\n3. Full logistics services throughout the territory of Georgia;\n4. Customs brokerage services;\n5. Preparation of all necessary documentation;\n6. Provision of fast and safe service.",
     "service4": "Courier service",
+    "service4Content": "For Postify customers, courier service is free throughout the entire territory of Georgia.\n\nThank you for your trust.",
     "tariffsTitle": "Pricing",
     "tariffsSectionTitle": "Rates and delivery times",
     "tariffCountry": "Country",

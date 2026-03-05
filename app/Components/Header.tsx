@@ -13,10 +13,10 @@ type NavItem =
   | { type: 'dropdown'; href: string; labelKey: string; children: NavLinkItem[] };
 
 const servicesLinks: NavLinkItem[] = [
-  { href: '/#online-shopping', labelKey: 'header.onlineShopping' },
-  { href: '/#commercial-export', labelKey: 'header.commercialExport' },
-  { href: '/#customs-broker', labelKey: 'header.customsBroker' },
-  { href: '/#courier', labelKey: 'header.courier' },
+  { href: '/services#service1', labelKey: 'header.onlineShopping' },
+  { href: '/services#service2', labelKey: 'header.commercialExport' },
+  { href: '/services#service3', labelKey: 'header.customsBroker' },
+  { href: '/services#service4', labelKey: 'header.courier' },
 ];
 
 const conditionsLinks: NavLinkItem[] = [
@@ -39,10 +39,10 @@ const faqLinks: NavLinkItem[] = [
 
 
 const navStructure: NavItem[] = [
-  {type: 'link',  href: '/our',  labelKey: 'header.about' },
+  {type: 'link',  href: '/about',  labelKey: 'header.about' },
   {
     type: 'dropdown',
-    href: '/',
+    href: '/services',
     labelKey: 'header.services',
     children: servicesLinks,
   },
@@ -196,10 +196,10 @@ const Header = () => {
       <div className="header-container">
         <Link href="/" className="logo" style={{ display: 'flex', alignItems: 'center' }}>
           <Image
-            src="/logo.jpg"
+            src="/logo4.jpg"
             alt="Logo"
             width={110}
-            height={1130}
+            height={130}
             className="rounded-full"
             priority
             unoptimized
@@ -207,11 +207,12 @@ const Header = () => {
               opacity: 1,
               display: 'block',
               visibility: 'visible',
-              width: '100px',
-              height: '130px',
+              width: '120px',
+              height: '140px',
               objectFit: 'contain',
             }}
           />
+          
         </Link>
 
         {/* Desktop nav in the top row */}
