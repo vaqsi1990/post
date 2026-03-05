@@ -135,9 +135,7 @@ export default async function ConditionsPage({ params, searchParams }: Props) {
                 className="relative overflow-hidden rounded-3xl border border-pink-200/60 bg-gradient-to-br from-white via-pink-50 to-indigo-50 shadow-xl p-5 md:p-8"
               >
                 <div className="flex items-start gap-3 md:gap-4">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-full text-sm font-semibold text-white shadow-sm transition-all duration-200 bg-gradient-to-br from-purple-500 to-indigo-500 group-hover:scale-105">
-                    {index + 1}
-                  </div>
+                  
                   <div className="flex-1">
                     <h2 className="font-semibold mb-2 md:mb-3 text-[16px] md:text-[20px] text-gray-900">
                       {section.title}

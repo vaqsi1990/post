@@ -16,7 +16,6 @@ type ServiceItem = {
 };
 
 export default function ServicesAccordion({ isKa, activeServiceId }: Props) {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
   const t = useTranslations("home");
 
   const services: ServiceItem[] = [
@@ -44,10 +43,6 @@ export default function ServicesAccordion({ isKa, activeServiceId }: Props) {
 
   const pageTitle = isKa ? "სერვისები" : "Services";
 
-  const handleToggle = (index: number) => {
-    setOpenIndex((current) => (current === index ? null : index));
-  };
-
   const visibleServices =
     activeServiceId && services.some((s) => s.id === activeServiceId)
       ? services.filter((s) => s.id === activeServiceId)
@@ -68,7 +63,6 @@ export default function ServicesAccordion({ isKa, activeServiceId }: Props) {
         {visibleServices.map((service) => {
           const indexInAll = services.findIndex((s) => s.id === service.id);
           const number = indexInAll + 1;
-          const isOpen = activeServiceId ? true : openIndex === indexInAll;
 
           return (
             <motion.div
@@ -80,43 +74,11 @@ export default function ServicesAccordion({ isKa, activeServiceId }: Props) {
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
             >
-              <button
-                type="button"
-                onClick={() => handleToggle(indexInAll)}
-                className="w-full flex items-center justify-between gap-3 px-4 md:px-6 py-3.5 md:py-4 text-left"
-              >
-                <div className="flex items-center gap-3">
-               
-                  <span className="text-black md:text-[18px] text-[15px] font-semibold group-hover:text-purple-700 transition-colors duration-150">
-                    {service.title}
-                  </span>
-                </div>
-                <span
-                  className={`flex h-8 w-8 items-center justify-center rounded-full border text-sm font-bold transition-all duration-200 ${
-                    isOpen
-                      ? "bg-black text-white rotate-180 border-black"
-                      : "bg-white text-black group-hover:border-purple-400 group-hover:text-purple-700"
-                  }`}
-                  aria-hidden="true"
-                >
-                  {isOpen ? "–" : "+"}
-                </span>
-              </button>
+              
 
-              <AnimatePresence initial={false}>
-                {isOpen && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.2, ease: "easeOut" }}
-                  >
-                    <div className="px-4 md:px-6 pb-4 md:pb-5 pt-0 md:pt-2 text-black/80 md:text-[16px] text-[14px] leading-relaxed border-t border-gray-100 bg-gradient-to-b from-white to-purple-50/40">
-                      {service.content}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              <div className="px-4 md:px-6 pb-4 md:pb-5 pt-0 md:pt-2 text-black/80 md:text-[16px] text-[14px] leading-relaxed border-t border-gray-100 bg-gradient-to-b from-white to-purple-50/40">
+                {service.content}
+              </div>
             </motion.div>
           );
         })}
