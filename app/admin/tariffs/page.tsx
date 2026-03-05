@@ -5,7 +5,7 @@ export default async function AdminTariffsPage() {
   return (
     <AdminShell
       title="ტარიფები"
-      description="აქ შეგიძლია შეცვალო კგ-ის დიაპაზონი და 1 კგ-ის ფასი (pricePerKg)."
+      description="ქვეყნების ჩამონათვალი და 1 კგ ფასის დაყენება."
     >
       <TariffsManager />
     </AdminShell>

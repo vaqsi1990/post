@@ -4,6 +4,8 @@ import { z } from 'zod';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 
+// All tariff data is stored only in Prisma (PostgreSQL). No other storage.
+
 export const dynamic = 'force-dynamic';
 
 const createTariffSchema = z.object({
@@ -128,6 +130,27 @@ export async function PUT(request: NextRequest) {
     }
     console.error('Update tariff error:', e);
     return NextResponse.json({ error: 'შენახვა ვერ მოხერხდა' }, { status: 500 });
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  const auth = await requireAdmin();
+  if (!auth.ok) return auth.res;
+
+  try {
+    const body = await request.json();
+    const { id } = z.object({ id: z.string().min(1) }).parse(body);
+    await prisma.tariff.delete({ where: { id } });
+    return NextResponse.json({ message: 'ტარიფი წაიშალა' }, { status: 200 });
+  } catch (e) {
+    if (e instanceof z.ZodError) {
+      return NextResponse.json(
+        { error: 'ვალიდაციის შეცდომა', details: e.issues },
+        { status: 400 }
+      );
+    }
+    console.error('Delete tariff error:', e);
+    return NextResponse.json({ error: 'წაშლა ვერ მოხერხდა' }, { status: 500 });
   }
 }
 
