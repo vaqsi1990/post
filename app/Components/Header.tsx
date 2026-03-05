@@ -194,9 +194,9 @@ const Header = () => {
   return (
     <header className="header">
       <div className="header-container">
-        <Link href="/" className="logo" style={{ display: 'flex', alignItems: 'center' }}>
+        <Link href="/" className="logo flex flex-col" style={{ display: 'flex', alignItems: 'center' }}>
           <Image
-            src="/logo4.jpg"
+            src="/logo2.jpg"
             alt="Logo"
             width={110}
             height={130}
@@ -208,11 +208,11 @@ const Header = () => {
               display: 'block',
               visibility: 'visible',
               width: '120px',
-              height: '140px',
+             
               objectFit: 'contain',
             }}
           />
-          
+          <h1 className="text-white md:text-[20px] text-[16px] font-bold">Postify</h1>
         </Link>
 
         {/* Desktop nav in the top row */}
