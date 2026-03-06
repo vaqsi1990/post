@@ -294,6 +294,8 @@
     "title": "ახალი შემოსული ამანათი",
     "userEmail": "მომხმარებლის ელფოსტა",
     "userEmailPlaceholder": "user@example.com",
+    "phone": "ტელეფონი ",
+    "phonePlaceholder": "მაგ. +995 599 12 34 56",
     "customerName": "მომხმარებლის სახელი",
     "customerNamePlaceholder": "სახელი, გვარი",
     "trackingNumber": "თრექინგ კოდი",

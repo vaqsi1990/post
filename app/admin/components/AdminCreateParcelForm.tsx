@@ -84,6 +84,7 @@ export default function AdminCreateParcelForm() {
   const [originCountry, setOriginCountry] = useState('');
   const [city, setCity] = useState('');
   const [address, setAddress] = useState('');
+  const [phone, setPhone] = useState('');
   const [comment, setComment] = useState('');
   const [weight, setWeight] = useState('');
   const [description, setDescription] = useState('');
@@ -222,6 +223,7 @@ export default function AdminCreateParcelForm() {
       formData.append('originCountry', originCountry.trim());
       if (city.trim()) formData.append('city', city.trim());
       if (address.trim()) formData.append('address', address.trim());
+      if (phone.trim()) formData.append('phone', phone.trim());
       if (comment.trim()) formData.append('comment', comment.trim());
       formData.append('weight', String(w));
       formData.append('description', description.trim());
@@ -280,6 +282,19 @@ export default function AdminCreateParcelForm() {
               onChange={(e) => setUserEmail(e.target.value)}
               className="w-full placeholder:font-bold placeholder:text-black placeholder:text-[16px] rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
               placeholder={t('userEmailPlaceholder')}
+            />
+          </div>
+
+          <div className="md:col-span-2">
+            <label className="mb-1 block text-[15px] font-semibold text-black">
+              {t('phone')}
+            </label>
+            <input
+              type="text"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className="w-full placeholder:font-bold placeholder:text-black placeholder:text-[16px] rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
+              placeholder={t('phonePlaceholder')}
             />
           </div>
 

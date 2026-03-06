@@ -38,6 +38,7 @@ const createParcelSchema = z.object({
   originCountry: z.enum(ORIGIN_COUNTRY_CODES, { message: 'Origin country is required' }),
   city: z.string().optional(),
   address: z.string().optional(),
+  phone: z.string().optional(),
   comment: z.string().optional(),
   weight: z.number().min(0.001, 'Weight is required'),
   description: z.string().min(1, 'Description is required'),
@@ -114,6 +115,7 @@ export async function POST(request: NextRequest) {
     const originCountry = formData.get('originCountry')?.toString().trim() ?? '';
     const city = formData.get('city')?.toString().trim() ?? '';
     const address = formData.get('address')?.toString().trim() ?? '';
+    const phone = formData.get('phone')?.toString().trim() ?? '';
     const comment = formData.get('comment')?.toString().trim() ?? '';
     const weightStr = formData.get('weight')?.toString().trim() ?? '';
     const description = formData.get('description')?.toString().trim() ?? '';
@@ -152,6 +154,7 @@ export async function POST(request: NextRequest) {
       originCountry: originCountry || undefined,
       city: city || undefined,
       address: address || undefined,
+      phone: phone || undefined,
       comment: comment || undefined,
       weight: Number.isNaN(weight) ? undefined : weight,
       description,
@@ -178,7 +181,7 @@ export async function POST(request: NextRequest) {
 
     let user = await prisma.user.findUnique({
       where: { email: parsed.userEmail.trim().toLowerCase() },
-      select: { id: true },
+      select: { id: true, phone: true },
     });
 
     if (!user) {
@@ -189,20 +192,13 @@ export async function POST(request: NextRequest) {
           email: parsed.userEmail.trim().toLowerCase(),
           password: randomPassword,
           personalIdNumber,
+          phone: parsed.phone || undefined,
           city: parsed.city || undefined,
           address: parsed.address || undefined,
         },
-        select: { id: true },
+        select: { id: true, phone: true },
       });
       user = created;
-    } else if (parsed.city || parsed.address) {
-      await prisma.user.update({
-        where: { email: parsed.userEmail.trim().toLowerCase() },
-        data: {
-          city: parsed.city || undefined,
-          address: parsed.address || undefined,
-        },
-      });
     }
 
     const existing = await prisma.parcel.findUnique({

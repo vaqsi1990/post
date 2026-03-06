@@ -294,6 +294,8 @@
     "title": "New incoming parcel",
     "userEmail": "User email",
     "userEmailPlaceholder": "user@example.com",
+    "phone": "Phone",
+    "phonePlaceholder": "e.g. +995 599 12 34 56",
     "customerName": "Customer name",
     "customerNamePlaceholder": "First and last name",
     "trackingNumber": "Tracking number",

@@ -181,7 +181,7 @@ export default function ParcelsTable({ parcels: initialParcels, currentStatus, o
                   {(parcel.shippingAmount ?? parcel.price).toFixed(2)} {parcel.currency || 'GEL'}
                 </span>
 
-                <span className="text-black">ტელფონი</span>
+                <span className="text-black">ტელეფონი</span>
                 <span className="text-black">
                   {formatPhone(parcel.user.phone)}
                 </span>
