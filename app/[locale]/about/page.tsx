@@ -50,31 +50,31 @@ export default function AboutPage(_props: Props) {
           whileHover={{ rotateX: 2, scale: 1.01 }}
         >
           <motion.p
-            className="text-black md:text-[18px] text-[16px] leading-relaxed"
+            className="text-black md:text-[18px] text-[16px] leading-relaxed text-justify"
             variants={paragraphVariants}
           >
             {t("intro1")}
           </motion.p>
           <motion.p
-            className="text-black md:text-[18px] text-[16px] leading-relaxed"
+            className="text-black md:text-[18px] text-[16px] leading-relaxed text-justify"
             variants={paragraphVariants}
           >
             {t("intro2")}
           </motion.p>
           <motion.p
-            className="text-black md:text-[18px] text-[16px] leading-relaxed"
+            className="text-black md:text-[18px] text-[16px] leading-relaxed text-justify"
             variants={paragraphVariants}
           >
             {t("intro3")}
           </motion.p>
           <motion.p
-            className="text-black md:text-[18px] text-[16px] leading-relaxed"
+            className="text-black md:text-[18px] text-[16px] leading-relaxed text-justify"
             variants={paragraphVariants}
           >
             {t("intro4")}
           </motion.p>
           <motion.p
-            className="text-black md:text-[18px] text-[16px] leading-relaxed"
+            className="text-black md:text-[18px] text-[16px] leading-relaxed text-justify"
             variants={paragraphVariants}
           >
             {t("intro5")}
@@ -87,7 +87,7 @@ export default function AboutPage(_props: Props) {
             <h2 className="text-black md:text-[22px] text-[18px] font-bold mb-3 md:mb-4">
               {t("requisitesTitle")}
             </h2>
-            <p className="text-black md:text-[18px] text-[16px] leading-relaxed whitespace-pre-line">
+            <p className="text-black md:text-[18px] text-[16px] leading-relaxed text-justify whitespace-pre-line">
               {t("requisitesContent")}
             </p>
           </motion.div>
