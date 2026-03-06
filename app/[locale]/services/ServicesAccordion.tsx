@@ -50,15 +50,7 @@ export default function ServicesAccordion({ isKa, activeServiceId }: Props) {
 
   return (
     <div className="max-w-4xl mx-auto px-4 md:px-0">
-      <div className="relative mb-8 md:mb-10">
-        <div className="absolute -inset-x-10 -inset-y-4 bg-gradient-to-r from-[#7C3AED]/5 via-[#EC4899]/5 to-[#22C55E]/5 blur-3xl pointer-events-none" />
-        <div className="relative flex flex-col items-center gap-2">
-          <h1 className="text-center text-black md:text-[32px] text-[24px] font-extrabold tracking-tight">
-            {pageTitle}
-          </h1>
-        </div>
-      </div>
-
+      
       <div className="space-y-3 md:space-y-4">
         {visibleServices.map((service) => {
           const indexInAll = services.findIndex((s) => s.id === service.id);
@@ -74,15 +66,15 @@ export default function ServicesAccordion({ isKa, activeServiceId }: Props) {
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
             >
-              <div className="w-full flex items-center justify-between gap-3 px-4 md:px-6 py-3.5 md:py-4 text-left">
-                <div className="flex items-center gap-3">
-                  <span className="text-black md:text-[18px] text-[15px] font-semibold">
+              <div className="w-full flex text-center mx-auto items-center justify-between gap-3 px-4 md:px-6 py-3.5 md:py-4 text-left">
+                <div className="flex text-center mx-auto items-center justify-center gap-3">
+                  <span className="text-black text-center md:text-[18px] text-[15px] font-semibold">
                      {service.title}
                   </span>
                 </div>
               </div>
 
-              <div className="px-4 md:px-6 pb-4 md:pb-5 pt-0 md:pt-2 text-black/80 md:text-[16px] text-[14px] leading-relaxed border-t border-gray-100  from-white to-purple-50/40">
+              <div className="px-4 md:px-6 pb-4 md:pb-5 text-center pt-0 md:pt-2 text-black md:text-[16px] text-[14px] leading-relaxed border-t border-gray-100  from-white to-purple-50/40">
                 {service.content}
               </div>
             </motion.div>

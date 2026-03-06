@@ -114,14 +114,7 @@ export default function ConditionsAccordion({ isKa }: Props) {
 
   return (
     <div className="max-w-4xl mx-auto px-4 md:px-0">
-      <div className="relative mb-8 md:mb-10">
-        <div className="absolute -inset-x-10 -inset-y-4 bg-gradient-to-r from-[#7C3AED]/5 via-[#EC4899]/5 to-[#22C55E]/5 blur-3xl pointer-events-none" />
-        <div className="relative flex flex-col items-center gap-2">
-          <h1 className="text-center text-black md:text-[32px] text-[24px] font-extrabold tracking-tight">
-            {pageTitle}
-          </h1>
-        </div>
-      </div>
+      
 
       <div className="space-y-3 md:space-y-4">
         {sections.map((section, index) => {
@@ -176,7 +169,7 @@ export default function ConditionsAccordion({ isKa }: Props) {
                     exit={{ height: 0, opacity: 0 }}
                     transition={{ duration: 0.2, ease: "easeOut" }}
                   >
-                    <div className="px-4 md:px-6 pb-4 md:pb-5 pt-0 md:pt-2 text-black/80 md:text-[16px] text-[14px] leading-relaxed border-t border-gray-100 bg-gradient-to-b from-white to-purple-50/40">
+                    <div className="px-4 md:px-6 pb-4 md:pb-5 pt-0 md:pt-2 text-center text-black md:text-[16px] text-[14px] leading-relaxed border-t border-gray-100 bg-gradient-to-b from-white to-purple-50/40">
                       {section.content}
                     </div>
                   </motion.div>

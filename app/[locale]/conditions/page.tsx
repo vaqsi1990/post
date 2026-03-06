@@ -119,15 +119,9 @@ export default async function ConditionsPage({ params, searchParams }: Props) {
         className="w-full pt-14 mt-14 md:pt-20 pb-16 md:pb-24 px-4"
       >
         <div className="max-w-4xl mx-auto">
-          <div className="mb-10 md:mb-12">
-                <h1 className="text-center md:text-left font-bold text-[22px] md:text-[32px] leading-tight">
-                  {pageTitle}
-                </h1>
-           
+         
 
-          </div>
-
-          <div className="space-y-6 md:space-y-7 text-black md:text-[16px] text-[14px] leading-relaxed">
+          <div className="space-y-6 text-center mx-auto md:space-y-7 text-black md:text-[16px] text-[14px] leading-relaxed">
             {visibleSections.map((section, index) => (
               <article
                 key={section.id}

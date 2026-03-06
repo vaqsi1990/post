@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { z } from 'zod';
+import crypto from 'crypto';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { utapi } from '@/lib/uploadthing';
@@ -35,6 +36,8 @@ const createParcelSchema = z.object({
   onlineShop: z.string().min(1, 'Online shop is required'),
   quantity: z.number().int().min(1, 'Quantity must be at least 1'),
   originCountry: z.enum(ORIGIN_COUNTRY_CODES, { message: 'Origin country is required' }),
+  city: z.string().optional(),
+  address: z.string().optional(),
   comment: z.string().optional(),
   weight: z.number().min(0.001, 'Weight is required'),
   description: z.string().min(1, 'Description is required'),
@@ -109,6 +112,8 @@ export async function POST(request: NextRequest) {
     const onlineShop = formData.get('onlineShop')?.toString().trim() ?? '';
     const quantityStr = formData.get('quantity')?.toString().trim() ?? '';
     const originCountry = formData.get('originCountry')?.toString().trim() ?? '';
+    const city = formData.get('city')?.toString().trim() ?? '';
+    const address = formData.get('address')?.toString().trim() ?? '';
     const comment = formData.get('comment')?.toString().trim() ?? '';
     const weightStr = formData.get('weight')?.toString().trim() ?? '';
     const description = formData.get('description')?.toString().trim() ?? '';
@@ -145,6 +150,8 @@ export async function POST(request: NextRequest) {
       onlineShop,
       quantity,
       originCountry: originCountry || undefined,
+      city: city || undefined,
+      address: address || undefined,
       comment: comment || undefined,
       weight: Number.isNaN(weight) ? undefined : weight,
       description,
@@ -169,16 +176,33 @@ export async function POST(request: NextRequest) {
     }
     const shippingAmount = Math.round(parsed.weight * tariff.pricePerKg * 100) / 100;
 
-    const user = await prisma.user.findUnique({
-      where: { email: parsed.userEmail },
+    let user = await prisma.user.findUnique({
+      where: { email: parsed.userEmail.trim().toLowerCase() },
       select: { id: true },
     });
 
     if (!user) {
-      return NextResponse.json(
-        { error: 'User with this email was not found' },
-        { status: 404 }
-      );
+      const randomPassword = crypto.randomBytes(24).toString('hex');
+      const personalIdNumber = `AUTO-${Date.now()}-${Math.floor(Math.random() * 1_000_000)}`;
+      const created = await prisma.user.create({
+        data: {
+          email: parsed.userEmail.trim().toLowerCase(),
+          password: randomPassword,
+          personalIdNumber,
+          city: parsed.city || undefined,
+          address: parsed.address || undefined,
+        },
+        select: { id: true },
+      });
+      user = created;
+    } else if (parsed.city || parsed.address) {
+      await prisma.user.update({
+        where: { email: parsed.userEmail.trim().toLowerCase() },
+        data: {
+          city: parsed.city || undefined,
+          address: parsed.address || undefined,
+        },
+      });
     }
 
     const existing = await prisma.parcel.findUnique({
