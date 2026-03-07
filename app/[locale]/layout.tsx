@@ -6,6 +6,7 @@ import { routing } from '../../i18n/routing';
 import Header from '../Components/Header';
 import Footer from '../Components/Footer';
 import Loader from '../Components/Loader';
+import { Metadata } from 'next';
 
 type Props = {
   children: React.ReactNode;
@@ -15,6 +16,21 @@ type Props = {
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
+
+export const metadata: Metadata = {
+  title: 'Postify',
+  description: 'Postify',
+  icons: {
+    icon: [
+      { url: '/logo.jpg', type: 'image/jpeg' },
+      { url: '/logo.jpg', sizes: '32x32', type: 'image/jpeg' },
+      { url: '/logo.jpg', sizes: '32x32', type: 'image/jpeg' },
+      { url: '/logo.jpg', sizes: '48x48', type: 'image/jpeg' },
+    ],
+    shortcut: '/logo2.jpg',
+    apple: '/logo.jpg',
+  },
+};
 
 export default async function LocaleLayout({ children, params }: Props) {
   const { locale } = await params;
