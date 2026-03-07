@@ -79,7 +79,7 @@ export default function UserParcelsTabs({ parcels }: Props) {
                 თრექინგი
               </th>
               <th className="px-4 py-3 text-left text-[16px] font-semibold text-black">
-                კლიენტი
+                მომხმარებელი
               </th>
               <th className="px-4 py-3 text-left text-[16px] font-semibold text-black">
                 რაოდენობა

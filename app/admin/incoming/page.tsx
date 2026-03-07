@@ -34,7 +34,7 @@ export default async function AdminIncomingPage() {
   return (
     <AdminShell
       title="შემოსული"
-      description="შემოსული მომხმარებლის ამანათების მართვა."
+      description="შემოსული  ამანათების მართვა."
     >
       <div className="space-y-6">
         <div className="flex justify-end">

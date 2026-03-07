@@ -318,7 +318,7 @@
     "quantityError": "რაოდენობა უნდა იყოს მინიმუმ 1"
   },
   "adminParcels": {
-    "title": "ახალი შემოსული ამანათი",
+    "title": "",
     "userEmail": "მომხმარებლის ელფოსტა",
     "userEmailPlaceholder": "user@example.com",
     "phone": "ტელეფონი ",

@@ -302,7 +302,7 @@ export default function ParcelsTable({ parcels: initialParcels, currentStatus, o
                     <tr className="bg-gray-50">
                       <td colSpan={2} className="px-4 pb-4 pt-0 text-black text-[14px] md:text-[18px]">
                         <div className="grid grid-cols-2 gap-2 pt-2">
-                            <span className="text-black">კლიენტი</span>
+                            <span className="text-black">მომხმარებელი</span>
                           <span>{parcel.customerName}</span>
 
                           <span className="text-black">თრექინგი</span>
@@ -324,7 +324,7 @@ export default function ParcelsTable({ parcels: initialParcels, currentStatus, o
                             {(parcel.shippingAmount ?? parcel.price).toFixed(2)} {parcel.currency || 'GEL'}
                           </span>
 
-                          <span className="text-black">ტელფონი</span>
+                          <span className="text-black">ტელეფონი</span>
                           <span>{formatPhone(parcel.user.phone)}</span>
 
                           <span className="text-black">ქალაქი</span>

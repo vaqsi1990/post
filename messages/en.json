@@ -318,7 +318,7 @@
     "quantityError": "Quantity must be at least 1"
   },
   "adminParcels": {
-    "title": "New incoming parcel",
+    "title": "",
     "userEmail": "User email",
     "userEmailPlaceholder": "user@example.com",
     "phone": "Phone",
