@@ -9,7 +9,7 @@ export const sectionsKa: SectionItem[] = [
     id: "provider-duties",
     title: "შემსრულებლის უფლება-მოვალეობები",
     content:
-      "კომპანია Posstify-ის  მიერ ამანათების ტრანსპორტირება ხდეა 9 ქვეყნიდან საქართველოში; კომპანია პასუხს არ აგებს რეგისტრაციისას მომხმარებლის მიერ შევსებული ინფორმაციის სისწორეზე; თუ მომხმარებლის მიერ შეკვეთილი პროდუქცია არ მივა ჩვენს ოფისებამდე „ონლაინ მაღაზიის“ შეცდომის გამო ან „ონლაინ მაღაზია“ გააუქმებს შეკვეთას, კომპანია არ აგებს პასუხს ზარალის ანაზღაურებაზე; კომპანია Posstify იღებს ვალდებულებას ამანათების უვნებლად ტრანსპორტირებაზე, დაკარგვის შემთხვევაში ზარალი იქნება ანაზღაურებული; კომპანია Posstify არის პასუხისმგებელი ისეთ ნივთზე, რომელიც გარეგნულად იქნება დაზიანებული (დახეული, გახნსილი, შეჭყლეტილი). ნივთის შემოწმება ხდება ადგილზე, სხვა შემთხვევაში პრეტენზია არ მიიღება. ანაზღაურება არ ვრცელდება მტვრევად ნივთებზე. კომპანია Posstify   არ აგებს პასუხს პროდუქციის ვარგისიანობაზე, ხარისხზე და მათ რაოდენობაზე; მომხმარებელი ვალდებულია წარმოადგინოს ყველა საბუთი, რაც კავშირში იქნება შეძენილ ნივთთან; კომპენსაციის შემთხვევაში შემსრულებელი იტოვებს საწყობში დაზიანებულ ნივთს;   კომპანია Posstify  მოკვლევის მიზნით ზარალის ანაზღაურებამდე ითხოვს მაქსიმუმ 30 სამუშაო დღეს, ხოლო ზარალის თანხას უნაზღაურებს დამკვეთს 5 სამუშაო დღეში, მიღება ჩაბარების აქტის საფუძველზე.",
+      "კომპანია Postify-ის  მიერ ამანათების ტრანსპორტირება ხდეა 9 ქვეყნიდან საქართველოში; კომპანია პასუხს არ აგებს რეგისტრაციისას მომხმარებლის მიერ შევსებული ინფორმაციის სისწორეზე; თუ მომხმარებლის მიერ შეკვეთილი პროდუქცია არ მივა ჩვენს ოფისებამდე „ონლაინ მაღაზიის“ შეცდომის გამო ან „ონლაინ მაღაზია“ გააუქმებს შეკვეთას, კომპანია არ აგებს პასუხს ზარალის ანაზღაურებაზე; კომპანია Postify იღებს ვალდებულებას ამანათების უვნებლად ტრანსპორტირებაზე, დაკარგვის შემთხვევაში ზარალი იქნება ანაზღაურებული; კომპანია Postify არის პასუხისმგებელი ისეთ ნივთზე, რომელიც გარეგნულად იქნება დაზიანებული (დახეული, გახნსილი, შეჭყლეტილი). ნივთის შემოწმება ხდება ადგილზე, სხვა შემთხვევაში პრეტენზია არ მიიღება. ანაზღაურება არ ვრცელდება მტვრევად ნივთებზე. კომპანია Postify   არ აგებს პასუხს პროდუქციის ვარგისიანობაზე, ხარისხზე და მათ რაოდენობაზე; მომხმარებელი ვალდებულია წარმოადგინოს ყველა საბუთი, რაც კავშირში იქნება შეძენილ ნივთთან; კომპენსაციის შემთხვევაში შემსრულებელი იტოვებს საწყობში დაზიანებულ ნივთს;   კომპანია Postify  მოკვლევის მიზნით ზარალის ანაზღაურებამდე ითხოვს მაქსიმუმ 30 სამუშაო დღეს, ხოლო ზარალის თანხას უნაზღაურებს დამკვეთს 5 სამუშაო დღეში, მიღება ჩაბარების აქტის საფუძველზე.",
   },
   {
     id: "customer-duties",
@@ -21,13 +21,13 @@ export const sectionsKa: SectionItem[] = [
     id: "calculation-rules",
     title: "დაანგარიშების წესი",
     content:
-      "ამანათის ტრანსპორტირების ღირებულება გამოითვლება ამანათის რეალური წონის მიხედვით. წონის დამრგვალება ხდება 100 გრამამდე, მინიმალური წონა შეადგენს 100 გრამს.კომპანია Posstify მოცულობით ითვლის მხოლოდ განსაკუთრებული გაბარიტების მქონე ნივთებს და ღირებულების განსაზღვრა მოხდება შეთანხმებით.",
+      "ამანათის ტრანსპორტირების ღირებულება გამოითვლება ამანათის რეალური წონის მიხედვით. წონის დამრგვალება ხდება 100 გრამამდე, მინიმალური წონა შეადგენს 100 გრამს.კომპანია Postify მოცულობით ითვლის მხოლოდ განსაკუთრებული გაბარიტების მქონე ნივთებს და ღირებულების განსაზღვრა მოხდება შეთანხმებით.",
   },
   {
     id: "declaration-service",
     title: "დეკლარირება და განბაჟების მომსახურება",
     content:
-      "დამკვეთი ვალდებულია მოახდინოს მისი კუთვნილი ნივთის დეკლარირება. დეკლარაციაში მითითებულ ნებისმიერ ინფორმაციაზე პასუხისმგებელია დამკვეთი. შემსრულბელი დამკვეთს უბის მხოლოდ საბაჟოზე მომსახურებას. ამანათების დეკლარიება სავალდებულოა, დაუდეკლარირებელი ამანათები შეჩერდება საბაჟოზე. ტვირთის განბაჟებაზე და დღგ-ეს დროულ გადახდაზე პასუხისმგებელია დამკვეთი. შემსრულებელი დამკვეთს გაუწევს მხოლოდ სადეკლარანტო სერვისს, რაც გულისხმობს დეკლარაციის ფორმის შევსებას. იმ შემთხვევაში თუ დამკვეთმა არ გადაიხადა ბაჟი, ვერ ჩაეტია შესაბამის ვადებში (ბაჟის გადახდის) მიუთითა არასწორი ინფორმაცია დეკლარაციაში, პასუხისმგებელი არის დამკვეთი. დამკვეთის მიერ არასწორი ინფორმაციის საფუძველზე თუ დაზარალდა კომპანია Posstify, დამკვეთი ზარალს აუნაზღაურებს კომპანიას სრულად.",
+      "დამკვეთი ვალდებულია მოახდინოს მისი კუთვნილი ნივთის დეკლარირება. დეკლარაციაში მითითებულ ნებისმიერ ინფორმაციაზე პასუხისმგებელია დამკვეთი. შემსრულბელი დამკვეთს უბის მხოლოდ საბაჟოზე მომსახურებას. ამანათების დეკლარიება სავალდებულოა, დაუდეკლარირებელი ამანათები შეჩერდება საბაჟოზე. ტვირთის განბაჟებაზე და დღგ-ეს დროულ გადახდაზე პასუხისმგებელია დამკვეთი. შემსრულებელი დამკვეთს გაუწევს მხოლოდ სადეკლარანტო სერვისს, რაც გულისხმობს დეკლარაციის ფორმის შევსებას. იმ შემთხვევაში თუ დამკვეთმა არ გადაიხადა ბაჟი, ვერ ჩაეტია შესაბამის ვადებში (ბაჟის გადახდის) მიუთითა არასწორი ინფორმაცია დეკლარაციაში, პასუხისმგებელი არის დამკვეთი. დამკვეთის მიერ არასწორი ინფორმაციის საფუძველზე თუ დაზარალდა კომპანია Postify, დამკვეთი ზარალს აუნაზღაურებს კომპანიას სრულად.",
   },
   {
     id: "third-party-pickup",
@@ -39,13 +39,13 @@ export const sectionsKa: SectionItem[] = [
     id: "confidentiality",
     title: "კონფიდენციალურობა",
     content:
-      "მომხმარებლის შესახებ, ნებისმიერი სახის ინფორმაცია, რომელიც ინახება კომპანია Posstify-ის ბაზაში წარმოადგენს კონფიდენციალურ მასალას. კომპანია Posstify აღნიშნულ ინფორმაციას არ გადასცემს მესამე პირს, თუ ამას არ მოითხოვს სახელმწიფოს წარმომადგენელი ორგანო, შესაბამისი მოთხოვნის საფუძველზე. აღნიშნული ინფორმაცია ინახება ბაზებში და დაცულია უცხო პირებისგან. თავის მხრივ, მომხმარებელი ვალდებულია არ გადასცეს მესამე პირს ისეთი ინფორმაცია როგორიცაა: ა) ტრანსპორტირების ანაზღაურების ტარიფი, რომელიც შეთანხმებულია მხოლოდ დამკვეთთან; ბ) ფინანსური დოკუმენტები, როგორიცაა ინვოისი. ",
+      "მომხმარებლის შესახებ, ნებისმიერი სახის ინფორმაცია, რომელიც ინახება კომპანია Postify-ის ბაზაში წარმოადგენს კონფიდენციალურ მასალას. კომპანია Postify აღნიშნულ ინფორმაციას არ გადასცემს მესამე პირს, თუ ამას არ მოითხოვს სახელმწიფოს წარმომადგენელი ორგანო, შესაბამისი მოთხოვნის საფუძველზე. აღნიშნული ინფორმაცია ინახება ბაზებში და დაცულია უცხო პირებისგან. თავის მხრივ, მომხმარებელი ვალდებულია არ გადასცეს მესამე პირს ისეთი ინფორმაცია როგორიცაა: ა) ტრანსპორტირების ანაზღაურების ტარიფი, რომელიც შეთანხმებულია მხოლოდ დამკვეთთან; ბ) ფინანსური დოკუმენტები, როგორიცაა ინვოისი. ",
   },
   {
     id: "declarant-service",
     title: "დეკლარანტის მომსახურება",
     content:
-      "კომპანია Posstify მომხმარებლებს სადეკლარანტო მომსახურებას გაუწევს უფასოდ. დეკლარაციის დაბეჭდვა უფასოა როგორც ფიზიკურ, ასევე იურიდიული პირებისთვის.",
+      "კომპანია Postify მომხმარებლებს სადეკლარანტო მომსახურებას გაუწევს უფასოდ. დეკლარაციის დაბეჭდვა უფასოა როგორც ფიზიკურ, ასევე იურიდიული პირებისთვის.",
   },
 ];
 
@@ -54,7 +54,7 @@ export const sectionsEn: SectionItem[] = [
     id: "provider-duties",
     title: "Provider rights and obligations",
     content:
-      "Posstify transports parcels from 9 countries to Georgia. The company is not responsible for the accuracy of information provided by the customer during registration. If the product ordered by the customer does not arrive at our office due to an error by the online store, or if the online store cancels the order, the company is not liable for any resulting loss. Posstify undertakes to transport parcels safely, and in case of loss, the damage will be compensated. Posstify is responsible only for items that are visibly damaged (torn, opened, crushed). The item must be inspected on-site; otherwise, claims will not be accepted. Compensation does not apply to fragile items. Posstify is not responsible for the validity period, quality, or quantity of the products. The customer is obliged to provide all documents related to the purchased item. In the event of compensation, the provider retains the damaged item in the warehouse. For investigation purposes, before reimbursing the loss, Posstify may take up to 30 working days and will reimburse the customer within 5 working days on the basis of a delivery-acceptance act.",
+      "Postify transports parcels from 9 countries to Georgia. The company is not responsible for the accuracy of information provided by the customer during registration. If the product ordered by the customer does not arrive at our office due to an error by the online store, or if the online store cancels the order, the company is not liable for any resulting loss. Postify undertakes to transport parcels safely, and in case of loss, the damage will be compensated. Postify is responsible only for items that are visibly damaged (torn, opened, crushed). The item must be inspected on-site; otherwise, claims will not be accepted. Compensation does not apply to fragile items. Postify is not responsible for the validity period, quality, or quantity of the products. The customer is obliged to provide all documents related to the purchased item. In the event of compensation, the provider retains the damaged item in the warehouse. For investigation purposes, before reimbursing the loss, Postify may take up to 30 working days and will reimburse the customer within 5 working days on the basis of a delivery-acceptance act.",
   },
   {
     id: "customer-duties",
@@ -66,13 +66,13 @@ export const sectionsEn: SectionItem[] = [
     id: "calculation-rules",
     title: "Calculation Rules",
     content:
-      "The cost of parcel transportation is calculated based on the actual weight of the parcel. The weight is rounded to 100 grams, and the minimum chargeable weight is 100 grams. Posstify calculates by volumetric weight only for items with especially large dimensions, and the price will be determined by mutual agreement.",
+      "The cost of parcel transportation is calculated based on the actual weight of the parcel. The weight is rounded to 100 grams, and the minimum chargeable weight is 100 grams. Postify calculates by volumetric weight only for items with especially large dimensions, and the price will be determined by mutual agreement.",
   },
   {
     id: "declaration-service",
     title: "Declaration and Customs Clearance Service",
     content:
-      "The customer is obliged to declare their item. The customer is responsible for any information indicated in the declaration. The provider only offers services at customs to the customer. Declaring parcels is mandatory; undeclared parcels will be held at customs. The customer is responsible for customs clearance and timely payment of VAT. The provider will only offer declarant services to the customer, which means filling out the declaration form. If the customer does not pay the customs duty, fails to meet the relevant deadlines for payment, or provides incorrect information in the declaration, the customer bears responsibility. If Posstify suffers damage due to incorrect information provided by the customer, the customer will fully compensate the company for the loss.",
+      "The customer is obliged to declare their item. The customer is responsible for any information indicated in the declaration. The provider only offers services at customs to the customer. Declaring parcels is mandatory; undeclared parcels will be held at customs. The customer is responsible for customs clearance and timely payment of VAT. The provider will only offer declarant services to the customer, which means filling out the declaration form. If the customer does not pay the customs duty, fails to meet the relevant deadlines for payment, or provides incorrect information in the declaration, the customer bears responsibility. If Postify suffers damage due to incorrect information provided by the customer, the customer will fully compensate the company for the loss.",
   },
   {
     id: "third-party-pickup",
@@ -84,13 +84,13 @@ export const sectionsEn: SectionItem[] = [
     id: "confidentiality",
     title: "Confidentiality",
     content:
-      "Any information about the customer stored in Posstify's database is confidential material. Posstify does not disclose this information to third parties unless this is required by a state authority on the basis of an appropriate request. This information is stored in databases and protected from unauthorized persons. In turn, the customer is obliged not to disclose to third parties such information as: (a) the transportation tariff, which is agreed only with the customer; (b) financial documents such as an invoice. Thank you for using our service.",
+      "Any information about the customer stored in Postify's database is confidential material. Postify does not disclose this information to third parties unless this is required by a state authority on the basis of an appropriate request. This information is stored in databases and protected from unauthorized persons. In turn, the customer is obliged not to disclose to third parties such information as: (a) the transportation tariff, which is agreed only with the customer; (b) financial documents such as an invoice. Thank you for using our service.",
   },
   {
     id: "declarant-service",
     title: "Declarant Service",
     content:
-      "Posstify provides declarant services to customers free of charge. Printing the declaration is free for both individuals and legal entities.",
+      "Postify provides declarant services to customers free of charge. Printing the declaration is free for both individuals and legal entities.",
   },
 ];
 

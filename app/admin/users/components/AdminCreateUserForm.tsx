@@ -158,7 +158,7 @@ export default function AdminCreateUserForm() {
           {errors.phone && <p className="mt-1 text-[13px] text-red-600">{errors.phone}</p>}
         </div>
         <div>
-          <label className="mb-1 block text-[14px] font-semibold text-black">პირადობის ნომერი *</label>
+          <label className="mb-1 block text-[14px] font-semibold text-black">პირადი ნომერი *</label>
           <input
             type="text"
             name="personalIdNumber"

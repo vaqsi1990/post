@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
     });
     if (existingByIdNumber) {
       return NextResponse.json(
-        { error: 'ეს პირადობის ნომერი უკვე გამოყენებულია' },
+        { error: 'ეს პირადი ნომერი უკვე გამოყენებულია' },
         { status: 400 }
       );
     }

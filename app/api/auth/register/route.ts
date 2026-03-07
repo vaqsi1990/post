@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
 
     if (existingUserByIdNumber) {
       return NextResponse.json(
-        { error: 'ეს პირადობის ნომერი უკვე გამოყენებულია' },
+        { error: 'ეს პირადი ნომერი უკვე გამოყენებულია' },
         { status: 400 }
       );
     }
@@ -128,7 +128,7 @@ export async function POST(request: NextRequest) {
         const fieldName = err.field === 'email' ? 'ელფოსტა' :
                          err.field === 'password' ? 'პაროლი' :
                          err.field === 'confirmPassword' ? 'პაროლის დამოწმება' :
-                         err.field === 'personalIdNumber' ? 'პირადობის ნომერი' :
+                         err.field === 'personalIdNumber' ? 'პირადი ნომერი' :
                          err.field === 'firstName' ? 'სახელი' :
                          err.field === 'lastName' ? 'გვარი' :
                          err.field === 'phone' ? 'ტელეფონი' :

@@ -10,9 +10,9 @@ const registerBaseSchema = z.object({
   otpCode: z.string().length(4, 'კოდი უნდა იყოს 4 ციფრი').regex(/^\d{4}$/, 'მხოლოდ 4 ციფრი'),
   personalIdNumber: z
     .string()
-    .min(11, 'პირადობის ნომერი უნდა იყოს 11 ციფრი')
-    .max(11, 'პირადობის ნომერი უნდა იყოს 11 ციფრი')
-    .regex(/^\d+$/, 'პირადობის ნომერი უნდა შეიცავდეს მხოლოდ ციფრებს'),
+    .min(11, 'პირადი ნომერი უნდა იყოს 11 ციფრი')
+    .max(11, 'პირადი ნომერი უნდა იყოს 11 ციფრი')
+    .regex(/^\d+$/, 'პირადი ნომერი უნდა შეიცავდეს მხოლოდ ციფრებს'),
   city: z.string().min(1, 'ქალაქი აუცილებელია'),
   address: z.string().min(1, 'მისამართი აუცილებელია'),
 });
@@ -45,9 +45,9 @@ export const adminCreateUserSchema = z.object({
   phone: z.string().min(9, 'მინიმუმ 9 ციფრი').optional().or(z.literal('')),
   personalIdNumber: z
     .string()
-    .min(11, 'პირადობის ნომერი უნდა იყოს 11 ციფრი')
-    .max(11, 'პირადობის ნომერი უნდა იყოს 11 ციფრი')
-    .regex(/^\d+$/, 'პირადობის ნომერი უნდა შეიცავდეს მხოლოდ ციფრებს'),
+    .min(11, 'პირადი ნომერი უნდა იყოს 11 ციფრი')
+    .max(11, 'პირადი ნომერი უნდა იყოს 11 ციფრი')
+    .regex(/^\d+$/, 'პირადი ნომერი უნდა შეიცავდეს მხოლოდ ციფრებს'),
   city: z.string().optional(),
   address: z.string().optional(),
   role: z.enum(['USER', 'ADMIN']).default('USER'),

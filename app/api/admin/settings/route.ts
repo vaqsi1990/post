@@ -12,7 +12,7 @@ const updateAdminSettingsSchema = z
     lastName: z.string().min(1, 'გვარი აუცილებელია').optional(),
     city: z.string().max(200).optional().nullable(),
     address: z.string().max(500).optional().nullable(),
-    personalIdNumber: z.string().min(1, 'პირადობის ნომერი აუცილებელია').max(50).optional(),
+    personalIdNumber: z.string().min(1, 'პირადი ნომერი აუცილებელია').max(50).optional(),
     currentPassword: z.string().min(1, 'მიმდინარე პაროლი აუცილებელია').optional(),
     newPassword: z.string().min(6, 'ახალი პაროლი უნდა იყოს მინიმუმ 6 სიმბოლო').optional(),
     confirmNewPassword: z.string().min(1, 'გაიმეორეთ ახალი პაროლი').optional(),
@@ -97,7 +97,7 @@ export async function PUT(request: NextRequest) {
       });
       if (existing) {
         return NextResponse.json(
-          { error: 'ეს პირადობის ნომერი უკვე გამოყენებულია', field: 'personalIdNumber' },
+          { error: 'ეს პირადი ნომერი უკვე გამოყენებულია', field: 'personalIdNumber' },
           { status: 400 }
         );
       }
