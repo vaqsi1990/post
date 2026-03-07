@@ -212,7 +212,7 @@ const Header = () => {
               objectFit: 'contain',
             }}
           />
-          <h1 className="text-[#3A5BFF] md:text-[25px] text-[18px] font-bold">Postify</h1>
+          <h1 className="text-[#3A5BFF] md:text-[25px] text-[18px] font-bold">Posstify</h1>
         </Link>
 
         {/* Desktop nav in the top row */}

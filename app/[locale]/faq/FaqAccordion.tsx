@@ -19,7 +19,7 @@ export default function FaqAccordion({ isKa }: Props) {
   const faqs: FaqItem[] = isKa
     ? [
         {
-          question: "რატომ Postify?",
+          question: "რატომ Posstify?",
           answer:
             "გთავაზობთ სწრაფ, უსაფრთხო და გამჭირვალე მომსახურებას; კომფორტულ ონლაინ კაბინეტს; 9 ქვეყანაში შოპინგის შესაძლებლობას; ამანათების სტატუსების მუდმივ განახლებას; ონლაინ გიდის დახმარებას, რომელიც გაგიმარტივებთ შოპინგს; უფასო საკურიერო მომსახურებას მთელი საქართველოს მასშტაბით.",
         },
@@ -30,7 +30,7 @@ export default function FaqAccordion({ isKa }: Props) {
         {
           question: "როგორ ითვლება ამანათის წონა?",
           answer:
-            "ამანათის ტრანსპორტირების ღირებულება გამოითვლება ამანათის რეალური წონის მიხედვით. წონის დამრგვალება ხდება 100 გრამამდე, მინიმალური წონა შეადგენს 100 გრამს.კომპანია Postify მოცულობით ითვლის მხოლოდ განსაკუთრებული გაბარიტების მქონე ნივთებს და ღირებულების განსაზღვრა მოხდება შეთანხმებით."
+            "ამანათის ტრანსპორტირების ღირებულება გამოითვლება ამანათის რეალური წონის მიხედვით. წონის დამრგვალება ხდება 100 გრამამდე, მინიმალური წონა შეადგენს 100 გრამს.კომპანია Posstify მოცულობით ითვლის მხოლოდ განსაკუთრებული გაბარიტების მქონე ნივთებს და ღირებულების განსაზღვრა მოხდება შეთანხმებით."
         },
         {
           question: "რა შემთხვევაში ექვემდებარება განბაჟებას გზავნილი?",
@@ -45,7 +45,7 @@ export default function FaqAccordion({ isKa }: Props) {
       ]
     : [
         {
-          question: "Why Postify?",
+          question: "Why Posstify?",
           answer:
             "We offer fast, safe and transparent service; a convenient online cabinet; the opportunity to shop in 9 countries; constant updates of parcel statuses; the help of an online guide that makes shopping easier; and free courier service throughout Georgia.",
         },
@@ -56,7 +56,7 @@ export default function FaqAccordion({ isKa }: Props) {
         {
           question: "How is the parcel weight calculated?",
           answer:
-            "The transportation cost of a parcel is calculated according to its actual weight. The weight is rounded to the nearest 100 grams, with a minimum chargeable weight of 100 grams. Postify calculates volumetric weight only for items with exceptional dimensions, and in such cases the price is determined by mutual agreement.",
+            "The transportation cost of a parcel is calculated according to its actual weight. The weight is rounded to the nearest 100 grams, with a minimum chargeable weight of 100 grams. Posstify calculates volumetric weight only for items with exceptional dimensions, and in such cases the price is determined by mutual agreement.",
         },
         {
           question: "When is a shipment subject to customs clearance?",
