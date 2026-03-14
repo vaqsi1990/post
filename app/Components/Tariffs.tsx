@@ -68,95 +68,103 @@ export default function Tariffs() {
       whileInView={{ opacity: 1 }}
       viewport={viewport}
       transition={{ duration: 0.6 }}
-      className="w-full py-10 sm:py-14 md:py-24 bg-gradient-to-b from-slate-50 to-slate-200 relative overflow-hidden"
+      className="relative w-full overflow-hidden bg py-10 sm:py-14 md:py-24"
     >
-    <div className="max-w-3xl mx-auto w-full px-3 sm:px-4 relative z-10">
-      
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={viewport}
-        transition={{ duration: 0.6, delay: 0.1 }}
-        className="text-center mb-6 sm:mb-8 md:mb-14"
-      >
-        <h2 className="text-slate-900 text-[20px] sm:text-[22px] md:text-[34px] font-extrabold tracking-tight">
-          {t('tariffsSectionTitle')}
-        </h2>
-        
-      </motion.div>
-  
-      {/* Table Card */}
-      <motion.div
-        initial={{ opacity: 0, y: 56 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={viewport}
-        transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
-        className="overflow-hidden rounded-xl sm:rounded-2xl border border-slate-200 bg-white shadow-lg sm:shadow-2xl"
-      >
-        <div className="overflow-x-auto -mx-px">
-          <table className="w-full min-w-[280px]">
-            <thead>
-              <tr className="border-b border-slate-200 bg-slate-100">
-                <th className="text-left py-3 px-3 sm:py-4 sm:px-4 md:py-5 md:px-8 text-slate-800 font-semibold text-xs sm:text-sm md:text-[18px]">
-                  {t('tariffCountry')}
-                </th>
-                <th className="text-center py-3 px-3 sm:py-4 sm:px-4 md:py-5 md:px-8 text-slate-800 font-semibold text-xs sm:text-sm md:text-[18px]">
-                  {t('tariffDelivery')}
-                </th>
-                <th className="text-right py-3 px-3 sm:py-4 sm:px-4 md:py-5 md:px-8 text-slate-800 font-semibold text-xs sm:text-sm md:text-[18px]">
-                  {t('tariffPrice')}
-                </th>
-              </tr>
-            </thead>
-  
-            <motion.tbody
-              variants={container}
-              initial="hidden"
-              whileInView="visible"
-              viewport={viewport}
-            >
-              {TARIFF_ROWS.map((row, i) => {
-                const countryName = tAddr(row.countryKey);
-                const deliveryDays = `${row.deliveryDaysPrefix} ${t('tariffDeliveryDays')}`;
-                return (
-                  <motion.tr
-                    key={row.countryCode}
-                    variants={item}
-                    className={`transition-colors duration-200 border-b border-slate-100 hover:bg-slate-50 ${
-                      i % 2 === 0 ? 'bg-white' : 'bg-slate-50/60'
-                    }`}
-                  >
-                    <td className="py-2.5 px-3 sm:py-3 sm:px-4 md:py-4 md:px-8 text-slate-800 text-xs sm:text-sm md:text-[18px] font-medium">
-                      <span className="inline-flex items-center gap-2 sm:gap-3">
-                        {(() => {
-                          const Flag = FLAGS[row.countryCode];
-                          return Flag ? (
-                            <Flag
-                              title={countryName}
-                              className="w-6 h-4 sm:w-7 sm:h-5 md:w-8 md:h-6 rounded object-cover shrink-0 shadow-sm"
-                            />
-                          ) : null;
-                        })()}
-                        <span className="whitespace-nowrap">{countryName}</span>
-                      </span>
-                    </td>
+      {/* Soft top glow — same family as bg, slightly lifted */}
+      <div
+        className="pointer-events-none absolute inset-0 "
+        aria-hidden
+      />
+      <div
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"
+        aria-hidden
+      />
 
-                    <td className="py-2.5 px-3 sm:py-3 sm:px-4 md:py-4 md:px-8 text-center text-slate-700 text-xs sm:text-sm md:text-[18px]">
-                      {deliveryDays}
-                    </td>
+      <div className="relative z-10 mx-auto w-full max-w-3xl px-3 sm:px-4">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={viewport}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="mb-6 text-center sm:mb-8 md:mb-14"
+        >
+          <h2 className="text-[20px] font-extrabold tracking-tight text-white sm:text-[22px] md:text-[34px]">
+            {t('tariffsSectionTitle')}
+          </h2>
+        </motion.div>
 
-                    <td className="py-2.5 px-3 sm:py-3 sm:px-4 md:py-4 md:px-8 text-right text-slate-900 text-xs sm:text-sm md:text-[18px] font-semibold whitespace-nowrap">
-                      $ {row.pricePerKg.toFixed(2)}
-                    </td>
-                  </motion.tr>
-                );
-              })}
-            </motion.tbody>
-          </table>
-        </div>
-      </motion.div>
-    </div>
-  </motion.section>
+        {/* Table card */}
+        <motion.div
+          initial={{ opacity: 0, y: 56 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={viewport}
+          transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
+          className="overflow-hidden rounded-xl border border-white/[0.08] bg-[#121311] shadow-[0_24px_80px_-20px_rgba(0,0,0,0.75),inset_0_1px_0_0_rgba(255,255,255,0.04)] sm:rounded-2xl"
+        >
+          <div className="-mx-px overflow-x-auto">
+            <table className="w-full min-w-[280px]">
+              <thead>
+                <tr className="border-b border-white/[0.08] bg-[#161716]">
+                  <th className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-400 sm:px-4 sm:py-4 md:px-8 md:py-5 md:text-sm md:normal-case md:tracking-normal md:text-[18px] md:font-semibold md:text-zinc-300">
+                    {t('tariffCountry')}
+                  </th>
+                  <th className="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wider text-zinc-400 sm:px-4 sm:py-4 md:px-8 md:py-5 md:text-sm md:normal-case md:tracking-normal md:text-[18px] md:font-semibold md:text-zinc-300">
+                    {t('tariffDelivery')}
+                  </th>
+                  <th className="px-3 py-3 text-right text-xs font-semibold uppercase tracking-wider text-zinc-400 sm:px-4 sm:py-4 md:px-8 md:py-5 md:text-sm md:normal-case md:tracking-normal md:text-[18px] md:font-semibold md:text-zinc-300">
+                    {t('tariffPrice')}
+                  </th>
+                </tr>
+              </thead>
+
+              <motion.tbody
+                variants={container}
+                initial="hidden"
+                whileInView="visible"
+                viewport={viewport}
+              >
+                {TARIFF_ROWS.map((row, i) => {
+                  const countryName = tAddr(row.countryKey);
+                  const deliveryDays = `${row.deliveryDaysPrefix} ${t('tariffDeliveryDays')}`;
+                  return (
+                    <motion.tr
+                      key={row.countryCode}
+                      variants={item}
+                      className={`border-b border-white/[0.06] transition-colors duration-200 last:border-b-0 hover:bg-white/[0.03] ${
+                        i % 2 === 0 ? 'bg-[#121311]' : 'bg-[#0f100f]'
+                      }`}
+                    >
+                      <td className="px-3 py-2.5 text-xs font-medium text-zinc-100 sm:px-4 sm:py-3 md:px-8 md:py-4 md:text-sm md:text-[18px]">
+                        <span className="inline-flex items-center gap-2 sm:gap-3">
+                          {(() => {
+                            const Flag = FLAGS[row.countryCode];
+                            return Flag ? (
+                              <Flag
+                                title={countryName}
+                                className="h-4 w-6 shrink-0 rounded object-cover shadow-md ring-1 ring-white/10 sm:h-5 sm:w-7 md:h-6 md:w-8"
+                              />
+                            ) : null;
+                          })()}
+                          <span className="whitespace-nowrap">{countryName}</span>
+                        </span>
+                      </td>
+
+                      <td className="px-3 py-2.5 text-center text-xs text-zinc-400 sm:px-4 sm:py-3 md:px-8 md:py-4 md:text-sm md:text-[18px]">
+                        {deliveryDays}
+                      </td>
+
+                      <td className="whitespace-nowrap px-3 py-2.5 text-right text-xs font-semibold text-emerald-400/95 tabular-nums sm:px-4 sm:py-3 md:px-8 md:py-4 md:text-sm md:text-[18px]">
+                        $ {row.pricePerKg.toFixed(2)}
+                      </td>
+                    </motion.tr>
+                  );
+                })}
+              </motion.tbody>
+            </table>
+          </div>
+        </motion.div>
+      </div>
+    </motion.section>
   );
 }

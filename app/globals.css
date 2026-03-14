@@ -12,6 +12,10 @@
   --font-sans: "BPG Banner", sans-serif;
 }
 
+.bg {
+  background-color: #0c0d0c !important;
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;

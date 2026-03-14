@@ -35,7 +35,7 @@
     "settings": "Settings"
   },
   "chat": {
-    "start": "Start chat",
+    "start": "Start",
     "title": "Chat with admin",
     "placeholder": "Enter your message...",
     "send": "Send",
