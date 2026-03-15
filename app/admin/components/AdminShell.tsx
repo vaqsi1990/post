@@ -18,7 +18,7 @@ export default async function AdminShell({
   if (session.user.role !== 'ADMIN') redirect('/');
 
   return (
-    <div className=" pt-20 min-h-screen bg-gray-100 py-8">
+    <div className=" pt-20 min-h-screen  bg py-8">
       <div className="mx-auto w-full  px-4">
         <div className="grid grid-cols-1 mt-10 gap-6 lg:grid-cols-[280px_1fr] lg:items-start">
           <AdminSidebar />

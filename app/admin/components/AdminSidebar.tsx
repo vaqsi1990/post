@@ -21,6 +21,31 @@ type ChatMessage = {
   sender: 'USER' | 'ADMIN';
 };
 
+type SectionCounts = {
+  users: number;
+  incoming: number;
+  inTransit: number;
+  warehouse: number;
+  regions: number;
+  stopped: number;
+  delivered: number;
+  payments: number;
+};
+
+const COUNT_KEY_BY_HREF: Record<string, keyof SectionCounts> = {
+  '/admin/users': 'users',
+  '/admin/incoming': 'incoming',
+  '/admin/in-transit': 'inTransit',
+  '/admin/warehouse': 'warehouse',
+  '/admin/regions': 'regions',
+  '/admin/stopped': 'stopped',
+  '/admin/delivered': 'delivered',
+  '/admin/payments': 'payments',
+};
+
+const countBadgeClass =
+  'ml-auto flex h-6 min-w-[1.75rem] shrink-0 items-center justify-center rounded-full bg-[#3a5bff] px-2 text-xs font-bold text-white ring-1 ring-white/20';
+
 export default function AdminSidebar() {
   const t = useTranslations('adminsidebar');
   const items: AdminNavItem[] = [
@@ -44,6 +69,31 @@ export default function AdminSidebar() {
     awaitingReply: number;
   } | null>(null);
   const [chatLoading, setChatLoading] = useState(false);
+  const [counts, setCounts] = useState<SectionCounts | null>(null);
+  const [countsLoading, setCountsLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    const loadCounts = async () => {
+      try {
+        const res = await fetch('/api/admin/counts', {
+          cache: 'no-store',
+          headers: { 'Cache-Control': 'no-cache' },
+        });
+        if (!res.ok || cancelled) return;
+        const data = await res.json();
+        if (!cancelled) setCounts(data);
+      } catch {
+        if (!cancelled) setCounts(null);
+      } finally {
+        if (!cancelled) setCountsLoading(false);
+      }
+    };
+    void loadCounts();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -111,14 +161,21 @@ export default function AdminSidebar() {
   const currentItem =
     items.find((item) => pathname === item.href) ?? items[0];
 
+  const getCount = (href: string): number | undefined => {
+    const key = COUNT_KEY_BY_HREF[href];
+    return key && counts ? counts[key] : undefined;
+  };
+
+  const showCount = (href: string) => COUNT_KEY_BY_HREF[href];
+
   return (
-    <div className="w-full lg:w-48 shrink-0 min-w-0">
+    <div className="w-full lg:w-52 shrink-0 min-w-0">
       {/* Mobile: dropdown menu */}
       <div className="mb-4 lg:hidden">
         <button
           type="button"
           onClick={() => setOpen((o) => !o)}
-          className="flex w-full items-center justify-between rounded-xl border border-gray-300 bg-white px-3 py-2.5 text-[15px] font-medium text-black shadow-sm"
+          className="flex w-full items-center justify-between rounded-xl border border-white/15 bg-zinc-900/90 px-3 py-2.5 text-[15px] font-medium text-zinc-100 shadow-lg shadow-black/20"
           aria-expanded={open}
           aria-haspopup="true"
         >
@@ -126,17 +183,21 @@ export default function AdminSidebar() {
             <span>{currentItem.label}</span>
             {currentItem.href === '/admin/chat' && (chatCounts || chatLoading) ? (
               <span className="flex items-center gap-1 text-xs">
-                <span className="rounded-full bg-black/5 px-2 py-0.5 text-[11px] text-black">
+                <span className="rounded-full bg-white/15 px-2 py-0.5 text-[11px] text-zinc-200">
                   გაუხსნელი: {chatCounts?.open ?? '...'}
                 </span>
-                <span className="rounded-full bg-black/5 px-2 py-0.5 text-[11px] text-black">
+                <span className="rounded-full bg-amber-500/20 px-2 py-0.5 text-[11px] text-amber-300">
                   უპასუხებელი: {chatCounts?.awaitingReply ?? '...'}
                 </span>
+              </span>
+            ) : showCount(currentItem.href) ? (
+              <span className={countBadgeClass}>
+                {countsLoading ? '...' : getCount(currentItem.href) ?? '−'}
               </span>
             ) : null}
           </span>
           <span
-            className={`text-black transition-transform ${
+            className={`text-zinc-400 transition-transform ${
               open ? 'rotate-180' : ''
             }`}
           >
@@ -144,7 +205,7 @@ export default function AdminSidebar() {
           </span>
         </button>
         {open && (
-          <div className="mt-1 rounded-xl border border-gray-200 bg-white shadow-lg">
+          <div className="mt-1.5 rounded-xl border border-white/15 bg-zinc-900/95 shadow-xl shadow-black/30 overflow-hidden">
             <nav className="flex flex-col gap-0.5 py-1">
               {items.map((item) => {
                 const isActive = pathname === item.href;
@@ -158,20 +219,24 @@ export default function AdminSidebar() {
                     }}
                     className={`block w-full text-left py-2.5 px-3 text-[15px] font-medium transition-colors ${
                       isActive
-                        ? 'bg-black text-white'
-                        : 'text-black hover:bg-gray-50'
+                        ? 'bg-white/15 text-white'
+                        : 'text-zinc-300 hover:bg-white/10 hover:text-zinc-100'
                     }`}
                   >
                     <span className="flex items-center justify-between gap-2">
                       <span>{item.label}</span>
                       {item.href === '/admin/chat' && (chatCounts || chatLoading) ? (
                         <span className="ml-auto flex items-center gap-1 text-xs">
-                          <span className="rounded-full bg-black/5 px-2 py-0.5 text-[11px] text-black">
-                            გაუხსნელი: {chatCounts?.open ?? '...'}
+                          <span className="rounded-full bg-white/15 px-2 py-0.5 text-[11px] text-zinc-200">
+                            {chatCounts?.open ?? '...'}
                           </span>
-                          <span className="rounded-full bg-black/5 px-2 py-0.5 text-[11px] text-black">
-                            უპასუხებელი: {chatCounts?.awaitingReply ?? '...'}
+                          <span className="rounded-full bg-amber-500/20 px-2 py-0.5 text-[11px] text-amber-300">
+                            {chatCounts?.awaitingReply ?? '...'}
                           </span>
+                        </span>
+                      ) : showCount(item.href) ? (
+                        <span className={countBadgeClass}>
+                          {countsLoading ? '...' : getCount(item.href) ?? '−'}
                         </span>
                       ) : null}
                     </span>
@@ -185,35 +250,43 @@ export default function AdminSidebar() {
 
       {/* Desktop: fixed sidebar */}
       <aside className="hidden lg:block">
-        <div className="sticky top-4 max-h-[calc(100vh-7rem)] overflow-y-auto overflow-x-hidden">
-          <nav className="flex flex-col gap-0.5 py-1">
-            {items.map((item) => {
-              const isActive = pathname === item.href;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`block py-2.5 px-2 text-[15px] font-medium transition-colors rounded-lg border-l-2 ${
-                    isActive
-                      ? 'border-black bg-black text-white'
-                      : 'border-transparent text-black hover:bg-gray-50 hover:text-black'
-                  }`}
-                >
-                  <span className="flex items-center justify-between gap-2">
-                    <span>{item.label}</span>
-                    {item.href === '/admin/chat' && (chatCounts || chatLoading) ? (
-                      <span className="ml-auto flex items-center gap-1 text-xs">
-                        <span className="rounded-full bg-white/10 px-2 py-0.5 text-[11px]">
-                          {chatCounts?.open ?? '...'}
+        <div className="sticky top-4 rounded-xl border border-white/10 bg-zinc-900/80 shadow-xl shadow-black/20 overflow-hidden">
+          <div className="max-h-[calc(100vh-7rem)] overflow-y-auto overflow-x-hidden py-2">
+            <nav className="flex flex-col gap-0.5 px-2">
+              {items.map((item) => {
+                const isActive = pathname === item.href;
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`block py-2.5 px-3 text-[15px] font-medium transition-colors rounded-lg border-l-2 ${
+                      isActive
+                        ? 'border-[#3a5bff] bg-white/10 text-white'
+                        : 'border-transparent text-zinc-300 hover:bg-white/8 hover:text-zinc-100'
+                    }`}
+                  >
+                    <span className="flex items-center justify-between gap-2">
+                      <span>{item.label}</span>
+                      {item.href === '/admin/chat' && (chatCounts || chatLoading) ? (
+                        <span className="ml-auto flex items-center gap-1 text-xs">
+                          <span className="rounded-full bg-white/15 px-2 py-0.5 text-[11px] text-zinc-200">
+                            {chatCounts?.open ?? '...'}
+                          </span>
+                          <span className="rounded-full bg-amber-500/20 px-2 py-0.5 text-[11px] text-amber-300">
+                            {chatCounts?.awaitingReply ?? '...'}
+                          </span>
                         </span>
-                       
-                      </span>
-                    ) : null}
-                  </span>
-                </Link>
-              );
-            })}
-          </nav>
+                      ) : showCount(item.href) ? (
+                        <span className={countBadgeClass}>
+                          {countsLoading ? '...' : getCount(item.href) ?? '−'}
+                        </span>
+                      ) : null}
+                    </span>
+                  </Link>
+                );
+              })}
+            </nav>
+          </div>
         </div>
       </aside>
     </div>
