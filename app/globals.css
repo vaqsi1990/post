@@ -992,7 +992,7 @@ nav.nav-desktop .header-dropdown-trigger.nav-link {
   background-size: cover;
   bottom: -15%;
   left: -10%;
-
+  position: absolute;
   right: -10%;
   top: -15%;
   height: 130%;

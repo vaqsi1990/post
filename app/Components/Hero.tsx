@@ -1,9 +1,31 @@
 'use client';
 
 import { useEffect, useRef, useState, useMemo } from 'react';
+import Image from 'next/image';
 import { gsap } from 'gsap';
 import { useTranslations } from 'next-intl';
-
+import {
+  GB,
+  US,
+  CN,
+  IT,
+  GR,
+  ES,
+  FR,
+  DE,
+  TR,
+} from 'country-flag-icons/react/3x2';
+const FLAGS: Record<string, React.ComponentType<{ title?: string; className?: string }>> = {
+  GB,
+  US,
+  CN,
+  IT,
+  GR,
+  ES,
+  FR,
+  DE,
+  TR,
+};
 const Hero = () => {
   const t = useTranslations('home');
   const HERO_TEXTS = useMemo(
@@ -123,6 +145,35 @@ const Hero = () => {
       {/* Hero Text — იცვლება ყოველ 3 წამში */}
       <div className="absolute inset-0 z-20 flex items-center justify-start -translate-y-32 md:-translate-y-16">
         <div className="relative pl-6 md:pl-12 lg:pl-20 pr-4 max-w-4xl">
+          <div className="mb-4 md:mb-6 flex flex-col items-center gap-3 md:flex-row md:items-center md:gap-4">
+            <Image
+              src="/guide.png"
+              alt="Guide"
+              width={80}
+              height={80}
+              className="w-32 h-32 md:w-32 md:h-32 object-contain"
+              priority
+            />
+            <div className="min-w-0 w-full md:w-auto">
+              <div className="mt-1 md:mt-3 flex flex-wrap justify-center md:justify-start gap-2">
+                {Object.entries(FLAGS).map(([code, Flag]) => (
+                  <span
+                    key={code}
+                    className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 ring-1 ring-white/15"
+                  >
+                    <Flag title={code} className="h-4 w-6 md:h-5 md:w-7 rounded-sm" />
+                    <span className="text-white/80 text-[11px] md:text-[12px] font-medium">
+                      {code}
+                    </span>
+                  </span>
+                ))}
+              </div>
+              <p className="mt-3 md:mt-2 text-white text-[13px] md:text-[15px] font-semibold leading-snug text-center md:text-left">
+                რთულია გამოწერის პროცესი? დარეკე და გადააბარე!!!
+              </p>
+            </div>
+            
+          </div>
           {HERO_TEXTS.map((text, i) => (
             <h1
               key={i}

@@ -52,7 +52,7 @@ export default function GuideSection({ title, text, isKa }: Props) {
             transition={{ duration: 0.5, ease: "easeOut" }}
           >
             <Image
-              src="/a187e6c6-0730-4685-ab6c-aa7fdf8b0965.png"
+              src="/helper.png"
               alt={isKa ? "ონლაინ გიდი" : "Online guide"}
               width={640}
               height={640}

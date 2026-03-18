@@ -24,6 +24,10 @@ const stores: Store[] = [
   { name: 'eBay', url: 'https://www.ebay.com' },
   { name: 'GoGroopie', url: 'https://www.gogroopie.com' },
   { name: 'Habitat', url: 'https://www.habitat.co.uk' },
+  {
+    name: 'HHV (adidas sale)',
+    url: 'https://www.hhv.de/en/clothing/catalog/filter/adidas-hhv-clothing-sale-L75N3P2SA1',
+  },
   { name: 'Homebase', url: 'https://www.homebase.co.uk' },
   { name: 'House Of Fraser', url: 'https://www.houseoffraser.co.uk' },
   { name: 'IKEA', url: 'https://www.ikea.com' },
