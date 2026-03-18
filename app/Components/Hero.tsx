@@ -151,7 +151,7 @@ const Hero = () => {
               alt="Guide"
               width={80}
               height={80}
-              className="w-32 h-32 md:w-32 md:h-32 object-contain"
+              className="w-32 h-32 md:w-[100px] md:h-[100px] object-cover"
               priority
             />
             <div className="min-w-0 w-full md:w-auto">
