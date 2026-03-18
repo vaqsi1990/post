@@ -149,14 +149,19 @@ const Hero = () => {
             <Image
               src="/guide.png"
               alt="Guide"
-              width={80}
-              height={80}
-              className="w-32 h-32 md:w-[100px] md:h-[100px] object-cover"
+              width={256}
+              height={256}
+              sizes="(max-width: 768px) 160px, 150px"
+              className="w-40 h-40 md:w-[150px] md:h-[150px] object-contain rounded-xl bg-white/5 p-2 ring-1 ring-white/10"
               priority
             />
             <div className="min-w-0 w-full md:w-auto">
-              <div className="mt-1 md:mt-3 flex flex-wrap justify-center md:justify-start gap-2">
+              <h1 className="mt-3 mb-3 md:mt-2 text-white text-[18px] md:text-[25px] font-semibold leading-snug text-center md:text-left">
+                რთულია გამოწერის პროცესი? დარეკე და გადააბარე!!!
+              </h1>
+              <div className="mt-1 md:mt-3 flex flex-wrap justify-center gap-2 md:grid md:grid-cols-5 md:justify-items-start md:gap-2">
                 {Object.entries(FLAGS).map(([code, Flag]) => (
+                  
                   <span
                     key={code}
                     className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 ring-1 ring-white/15"
@@ -168,9 +173,7 @@ const Hero = () => {
                   </span>
                 ))}
               </div>
-              <p className="mt-3 md:mt-2 text-white text-[13px] md:text-[15px] font-semibold leading-snug text-center md:text-left">
-                რთულია გამოწერის პროცესი? დარეკე და გადააბარე!!!
-              </p>
+             
             </div>
             
           </div>
