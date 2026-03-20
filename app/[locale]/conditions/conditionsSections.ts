@@ -21,7 +21,7 @@ export const sectionsKa: SectionItem[] = [
     id: "calculation-rules",
     title: "დაანგარიშების წესი",
     content:
-      "ამანათის ტრანსპორტირების ღირებულება გამოითვლება ამანათის რეალური წონის მიხედვით. წონის დამრგვალება ხდება 100 გრამამდე, მინიმალური წონა შეადგენს 100 გრამს.კომპანია Postifly მოცულობით ითვლის მხოლოდ განსაკუთრებული გაბარიტების მქონე ნივთებს და ღირებულების განსაზღვრა მოხდება შეთანხმებით.",
+      "ამანათის ტრანსპორტირების ღირებულება გამოითვლება ამანათის რეალური წონის მიხედვით. წონის დამრგვალება ხდება 1 კილომდე, მინიმალური წონა შეადგენს 1 კილოს.კომპანია Postifly მოცულობით ითვლის მხოლოდ განსაკუთრებული გაბარიტების მქონე ნივთებს და ღირებულების განსაზღვრა მოხდება შეთანხმებით.",
   },
   {
     id: "declaration-service",
@@ -66,7 +66,7 @@ export const sectionsEn: SectionItem[] = [
     id: "calculation-rules",
     title: "Calculation Rules",
     content:
-      "The cost of parcel transportation is calculated based on the actual weight of the parcel. The weight is rounded to 100 grams, and the minimum chargeable weight is 100 grams. Postifly calculates by volumetric weight only for items with especially large dimensions, and the price will be determined by mutual agreement.",
+      "The cost of parcel transportation is calculated based on the actual weight of the parcel. The weight is rounded to 1 kilogram, and the minimum chargeable weight is 1 kilogram. Postifly calculates by volumetric weight only for items with especially large dimensions, and the price will be determined by mutual agreement.",
   },
   {
     id: "declaration-service",

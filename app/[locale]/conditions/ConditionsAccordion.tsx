@@ -35,7 +35,7 @@ export default function ConditionsAccordion({ isKa, sectionId }: Props) {
                 {section.title}
               </h2>
             </div>
-            <div className="px-4 md:px-6 pb-4 md:pb-5 pt-0 text-black md:text-[16px] text-[14px] leading-relaxed text-justify border-t border-gray-100">
+            <div className="px-4 md:px-6 pb-4 md:pb-5 pt-0 text-black md:text-[16px] text-[14px] leading-relaxed text-left md:text-justify border-t border-gray-100">
               {section.content}
             </div>
           </motion.article>

@@ -113,7 +113,7 @@
     "tariffCountry": "Country",
     "tariffDelivery": "Delivery",
     "tariffPrice": "Price",
-    "tariffDeliveryDays": "business days"
+    "tariffDeliveryDays": "days"
   },
   "login": {
     "title": "Login",

@@ -30,7 +30,7 @@ export default function FaqAccordion({ isKa }: Props) {
         {
           question: "როგორ ითვლება ამანათის წონა?",
           answer:
-            "ამანათის ტრანსპორტირების ღირებულება გამოითვლება ამანათის რეალური წონის მიხედვით. წონის დამრგვალება ხდება 100 გრამამდე, მინიმალური წონა შეადგენს 100 გრამს.კომპანია Postifly მოცულობით ითვლის მხოლოდ განსაკუთრებული გაბარიტების მქონე ნივთებს და ღირებულების განსაზღვრა მოხდება შეთანხმებით."
+            "ამანათის ტრანსპორტირების ღირებულება გამოითვლება ამანათის რეალური წონის მიხედვით. წონის დამრგვალება ხდება 1 კილომდე, მინიმალური წონა შეადგენს 1 კილოს.კომპანია Postifly მოცულობით ითვლის მხოლოდ განსაკუთრებული გაბარიტების მქონე ნივთებს და ღირებულების განსაზღვრა მოხდება შეთანხმებით."
         },
         {
           question: "რა შემთხვევაში ექვემდებარება განბაჟებას გზავნილი?",
@@ -56,7 +56,7 @@ export default function FaqAccordion({ isKa }: Props) {
         {
           question: "How is the parcel weight calculated?",
           answer:
-            "The transportation cost of a parcel is calculated according to its actual weight. The weight is rounded to the nearest 100 grams, with a minimum chargeable weight of 100 grams. Postifly calculates volumetric weight only for items with exceptional dimensions, and in such cases the price is determined by mutual agreement.",
+            "The transportation cost of a parcel is calculated according to its actual weight. The weight is rounded to the nearest 1 kilogram, with a minimum chargeable weight of 1 kilogram. Postifly calculates volumetric weight only for items with exceptional dimensions, and in such cases the price is determined by mutual agreement.",
         },
         {
           question: "When is a shipment subject to customs clearance?",
@@ -133,7 +133,7 @@ export default function FaqAccordion({ isKa }: Props) {
                     exit={{ height: 0, opacity: 0 }}
                     transition={{ duration: 0.2, ease: "easeOut" }}
                   >
-                    <div className="px-4 md:px-6 pb-4 md:pb-5 pt-0 md:pt-2 text-justify text-black md:text-[16px] text-[14px] leading-relaxed border-t border-gray-100 bg-gradient-to-b from-white to-purple-50/40">
+                    <div className="px-4 md:px-6 pb-4 md:pb-5 pt-0 md:pt-2 text-left md:text-justify text-black md:text-[16px] text-[14px] leading-relaxed border-t border-gray-100 bg-gradient-to-b from-white to-purple-50/40">
                       {item.answer}
                     </div>
                   </motion.div>

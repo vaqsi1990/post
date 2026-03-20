@@ -74,7 +74,7 @@ export default function ServicesAccordion({ isKa, activeServiceId }: Props) {
                 </div>
               </div>
 
-              <div className="px-4 md:px-6 pb-4 md:pb-5 text-center pt-0 md:pt-2 text-black md:text-[16px] text-[14px] leading-relaxed text-justify border-t border-gray-100  from-white to-purple-50/40">
+              <div className="px-4 md:px-6 pb-4 md:pb-5 text-left pt-0 md:pt-2 text-black md:text-[16px] text-[14px] leading-relaxed md:text-justify border-t border-gray-100  from-white to-purple-50/40">
                 {service.content}
               </div>
             </motion.div>
