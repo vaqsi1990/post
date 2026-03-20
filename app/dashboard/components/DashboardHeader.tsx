@@ -74,12 +74,32 @@ export default function DashboardHeader() {
         {/* Desktop: links */}
         <div className="hidden sm:flex items-center justify-between gap-4 w-full">
           <div className="flex items-center gap-4">
-            <Link href="/" className="flex items-center gap-2 text-[16px] md:text-[18px] font-bold text-black hover:text-black">{t('home')}</Link>
-            <Link href="/dashboard/addresses" className="flex items-center gap-2 text-[16px] md:text-[18px] font-bold text-black hover:text-black relative">{t('addresses')}</Link>
-            <Link href="/dashboard/balance" className="flex items-center gap-2 text-[16px] md:text-[18px] font-bold text-black hover:text-black">{t('balanceTopUp')}</Link>
+            <Link
+              href="/"
+              className="relative flex items-center gap-2 text-[16px] md:text-[18px] font-bold text-black hover:text-black after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-full after:bg-[#3a5bff] after:scale-x-0 after:origin-left after:transition-transform after:duration-200 hover:after:scale-x-100"
+            >
+              {t('home')}
+            </Link>
+            <Link
+              href="/dashboard/addresses"
+              className="relative flex items-center gap-2 text-[16px] md:text-[18px] font-bold text-black hover:text-black after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-full after:bg-[#3a5bff] after:scale-x-0 after:origin-left after:transition-transform after:duration-200 hover:after:scale-x-100"
+            >
+              {t('addresses')}
+            </Link>
+            <Link
+              href="/dashboard/balance"
+              className="relative flex items-center gap-2 text-[16px] md:text-[18px] font-bold text-black hover:text-black after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-full after:bg-[#3a5bff] after:scale-x-0 after:origin-left after:transition-transform after:duration-200 hover:after:scale-x-100"
+            >
+              {t('balanceTopUp')}
+            </Link>
           
           </div>
-          <Link href="/dashboard/settings" className="flex items-center gap-2 text-[15px] md:text-[18px] font-bold text-black hover:text-black">{t('settings')}</Link>
+          <Link
+            href="/dashboard/settings"
+            className="relative flex items-center gap-2 text-[15px] md:text-[18px] font-bold text-black hover:text-black after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-full after:bg-[#3a5bff] after:scale-x-0 after:origin-left after:transition-transform after:duration-200 hover:after:scale-x-100"
+          >
+            {t('settings')}
+          </Link>
         </div>
       </div>
 

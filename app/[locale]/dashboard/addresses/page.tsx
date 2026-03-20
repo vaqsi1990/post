@@ -4,22 +4,86 @@ import { Link } from '@/i18n/navigation';
 import { getTranslations } from 'next-intl/server';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import type React from 'react';
+import {
+  GB,
+  US,
+  CN,
+  IT,
+  GR,
+  ES,
+  FR,
+  DE,
+  TR,
+} from 'country-flag-icons/react/3x2';
+
+const FLAGS: Record<string, React.ComponentType<{ title?: string; className?: string }>> = {
+  GB,
+  US,
+  CN,
+  IT,
+  GR,
+  ES,
+  FR,
+  DE,
+  TR,
+};
 
 export const dynamic = 'force-dynamic';
 
 type Props = { params: Promise<{ locale: string }> };
 
-const ADDRESS_ROWS = [
-  { countryKey: 'uk' as const, cityKey: 'london' as const, street: 'Baker Street 221B, 3', postalCode: 'NW1 6XE' },
-  { countryKey: 'us' as const, cityKey: 'newYork' as const, street: 'Fifth Avenue 350, 12', postalCode: '10118' },
-  { countryKey: 'cn' as const, cityKey: 'beijing' as const, street: 'Wangfujing Street 88, 5', postalCode: '100006' },
-  { countryKey: 'it' as const, cityKey: 'rome' as const, street: 'Via Condotti 15, 2', postalCode: '00187' },
-  { countryKey: 'gr' as const, cityKey: 'athens' as const, street: 'Ermou 45, 1', postalCode: '10563' },
-  { countryKey: 'es' as const, cityKey: 'madrid' as const, street: 'Gran Vía 28, 4', postalCode: '28013' },
-  { countryKey: 'fr' as const, cityKey: 'paris' as const, street: 'Champs-Élysées 101, A', postalCode: '75008' },
-  { countryKey: 'de' as const, cityKey: 'berlin' as const, street: 'Unter den Linden 77, 6', postalCode: '10117' },
-  { countryKey: 'tr' as const, cityKey: 'istanbul' as const, street: 'İstiklal Caddesi 120, 7', postalCode: '34433' },
-  { countryKey: 'ge' as const, cityKey: 'tbilisi' as const, street: 'Vazha-Pshavela 12, 5', postalCode: '0162' },
+type AddressRow = {
+  countryKey: string;
+  countryCode: string;
+  cityKey?: string;
+  street: string;
+  postalCode: string;
+  phone?: string;
+};
+
+// Only these 4 countries should have real data. Others should be blank.
+const ADDRESS_ROWS: AddressRow[] = [
+  { countryKey: 'uk', countryCode: 'GB', street: '', postalCode: '' },
+  { countryKey: 'us', countryCode: 'US', street: '', postalCode: '' },
+  { countryKey: 'cn', countryCode: 'CN', street: '', postalCode: '' },
+
+  {
+    countryKey: 'it',
+    countryCode: 'IT',
+    cityKey: 'paris',
+    street: '7 bis rue decres, Paris, France',
+    postalCode: '75014',
+    phone: '+33 7 53 19 86 83',
+  },
+
+  { countryKey: 'gr', countryCode: 'GR', street: '', postalCode: '' },
+  {
+    countryKey: 'es',
+    countryCode: 'ES',
+    cityKey: 'paris',
+    street: '7 bis rue decres, Paris, France',
+    postalCode: '75014',
+    phone: '+33 7 53 19 86 83',
+  },
+  {
+    countryKey: 'fr',
+    countryCode: 'FR',
+    cityKey: 'paris',
+    street: '7 bis rue decres, Paris, France',
+    postalCode: '75014',
+    phone: '+33 7 53 19 86 83',
+  },
+  {
+    countryKey: 'de',
+    countryCode: 'DE',
+    cityKey: 'paris',
+    street: '7 bis rue decres, Paris, France',
+    postalCode: '75014',
+    phone: '+33 7 53 19 86 83',
+  },
+
+  { countryKey: 'tr', countryCode: 'TR', street: '', postalCode: '' },
 ];
 
 export default async function DashboardAddressesPage({ params }: Props) {
@@ -37,68 +101,99 @@ export default async function DashboardAddressesPage({ params }: Props) {
   });
 
   const addressList = ADDRESS_ROWS.map((row) => ({
+    countryCode: row.countryCode,
     country: tAddr(row.countryKey),
-    city: tAddr(row.cityKey),
+    city: row.cityKey ? tAddr(row.cityKey) : '',
     street: row.street,
     postalCode: row.postalCode,
+    phone: row.phone,
   }));
 
   return (
-    <div className=" bg-gray-100 py-4 sm:py-8">
-      <div className="mx-auto mt-16 sm:mt-20 md:mt-24 w-full max-w-3xl px-3 sm:px-4">
-        <main className="rounded-xl sm:rounded-2xl border border-gray-200 bg-white p-4 sm:p-6 shadow-sm">
-          <div className="pb-4 sm:pb-6 border-b border-gray-200">
-            <Link href="/dashboard" className="text-[16px] md:text-[18px] font-medium text-black hover:text-black">
+    <div className="bg-[#010002] py-4 sm:py-8 text-white">
+      <div className="mx-auto mt-16 sm:mt-20 md:mt-24 w-full max-w-6xl px-3 sm:px-4">
+        <main className="rounded-xl sm:rounded-2xl border border-white/10 bg-[#121311] p-4 sm:p-6">
+          <div className="pb-4 sm:pb-6 border-b border-white/10">
+            <Link href="/dashboard" className="text-[16px] md:text-[18px] font-medium text-white hover:text-white/90">
               ← {t('back')}
             </Link>
           </div>
           <div className="pt-4 sm:pt-6">
-            <h1 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-6">{tAddr('title')}</h1>
+            <h1 className="text-lg sm:text-xl font-semibold text-white mb-4 sm:mb-6">{tAddr('title')}</h1>
 
             <div className="md:hidden space-y-3">
               {addressList.map((row, i) => (
-                <div key={i} className="rounded-lg border border-gray-200 bg-gray-50/50 p-3 text-sm">
-                  <div className="flex justify-between gap-2 mb-1">
-                    <span className="text-black shrink-0">{tAddr('country')}</span>
-                    <span className="text-gray-900 text-right">{row.country}</span>
+                <div key={i} className="rounded-lg border border-white/10 bg-white/5 p-3 text-sm">
+                  <div className="flex flex-col items-center gap-1 mb-2">
+                    {(() => {
+                      const Flag = FLAGS[row.countryCode];
+                      return Flag ? (
+                        <Flag
+                          title={row.country}
+                          className="h-8 w-auto rounded object-cover shadow-md ring-1 ring-white/10"
+                        />
+                      ) : null;
+                    })()}
+                    <div className="text-white/90 text-[14px] font-semibold">{row.country}</div>
                   </div>
                   <div className="flex justify-between gap-2 mb-1">
-                    <span className="text-black shrink-0">{tAddr('city')}</span>
-                    <span className="text-gray-900 text-right">{row.city}</span>
+                    <span className="text-white/90 font-semibold shrink-0">{tAddr('city')}</span>
+                    <span className="text-white/90 text-right">{row.city}</span>
                   </div>
                   <div className="flex justify-between gap-2 mb-1">
-                    <span className="text-black shrink-0">{tAddr('street')}</span>
-                    <span className="text-gray-900 text-right break-all">{row.street}</span>
+                    <span className="text-white/90 font-semibold shrink-0">{tAddr('street')}</span>
+                    <span className="text-white/90 text-right break-all">{row.street}</span>
                   </div>
                   <div className="flex justify-between gap-2">
-                    <span className="text-black shrink-0">{tAddr('postalCode')}</span>
-                    <span className="text-gray-900 font-medium">{row.postalCode}</span>
+                    <span className="text-white/90 font-semibold shrink-0">{tAddr('postalCode')}</span>
+                    <span className="text-white/90 font-medium">{row.postalCode}</span>
                   </div>
+                  {row.phone ? (
+                    <div className="flex justify-between gap-2 mt-1">
+                      <span className="text-white/90 font-semibold shrink-0">{tAddr('phone')}</span>
+                      <span className="text-white/90 font-medium">{row.phone}</span>
+                    </div>
+                  ) : null}
                 </div>
               ))}
             </div>
 
-            <div className="hidden md:block overflow-x-auto rounded-lg border border-gray-200">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th scope="col" className="px-4 py-3 text-left text-[16px] md:text-[18px] font-medium text-black uppercase tracking-wider">{tAddr('country')}</th>
-                    <th scope="col" className="px-4 py-3 text-left text-[16px] md:text-[18px] font-medium text-black uppercase tracking-wider">{tAddr('city')}</th>
-                    <th scope="col" className="px-4 py-3 text-left text-[16px] md:text-[18px] font-medium text-black uppercase tracking-wider">{tAddr('streetBuilding')}</th>
-                    <th scope="col" className="px-4 py-3 text-left text-[16px] md:text-[18px] font-medium text-black uppercase tracking-wider">{tAddr('postalCode')}</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {addressList.map((row, i) => (
-                    <tr key={i}>
-                      <td className="px-4 py-3 text-[16px] md:text-[18px] text-black font-medium">{row.country}</td>
-                      <td className="px-4 py-3 text-[16px] md:text-[18px] text-black font-medium">{row.city}</td>
-                      <td className="px-4 py-3 text-[16px] md:text-[18px] text-black">{row.street}</td>
-                      <td className="px-4 py-3 text-[16px] md:text-[18px] text-black font-medium">{row.postalCode}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            {/* Desktop: show each country as its own card */}
+            <div className="hidden md:grid md:grid-cols-3 gap-4">
+              {addressList.map((row, i) => (
+                <div key={i} className="rounded-lg border border-white/10 bg-white/5 p-4">
+                  <div className="flex flex-col items-center gap-1 mb-3">
+                    {(() => {
+                      const Flag = FLAGS[row.countryCode];
+                      return Flag ? (
+                        <Flag
+                          title={row.country}
+                          className="h-10 w-auto rounded object-cover shadow-md ring-1 ring-white/10"
+                        />
+                      ) : null;
+                    })()}
+                    <div className="text-white/90 text-[14px] font-semibold">{row.country}</div>
+                  </div>
+                  <div className="flex justify-between gap-2 mb-2">
+                    <span className="text-white/90 font-semibold shrink-0">{tAddr('city')}</span>
+                    <span className="text-white/90 text-right">{row.city}</span>
+                  </div>
+                  <div className="flex justify-between gap-2 mb-2">
+                    <span className="text-white/90 font-semibold shrink-0">{tAddr('street')}</span>
+                    <span className="text-white/90 text-right break-all">{row.street}</span>
+                  </div>
+                  <div className="flex justify-between gap-2">
+                    <span className="text-white/90 font-semibold shrink-0">{tAddr('postalCode')}</span>
+                    <span className="text-white/90 font-medium">{row.postalCode}</span>
+                  </div>
+                  {row.phone ? (
+                    <div className="flex justify-between gap-2 mt-1">
+                      <span className="text-white/90 font-semibold shrink-0">{tAddr('phone')}</span>
+                      <span className="text-white/90 font-medium">{row.phone}</span>
+                    </div>
+                  ) : null}
+                </div>
+              ))}
             </div>
           </div>
         </main>

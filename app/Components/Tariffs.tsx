@@ -165,8 +165,7 @@ export default function Tariffs() {
                   const countryName = tAddr(row.countryKey);
                   const deliveryDaysLabel = t('tariffDeliveryDays').trim();
                   const deliveryDays = `${row.deliveryDaysPrefix} ${deliveryDaysLabel}`;
-                  const deliveryNote = row.deliveryNoteKey ? ` ${t(row.deliveryNoteKey)}` : '';
-                  const deliveryText = `${deliveryDays}${deliveryNote}`;
+                  const deliveryNote = row.deliveryNoteKey ? t(row.deliveryNoteKey) : null;
                   return (
                     <motion.tr
                       key={row.countryCode}
@@ -191,14 +190,23 @@ export default function Tariffs() {
                       </td>
 
                       <td
-                        className={`px-3 py-2.5 text-center text-xs text-zinc-400 sm:px-4 sm:py-3 md:px-8 md:py-4 whitespace-nowrap ${
+                        className={`px-3 py-2.5 text-center text-xs text-zinc-400 sm:px-4 sm:py-3 md:px-8 md:py-4 ${
                           row.deliveryNoteKey ? 'md:text-[16px]' : 'md:text-[18px]'
                         }`}
                       >
-                        <span className="whitespace-nowrap">{deliveryText}</span>
+                        {row.deliveryNoteKey ? (
+                          <span className="flex flex-col items-center leading-tight">
+                            <span className="whitespace-nowrap">{deliveryDays}</span>
+                            <span className="whitespace-nowrap text-[16px] text-zinc-500 mt-0.5">
+                              {deliveryNote}
+                            </span>
+                          </span>
+                        ) : (
+                          <span className="whitespace-nowrap">{deliveryDays}</span>
+                        )}
                       </td>
 
-                      <td className="whitespace-nowrap px-3 py-2.5 text-right text-xs font-semibold text-emerald-400/95 tabular-nums sm:px-4 sm:py-3 md:px-8 md:py-4 md:text-sm md:text-[18px]">
+                      <td className="whitespace-nowrap px-3 py-2.5 text-right text-xs font-semibold text-white/90 tabular-nums sm:px-4 sm:py-3 md:px-8 md:py-4 md:text-sm md:text-[18px]">
                         {row.currencySymbol} {row.pricePerKg.toFixed(2)}
                       </td>
                     </motion.tr>
