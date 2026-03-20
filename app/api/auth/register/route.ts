@@ -4,6 +4,7 @@ import { ZodError } from 'zod';
 import prisma from '../../../../lib/prisma';
 import { registerApiSchema } from '../../../../lib/validations';
 import { normalizePhone } from '../../../../lib/sms';
+import { generateNextRoomNumber } from '../../../../lib/roomNumber';
 
 export async function POST(request: NextRequest) {
   try {
@@ -70,6 +71,8 @@ export async function POST(request: NextRequest) {
     // Hash password
     const hashedPassword = await bcrypt.hash(validatedData.password, 10);
 
+    const roomNumber = await generateNextRoomNumber();
+
     // Create user (phone verified via OTP)
     const user = await prisma.user.create({
       data: {
@@ -83,6 +86,7 @@ export async function POST(request: NextRequest) {
         city: validatedData.city,
         address: validatedData.address,
         role: 'USER',
+        roomNumber,
       },
       select: {
         id: true,

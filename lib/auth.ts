@@ -34,7 +34,7 @@ export const authOptions: NextAuthOptions = {
             role: true,
             phoneVerified: true,
             password: true,
-            poNumber: true,
+            roomNumber: true,
           },
         });
 
@@ -58,7 +58,7 @@ export const authOptions: NextAuthOptions = {
           name: `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.email,
           role: user.role,
           phoneVerified: user.phoneVerified ?? false,
-          poNumber: user.poNumber,
+          roomNumber: user.roomNumber,
         };
       },
     }),
@@ -69,7 +69,7 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id;
         token.role = (user as any).role;
         token.phoneVerified = (user as any).phoneVerified ?? false;
-        token.poNumber = (user as any).poNumber;
+        token.roomNumber = (user as any).roomNumber;
       }
       return token;
     },
@@ -78,8 +78,7 @@ export const authOptions: NextAuthOptions = {
         session.user.id = token.id as string;
         session.user.role = token.role as string;
         session.user.phoneVerified = token.phoneVerified as boolean;
-        // @ts-expect-error custom field
-        session.user.poNumber = token.poNumber as number | undefined;
+        session.user.roomNumber = token.roomNumber as string | undefined;
       }
       return session;
     },

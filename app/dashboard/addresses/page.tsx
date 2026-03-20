@@ -28,6 +28,18 @@ const FLAGS: Record<string, React.ComponentType<{ title?: string; className?: st
   TR,
 };
 
+const COUNTRY_EN: Record<string, string> = {
+  GB: 'United Kingdom',
+  US: 'USA',
+  CN: 'China',
+  IT: 'Italy',
+  GR: 'Greece',
+  ES: 'Spain',
+  FR: 'France',
+  DE: 'Germany',
+  TR: 'Turkey',
+};
+
 
 export const dynamic = 'force-dynamic';
 
@@ -41,6 +53,13 @@ export default async function DashboardAddressesPage() {
     where: { userId: session.user.id },
     orderBy: [{ isDefault: 'desc' }, { createdAt: 'desc' }],
   });
+
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { roomNumber: true },
+  });
+
+  const userRoomNumber = user?.roomNumber ?? '';
 
   const initialAddresses = addresses.map((a) => ({
     id: a.id,
@@ -81,7 +100,19 @@ export default async function DashboardAddressesPage() {
             <div className="md:hidden space-y-3">
               {addressList.map((row, i) => (
                 <div key={i} className="rounded-lg border border-white/10 bg-white/5 p-3 text-sm">
-                  <div className="flex flex-col items-center gap-1 mb-2">
+                  <div className="flex justify-between gap-2 mb-1">
+                    <span className="text-[#3A5BFF] font-semibold shrink-0">მისამართი</span>
+                    <span className="text-white/90 text-right break-all">{row.street}</span>
+                  </div>
+                  <div className="flex justify-between gap-2 mb-1">
+                    <span className="text-[#3A5BFF] font-semibold shrink-0">მისამართი2</span>
+                    <span className="text-white/90 text-right break-words">{userRoomNumber}</span>
+                  </div>
+                  <div className="flex justify-between gap-2 mb-1">
+                    <span className="text-[#3A5BFF] font-semibold shrink-0">ქვეყანა</span>
+                    <span className="text-white/90 text-right">{row.country}</span>
+                  </div>
+                  <div className="flex items-center justify-center gap-2 mb-2">
                     {(() => {
                       const Flag = FLAGS[row.countryCode];
                       return Flag ? (
@@ -91,18 +122,13 @@ export default async function DashboardAddressesPage() {
                         />
                       ) : null;
                     })()}
-                    <div className="text-white/90 text-[14px] font-semibold">{row.country}</div>
                   </div>
                   <div className="flex justify-between gap-2 mb-1">
                     <span className="text-[#3A5BFF] font-semibold shrink-0">ქალაქი</span>
                     <span className="text-white/90 text-right">{row.city}</span>
                   </div>
-                  <div className="flex justify-between gap-2 mb-1">
-                    <span className="text-[#3A5BFF] font-semibold shrink-0">ქუჩა </span>
-                    <span className="text-white/90 text-right break-all">{row.street}</span>
-                  </div>
                   <div className="flex justify-between gap-2">
-                    <span className="text-[#3A5BFF] font-semibold shrink-0">ინდექსი</span>
+                    <span className="text-[#3A5BFF] font-semibold shrink-0">საფოსტო ინდექსი</span>
                     <span className="text-white/90 font-medium">{row.postalCode}</span>
                   </div>
                   {row.phone ? (
@@ -116,10 +142,10 @@ export default async function DashboardAddressesPage() {
             </div>
 
             {/* Desktop: show each country as its own card */}
-            <div className="hidden md:grid md:grid-cols-3 gap-4">
+            <div className=" md:grid-cols-3 gap-4">
               {addressList.map((row, i) => (
                 <div key={i} className="rounded-lg border border-white/10 bg-white/5 p-4">
-                  <div className="flex flex-col items-center gap-1 mb-3">
+                  <div className="flex items-center justify-center gap-3 mb-3">
                     {(() => {
                       const Flag = FLAGS[row.countryCode];
                       return Flag ? (
@@ -128,19 +154,31 @@ export default async function DashboardAddressesPage() {
                           className="h-10 w-auto rounded object-cover shadow-md ring-1 ring-white/10"
                         />
                       ) : null;
-                    })()}
-                    <div className="text-white/90 text-[14px] font-semibold">{row.country}</div>
+                    }) ()}
+                    <div className="text-white/90 text-[14px] font-semibold whitespace-nowrap">
+                      {row.country}
+                    </div>
+                  </div>
+                  <div className="flex justify-between gap-2 mb-2">
+                    <span className="text-[#3A5BFF] font-semibold shrink-0">მისამართი</span>
+                    <span className="text-white/90 text-right break-all">{row.street}</span>
+                  </div>
+                  <div className="flex justify-between gap-2 mb-2">
+                    <span className="text-[#3A5BFF] font-semibold shrink-0">მისამართი2</span>
+                    <span className="text-white/90 text-right break-words">{userRoomNumber}</span>
+                  </div>
+                  <div className="flex justify-between gap-2 mb-2">
+                    <span className="text-[#3A5BFF] font-semibold shrink-0">ქვეყანა</span>
+                    <span className="text-white/90 text-right">
+                      {COUNTRY_EN[row.countryCode] ?? row.country}
+                    </span>
                   </div>
                   <div className="flex justify-between gap-2 mb-2">
                     <span className="text-[#3A5BFF] font-semibold shrink-0">ქალაქი</span>
                     <span className="text-white/90 text-right">{row.city}</span>
                   </div>
-                  <div className="flex justify-between gap-2 mb-2">
-                    <span className="text-[#3A5BFF] font-semibold shrink-0">ქუჩა </span>
-                    <span className="text-white/90 text-right break-all">{row.street}</span>
-                  </div>
                   <div className="flex justify-between gap-2">
-                    <span className="text-[#3A5BFF] font-semibold shrink-0">ინდექსი</span>
+                    <span className="text-[#3A5BFF] font-semibold shrink-0">საფოსტო ინდექსი</span>
                     <span className="text-white/90 font-medium">{row.postalCode}</span>
                   </div>
                   {row.phone ? (

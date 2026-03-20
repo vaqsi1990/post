@@ -11,7 +11,7 @@ type User = {
   address?: string | null;
   role: string;
   createdAt: string; // Formatted date string from server
-  poNumber?: number;
+  roomNumber?: string | null;
 };
 
 type UserDetails = {
@@ -26,7 +26,7 @@ type UserDetails = {
     city: string | null;
     address: string | null;
     balance: number;
-    poNumber: number;
+    roomNumber: string;
     role: string;
     createdAt: string;
     updatedAt: string;
@@ -203,7 +203,8 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
     const email = (u.email ?? '').toLowerCase();
     const name = `${u.firstName ?? ''} ${u.lastName ?? ''}`.trim().toLowerCase();
     const address = (u.address ?? '').toLowerCase();
-    const po = u.poNumber != null ? `po${u.poNumber}`.toLowerCase() : '';
+    const roomText = (u.roomNumber ?? '').toLowerCase();
+    const roomDigits = u.roomNumber != null ? String(u.roomNumber).replace(/\D/g, '') : '';
 
     const emailOk = !emailQuery.trim() || email.includes(emailQuery.trim().toLowerCase());
     const nameOk = !nameQuery.trim() || name.includes(nameQuery.trim().toLowerCase());
@@ -211,8 +212,8 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
     const roomOk =
       !roomQ ||
       address.includes(roomQ) ||
-      po.includes(roomQ) ||
-      (u.poNumber != null && String(u.poNumber).includes(roomQuery.trim()));
+      roomText.includes(roomQ) ||
+      roomDigits.includes(roomQuery.trim());
 
     return emailOk && nameOk && roomOk;
   });
@@ -318,7 +319,7 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
                           : '—'}
                       </td>
                       <td className="px-4 py-2 text-[16px] text-black">
-                        {user.poNumber !== undefined ? `PO${user.poNumber}` : '—'}
+                        {user.roomNumber != null ? user.roomNumber : '—'}
                       </td>
                       <td className="px-4 py-2 text-[16px] text-black">
                         {user.role === 'ADMIN' ? 'ადმინი' : 'მომხმარებელი'}
@@ -368,7 +369,7 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
                                         : '—'}
                                     </span>
                                     <span className="text-gray-600">PO</span>
-                                    <span>{`PO${d.user.poNumber}`}</span>
+                                    <span>{d.user.roomNumber}</span>
                                     <span className="text-gray-600">როლი</span>
                                     <span>{d.user.role === 'ADMIN' ? 'ადმინი' : 'მომხმარებელი'}</span>
                                     <span className="text-gray-600">ბალანსი</span>

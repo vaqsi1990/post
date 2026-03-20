@@ -13,7 +13,7 @@ export default async function AdminUsersPage() {
       address: true,
       role: true,
       createdAt: true,
-      poNumber: true,
+      roomNumber: true,
     },
   });
 

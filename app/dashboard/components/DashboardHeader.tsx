@@ -14,8 +14,7 @@ export default function DashboardHeader() {
   const [navOpen, setNavOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const navRef = useRef<HTMLDivElement>(null);
-  // @ts-expect-error custom field from auth callbacks
-  const poNumber = session?.user?.poNumber as number | undefined;
+  const roomNumber = session?.user?.roomNumber as string | undefined;
 
   useEffect(() => setMounted(true), []);
 
@@ -30,9 +29,9 @@ export default function DashboardHeader() {
 
   return (
     <header className="border-b border-gray-200 bg-white pb-4 mb-6 overflow-hidden">
-      {poNumber != null && (
+      {roomNumber != null && (
         <p className="text-[16px] md:text-[18px] font-bold text-black mb-3" suppressHydrationWarning>
-          {t('roomNumber')} PO{poNumber}
+          {t('roomNumber')} {roomNumber}
         </p>
       )}
       <div className="relative flex items-center justify-between" ref={navRef}>

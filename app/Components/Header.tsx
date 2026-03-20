@@ -77,8 +77,6 @@ const Header = () => {
   const role = session?.user?.role;
   const panelHref = role === 'ADMIN' ? '/admin' : '/dashboard';
   const panelLabel = role === 'ADMIN' ? t('common.adminPanel') : t('common.myCabinet');
-  // @ts-expect-error custom field added in auth callbacks
-  const poNumber = session?.user?.poNumber as number | undefined;
 
   const rawName = session?.user?.name?.trim();
   const accountTriggerLabel = rawName

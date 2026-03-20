@@ -6,6 +6,7 @@ import { authOptions } from '../../../../lib/auth';
 import prisma from '../../../../lib/prisma';
 import { adminCreateUserSchema } from '../../../../lib/validations';
 import { normalizePhone } from '../../../../lib/sms';
+import { generateNextRoomNumber } from '../../../../lib/roomNumber';
 
 export async function GET() {
   const session = await getServerSession(authOptions);
@@ -29,7 +30,7 @@ export async function GET() {
         address: true,
         role: true,
         createdAt: true,
-        poNumber: true,
+        roomNumber: true,
       },
     });
 
@@ -97,6 +98,8 @@ export async function POST(request: NextRequest) {
 
     const hashedPassword = await bcrypt.hash(validatedData.password, 10);
 
+    const roomNumber = await generateNextRoomNumber();
+
     const user = await prisma.user.create({
       data: {
         email,
@@ -109,6 +112,7 @@ export async function POST(request: NextRequest) {
         city: validatedData.city?.trim() || null,
         address: validatedData.address?.trim() || null,
         role: validatedData.role ?? 'USER',
+        roomNumber,
       },
       select: {
         id: true,
@@ -117,7 +121,7 @@ export async function POST(request: NextRequest) {
         lastName: true,
         role: true,
         createdAt: true,
-        poNumber: true,
+          roomNumber: true,
       },
     });
 

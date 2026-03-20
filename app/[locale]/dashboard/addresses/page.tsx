@@ -29,6 +29,19 @@ const FLAGS: Record<string, React.ComponentType<{ title?: string; className?: st
   TR,
 };
 
+// Desktop: show Georgian next to flag, English below it.
+const COUNTRY_KA: Record<string, string> = {
+  GB: 'დიდი ბრიტანეთი',
+  US: 'აშშ',
+  CN: 'ჩინეთი',
+  IT: 'იტალია',
+  GR: 'საბერძნეთი',
+  ES: 'ესპანეთი',
+  FR: 'საფრანგეთი',
+  DE: 'გერმანია',
+  TR: 'თურქეთი',
+};
+
 export const dynamic = 'force-dynamic';
 
 type Props = { params: Promise<{ locale: string }> };
@@ -37,32 +50,32 @@ type AddressRow = {
   countryKey: string;
   countryCode: string;
   cityKey?: string;
-  street: string;
+  adress: string;
   postalCode: string;
   phone?: string;
 };
 
 // Only these 4 countries should have real data. Others should be blank.
 const ADDRESS_ROWS: AddressRow[] = [
-  { countryKey: 'uk', countryCode: 'GB', street: '', postalCode: '' },
-  { countryKey: 'us', countryCode: 'US', street: '', postalCode: '' },
-  { countryKey: 'cn', countryCode: 'CN', street: '', postalCode: '' },
+  { countryKey: 'uk', countryCode: 'GB', adress: '', postalCode: '' },
+  { countryKey: 'us', countryCode: 'US', adress: '', postalCode: '' },
+  { countryKey: 'cn', countryCode: 'CN', adress: '', postalCode: '' },
 
   {
     countryKey: 'it',
     countryCode: 'IT',
     cityKey: 'paris',
-    street: '7 bis rue decres, Paris, France',
+    adress: '7 bis rue decres',
     postalCode: '75014',
     phone: '+33 7 53 19 86 83',
   },
 
-  { countryKey: 'gr', countryCode: 'GR', street: '', postalCode: '' },
+  { countryKey: 'gr', countryCode: 'GR', adress: '', postalCode: '' },
   {
     countryKey: 'es',
     countryCode: 'ES',
     cityKey: 'paris',
-    street: '7 bis rue decres, Paris, France',
+    adress: '7 bis rue decres',
     postalCode: '75014',
     phone: '+33 7 53 19 86 83',
   },
@@ -70,7 +83,7 @@ const ADDRESS_ROWS: AddressRow[] = [
     countryKey: 'fr',
     countryCode: 'FR',
     cityKey: 'paris',
-    street: '7 bis rue decres, Paris, France',
+    adress: '7 bis rue decres',
     postalCode: '75014',
     phone: '+33 7 53 19 86 83',
   },
@@ -78,12 +91,12 @@ const ADDRESS_ROWS: AddressRow[] = [
     countryKey: 'de',
     countryCode: 'DE',
     cityKey: 'paris',
-    street: '7 bis rue decres, Paris, France',
+    adress: '7 bis rue decres',
     postalCode: '75014',
     phone: '+33 7 53 19 86 83',
   },
 
-  { countryKey: 'tr', countryCode: 'TR', street: '', postalCode: '' },
+  { countryKey: 'tr', countryCode: 'TR', adress: '', postalCode: '' },
 ];
 
 export default async function DashboardAddressesPage({ params }: Props) {
@@ -95,16 +108,23 @@ export default async function DashboardAddressesPage({ params }: Props) {
   if (!session?.user) redirect(`/${locale}/login`);
   if (session.user.role === 'ADMIN') redirect(`/${locale}/admin`);
 
-  await prisma.address.findMany({
+  const addresses = await prisma.address.findMany({
     where: { userId: session.user.id },
     orderBy: [{ isDefault: 'desc' }, { createdAt: 'desc' }],
   });
+
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { roomNumber: true },
+  });
+
+  const userRoomNumber = user?.roomNumber ?? '';
 
   const addressList = ADDRESS_ROWS.map((row) => ({
     countryCode: row.countryCode,
     country: tAddr(row.countryKey),
     city: row.cityKey ? tAddr(row.cityKey) : '',
-    street: row.street,
+    adress: row.adress,
     postalCode: row.postalCode,
     phone: row.phone,
   }));
@@ -124,26 +144,39 @@ export default async function DashboardAddressesPage({ params }: Props) {
             <div className="md:hidden space-y-3">
               {addressList.map((row, i) => (
                 <div key={i} className="rounded-lg border border-white/10 bg-white/5 p-3 text-sm">
-                  <div className="flex flex-col items-center gap-1 mb-2">
-                    {(() => {
-                      const Flag = FLAGS[row.countryCode];
-                      return Flag ? (
-                        <Flag
-                          title={row.country}
-                          className="h-8 w-auto rounded object-cover shadow-md ring-1 ring-white/10"
-                        />
-                      ) : null;
-                    })()}
-                    <div className="text-white/90 text-[14px] font-semibold">{row.country}</div>
+                  <div className="flex justify-between gap-2 mb-1">
+                    <span className="text-white/90 font-semibold shrink-0">{tAddr('street')}</span>
+                    <span className="text-white/90 text-right break-all">{row.adress}</span>
+                  </div>
+                  <div className="flex justify-between gap-2 mb-1">
+                    <span className="text-white/90 font-semibold shrink-0">მისამართი2</span>
+                    <span className="text-white/90 text-right break-words">{userRoomNumber}</span>
+                  </div>
+                  <div className="flex items-center justify-between gap-2 mb-2">
+                    <span className="text-white/90 font-semibold shrink-0">{tAddr('country')}</span>
+                    <div className="flex flex-col items-end">
+                      <div className="flex items-center gap-2">
+                        {(() => {
+                          const Flag = FLAGS[row.countryCode];
+                          return Flag ? (
+                            <Flag
+                              title={row.country}
+                              className="h-8 w-auto rounded object-cover shadow-md ring-1 ring-white/10"
+                            />
+                          ) : null;
+                        })()}
+                        <span className="text-white/90 text-[14px] font-semibold whitespace-nowrap">
+                          {COUNTRY_KA[row.countryCode] ?? row.country}
+                        </span>
+                      </div>
+                      <span className="text-white/90 text-[14px] font-semibold">{row.country}</span>
+                    </div>
                   </div>
                   <div className="flex justify-between gap-2 mb-1">
                     <span className="text-white/90 font-semibold shrink-0">{tAddr('city')}</span>
                     <span className="text-white/90 text-right">{row.city}</span>
                   </div>
-                  <div className="flex justify-between gap-2 mb-1">
-                    <span className="text-white/90 font-semibold shrink-0">{tAddr('street')}</span>
-                    <span className="text-white/90 text-right break-all">{row.street}</span>
-                  </div>
+                 
                   <div className="flex justify-between gap-2">
                     <span className="text-white/90 font-semibold shrink-0">{tAddr('postalCode')}</span>
                     <span className="text-white/90 font-medium">{row.postalCode}</span>
@@ -162,25 +195,35 @@ export default async function DashboardAddressesPage({ params }: Props) {
             <div className="hidden md:grid md:grid-cols-3 gap-4">
               {addressList.map((row, i) => (
                 <div key={i} className="rounded-lg border border-white/10 bg-white/5 p-4">
-                  <div className="flex flex-col items-center gap-1 mb-3">
+                  <div className="flex items-center justify-center gap-3 mb-3">
                     {(() => {
                       const Flag = FLAGS[row.countryCode];
                       return Flag ? (
                         <Flag
-                          title={row.country}
+                          title={COUNTRY_KA[row.countryCode] ?? row.country}
                           className="h-10 w-auto rounded object-cover shadow-md ring-1 ring-white/10"
                         />
                       ) : null;
                     })()}
-                    <div className="text-white/90 text-[14px] font-semibold">{row.country}</div>
+                    <div className="text-white/90 text-[14px] font-semibold whitespace-nowrap">
+                      {COUNTRY_KA[row.countryCode] ?? row.country}
+                    </div>
+                  </div>
+                  <div className="flex justify-between gap-2 mb-2">
+                    <span className="text-white/90 font-semibold shrink-0">{tAddr('street')}</span>
+                    <span className="text-white/90 text-right break-all">{row.adress}</span>
+                  </div>
+                  <div className="flex justify-between gap-2 mb-2">
+                    <span className="text-white/90 font-semibold shrink-0">მისამართი2</span>
+                    <span className="text-white/90 text-right break-words">{userRoomNumber}</span>
+                  </div>
+                  <div className="flex justify-between gap-2 mb-2">
+                    <span className="text-white/90 font-semibold shrink-0">{tAddr('country')}</span>
+                    <span className="text-white/90 text-right">{row.country}</span>
                   </div>
                   <div className="flex justify-between gap-2 mb-2">
                     <span className="text-white/90 font-semibold shrink-0">{tAddr('city')}</span>
                     <span className="text-white/90 text-right">{row.city}</span>
-                  </div>
-                  <div className="flex justify-between gap-2 mb-2">
-                    <span className="text-white/90 font-semibold shrink-0">{tAddr('street')}</span>
-                    <span className="text-white/90 text-right break-all">{row.street}</span>
                   </div>
                   <div className="flex justify-between gap-2">
                     <span className="text-white/90 font-semibold shrink-0">{tAddr('postalCode')}</span>

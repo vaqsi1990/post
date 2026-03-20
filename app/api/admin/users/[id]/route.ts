@@ -34,7 +34,7 @@ export async function GET(
           city: true,
           address: true,
           balance: true,
-          poNumber: true,
+              roomNumber: true,
           role: true,
           createdAt: true,
           updatedAt: true,

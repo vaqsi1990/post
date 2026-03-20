@@ -33,7 +33,7 @@ model User {
   city              String?
   address           String?
   balance           Float    @default(0)  // მომხმარებლის ბალანსი (GEL)
-  poNumber          Int      @default(autoincrement()) @unique // მომხმარებლის PO ნომერი (დარეგისტრირების რიგითობა)
+  roomNumber      String?      @unique // მომხმარებლის ოთახის ნომერი (მაგ. PO1, PO2, PO3...)
   role              UserRole @default(USER)
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
