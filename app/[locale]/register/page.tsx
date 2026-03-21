@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter, Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
-import { registerSchema } from '@/lib/validations';
+import { ZodError } from 'zod';
+import { hasGeorgianLetter, hasLatinLetter, registerSchema } from '@/lib/validations';
 import type { RegisterInput } from '@/lib/validations';
 
 const RegisterPage = () => {
@@ -122,11 +123,11 @@ const RegisterPage = () => {
         router.push('/login');
       }
     } catch (error: unknown) {
-      const err = error as { name?: string; errors?: Array<{ path: string[]; message: string }> };
-      if (err.name === 'ZodError' && err.errors) {
+      if (error instanceof ZodError) {
         const fieldErrors: Record<string, string> = {};
-        err.errors.forEach((e) => {
-          if (e.path[0]) fieldErrors[e.path[0]] = e.message;
+        error.issues.forEach((e) => {
+          const key = e.path[0];
+          if (key !== undefined) fieldErrors[String(key)] = e.message;
         });
         setErrors(fieldErrors);
       } else {
@@ -160,29 +161,53 @@ const RegisterPage = () => {
           <div className="rounded-md space-y-4">
             <div>
               <label htmlFor="firstName" className="block text-[16px] font-medium text-black mb-1">{t('firstName')}</label>
+              <p className="mb-1 text-[13px] text-gray-600">{t('nameLatinHint')}</p>
               <input
                 id="firstName"
                 name="firstName"
                 type="text"
+                lang="en"
+                inputMode="text"
+                autoComplete="given-name"
                 value={formData.firstName}
                 onChange={handleChange}
                 className={`appearance-none relative block w-full px-3 py-2 border ${errors.firstName ? 'border-red-300 text-black' : 'border-gray-300 text-black'} placeholder-gray-500 rounded-md focus:outline-none focus:ring-black focus:border-black sm:text-[16px]`}
-                placeholder={t('firstName')}
+                placeholder={t('firstNamePlaceholder')}
               />
+              {hasGeorgianLetter(formData.firstName) && (
+                <p
+                  role="status"
+                  className="mt-1 text-[13px] leading-snug text-red-600"
+                >
+                  {t('nameLatinWarning')}
+                </p>
+              )}
               {errors.firstName && <p className="mt-1 text-[16px] text-red-600">{errors.firstName}</p>}
             </div>
 
             <div>
               <label htmlFor="lastName" className="block text-[16px] font-medium text-black mb-1">{t('lastName')}</label>
+              <p className="mb-1 text-[13px] text-gray-600">{t('nameLatinHint')}</p>
               <input
                 id="lastName"
                 name="lastName"
                 type="text"
+                lang="en"
+                inputMode="text"
+                autoComplete="family-name"
                 value={formData.lastName}
                 onChange={handleChange}
                 className={`appearance-none relative block w-full px-3 py-2 border ${errors.lastName ? 'border-red-300 text-black' : 'border-gray-300 text-black'} placeholder-gray-500 rounded-md focus:outline-none focus:ring-black focus:border-black sm:text-[16px]`}
-                placeholder={t('lastName')}
+                placeholder={t('lastNamePlaceholder')}
               />
+              {hasGeorgianLetter(formData.lastName) && (
+                <p
+                  role="status"
+                  className="mt-1 text-[13px] leading-snug text-red-600"
+                >
+                  {t('nameLatinWarning')}
+                </p>
+              )}
               {errors.lastName && <p className="mt-1 text-[16px] text-red-600">{errors.lastName}</p>}
             </div>
 
@@ -245,31 +270,51 @@ const RegisterPage = () => {
 
             <div>
               <label htmlFor="city" className="block text-[16px] font-medium text-black mb-1">{t('city')}</label>
+              <p className="mb-1 text-[13px] text-gray-600">{t('georgianFieldHint')}</p>
               <input
                 id="city"
                 name="city"
                 type="text"
+                lang="ka"
                 required
                 value={formData.city}
                 onChange={handleChange}
                 className={`appearance-none relative block w-full px-3 py-2 border ${errors.city ? 'border-red-300 text-black' : 'border-gray-300 text-black'} placeholder-gray-500 rounded-md focus:outline-none focus:ring-black focus:border-black sm:text-[16px]`}
                 placeholder={t('cityPlaceholder')}
               />
+              {hasLatinLetter(formData.city) && (
+                <p
+                  role="status"
+                  className="mt-1 text-[13px] leading-snug text-red-600"
+                >
+                  {t('georgianLatinWarning')}
+                </p>
+              )}
               {errors.city && <p className="mt-1 text-[16px] text-red-600">{errors.city}</p>}
             </div>
 
             <div>
               <label htmlFor="address" className="block text-[16px] font-medium text-black mb-1">{t('address')}</label>
+              <p className="mb-1 text-[13px] text-gray-600">{t('georgianFieldHint')}</p>
               <input
                 id="address"
                 name="address"
                 type="text"
+                lang="ka"
                 required
                 value={formData.address}
                 onChange={handleChange}
                 className={`appearance-none relative block w-full px-3 py-2 border ${errors.address ? 'border-red-300 text-black' : 'border-gray-300 text-black'} placeholder-gray-500 rounded-md focus:outline-none focus:ring-black focus:border-black sm:text-[16px]`}
                 placeholder={t('addressPlaceholder')}
               />
+              {hasLatinLetter(formData.address) && (
+                <p
+                  role="status"
+                  className="mt-1 text-[13px] leading-snug text-red-600"
+                >
+                  {t('georgianLatinWarning')}
+                </p>
+              )}
               {errors.address && <p className="mt-1 text-[16px] text-red-600">{errors.address}</p>}
             </div>
 
