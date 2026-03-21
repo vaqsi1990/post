@@ -20,6 +20,10 @@ const Footer = () => {
             <div>
               {t('addressLabel')}: {t('addressValue')}
             </div>
+
+            <div className="mt-1">
+              {t('hoursLabel')}: {t('hoursValue')}
+            </div>
             <div className="mt-1">
               {t('phoneLabel')}:{" "}
               <a
@@ -28,9 +32,6 @@ const Footer = () => {
               >
                 {t('phoneValue')}
               </a>
-            </div>
-            <div className="mt-1">
-              {t('hoursLabel')}: {t('hoursValue')}
             </div>
           </div>
 

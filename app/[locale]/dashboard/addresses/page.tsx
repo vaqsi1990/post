@@ -32,7 +32,7 @@ const FLAGS: Record<string, React.ComponentType<{ title?: string; className?: st
 // Desktop: show Georgian next to flag, English below it.
 const COUNTRY_KA: Record<string, string> = {
   GB: 'დიდი ბრიტანეთი',
-  US: 'აშშ',
+  US: 'ამერიკა ',
   CN: 'ჩინეთი',
   IT: 'იტალია',
   GR: 'საბერძნეთი',
