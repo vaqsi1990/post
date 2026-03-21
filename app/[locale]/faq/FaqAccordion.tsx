@@ -21,7 +21,7 @@ export default function FaqAccordion({ isKa }: Props) {
         {
           question: "რატომ Postifly?",
           answer:
-            "გთავაზობთ სწრაფ, უსაფრთხო და გამჭირვალე მომსახურებას; კომფორტულ ონლაინ კაბინეტს; 9 ქვეყანაში შოპინგის შესაძლებლობას; ამანათების სტატუსების მუდმივ განახლებას; ონლაინ გიდის დახმარებას, რომელიც გაგიმარტივებთ შოპინგს; სწრაფი და უსაფრთხო მომსახურება.",
+            "გთავაზობთ სწრაფ, უსაფრთხო და გამჭირვალე მომსახურებას; კომფორტულ ონლაინ კაბინეტს; 9 ქვეყანაში შოპინგის შესაძლებლობას; ამანათების სტატუსების მუდმივ განახლებას; ონლაინ გიდის დახმარებას, რომელიც გაგიმარტივებთ შოპინგს; სწრაფი და უსაფრთხო საკურიერო მომსახურება მთელი საქართველოს მასშტაბით.",
         },
         {
           question: "როგორ გამოვიწეროთ?",
@@ -47,7 +47,7 @@ export default function FaqAccordion({ isKa }: Props) {
         {
           question: "Why Postifly?",
           answer:
-            "We offer fast, safe and transparent service; a convenient online cabinet; the opportunity to shop in 9 countries; constant updates of parcel statuses; the help of an online guide that makes shopping easier; and fast and safe courier service.",
+            "We offer fast, safe and transparent service; a convenient online cabinet; the opportunity to shop in 9 countries; constant updates of parcel statuses; the help of an online guide that makes shopping easier; and fast and safe courier service throughout Georgia.",
         },
         {
           question: "How to order?",
