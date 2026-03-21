@@ -14,12 +14,31 @@ const Footer = () => {
       }}
     >
       <div className="max-w-6xl mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-          <div className="flex flex-col gap-4">
-              <h2 className="text-white text-[16px] font-semibold">
-                {t('contactUsTitle')}
-              </h2>
-            <div className="flex items-center  gap-3">
+        <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
+          <div className="text-white/90 text-[14px] leading-relaxed md:max-w-[min(100%,28rem)] md:text-left">
+            <div className="font-semibold text-[16px] md:text-[18px] mb-1">{t('contactsTitle')}</div>
+            <div>
+              {t('addressLabel')}: {t('addressValue')}
+            </div>
+            <div className="mt-1">
+              {t('phoneLabel')}:{" "}
+              <a
+                className="underline decoration-white/40 hover:decoration-white/80"
+                href={`tel:${t('phoneValue').replace(/\s+/g, '')}`}
+              >
+                {t('phoneValue')}
+              </a>
+            </div>
+            <div className="mt-1">
+              {t('hoursLabel')}: {t('hoursValue')}
+            </div>
+          </div>
+
+          <div className="flex shrink-0 flex-col gap-4 self-end md:self-auto md:items-end">
+            <h2 className="text-right text-[16px] font-semibold text-white">
+              {t('contactUsTitle')}
+            </h2>
+            <div className="flex items-center gap-3">
               <a
                 href="https://wa.me/995591357357"
                 target="_blank"
@@ -41,25 +60,6 @@ const Footer = () => {
                 {/* Facebook icon */}
                 <FaFacebook className="text-white text-[22px]" />
               </a>
-            </div>
-          </div>
-
-          <div className="text-white/90 text-[14px] leading-relaxed md:justify-self-end md:text-right">
-            <div className="font-semibold text-[16px] md:text-[18px] mb-1">{t('contactsTitle')}</div>
-            <div>
-              {t('addressLabel')}: {t('addressValue')}
-            </div>
-            <div className="mt-1">
-              {t('phoneLabel')}:{" "}
-              <a
-                className="underline decoration-white/40 hover:decoration-white/80"
-                href={`tel:${t('phoneValue').replace(/\\s+/g, '')}`}
-              >
-                {t('phoneValue')}
-              </a>
-            </div>
-            <div className="mt-1">
-              {t('hoursLabel')}: {t('hoursValue')}
             </div>
           </div>
         </div>

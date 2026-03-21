@@ -27,7 +27,7 @@ const FLAGS: Record<string, React.ComponentType<{ title?: string; className?: st
   TR,
 };
 
-type DeliveryNoteKey = 'tariffAirShipping';
+type DeliveryNoteKey = 'tariffAirShipping' | 'tariffLandShipping';
 
 type TariffRow = {
   countryKey: string;
@@ -39,9 +39,30 @@ type TariffRow = {
 };
 
 const TARIFF_ROWS: TariffRow[] = [
-  { countryKey: 'uk' as const, countryCode: 'GB', pricePerKg: 4.5, deliveryDaysPrefix: '5-7', currencySymbol: '$' },
-  { countryKey: 'us' as const, countryCode: 'US', pricePerKg: 5.5, deliveryDaysPrefix: '7-10', currencySymbol: '$' },
-  { countryKey: 'cn' as const, countryCode: 'CN', pricePerKg: 3.2, deliveryDaysPrefix: '10-14', currencySymbol: '$' },
+  {
+    countryKey: 'unitedkingdom' as const,
+    countryCode: 'GB',
+    pricePerKg: 7,
+    deliveryDaysPrefix: '3-7',
+    currencySymbol: '£',
+    deliveryNoteKey: 'tariffAirShipping',
+  },
+  {
+    countryKey: 'usa' as const,
+    countryCode: 'US',
+    pricePerKg: 8,
+    deliveryDaysPrefix: '3-7',
+    currencySymbol: '$',
+    deliveryNoteKey: 'tariffAirShipping',
+  },
+  {
+    countryKey: 'china' as const,
+    countryCode: 'CN',
+    pricePerKg: 12,
+    deliveryDaysPrefix: '5-8',
+    currencySymbol: '$',
+    deliveryNoteKey: 'tariffAirShipping',
+  },
   {
     countryKey: 'italy' as const,
     countryCode: 'IT',
@@ -50,7 +71,14 @@ const TARIFF_ROWS: TariffRow[] = [
     currencySymbol: '€',
     deliveryNoteKey: 'tariffAirShipping',
   },
-  { countryKey: 'gr' as const, countryCode: 'GR', pricePerKg: 3.8, deliveryDaysPrefix: '5-7', currencySymbol: '$' },
+  {
+    countryKey: 'greece' as const,
+    countryCode: 'GR',
+    pricePerKg: 7,
+    deliveryDaysPrefix: '1-3',
+    currencySymbol: '€',
+    deliveryNoteKey: 'tariffAirShipping',
+  },
   {
     countryKey: 'spain' as const,
     countryCode: 'ES',
@@ -75,7 +103,14 @@ const TARIFF_ROWS: TariffRow[] = [
     currencySymbol: '€',
     deliveryNoteKey: 'tariffAirShipping',
   },
-  { countryKey: 'tr' as const, countryCode: 'TR', pricePerKg: 2.8, deliveryDaysPrefix: '3-5', currencySymbol: '$' },
+  {
+    countryKey: 'turkey' as const,
+    countryCode: 'TR',
+    pricePerKg: 4,
+    deliveryDaysPrefix: '3-6',
+    currencySymbol: '$',
+    deliveryNoteKey: 'tariffLandShipping',
+  },
 ];
 
 const viewport = { once: true, amount: 0.15, margin: '-60px 0px -60px 0px' };

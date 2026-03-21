@@ -91,7 +91,7 @@
     "madeWith": "Made with care",
     "contactUsTitle": "Contact us:",
     "contactsTitle": "Contacts",
-    "addressLabel": "Office address",
+    "addressLabel": "address",
     "addressValue": "0160 Tbilisi, Yuri Gagarin street 4/4a",
     "phoneLabel": "Phone",
     "phoneValue": "591 357 357",
@@ -130,7 +130,8 @@
     "tariffDelivery": "Delivery",
     "tariffPrice": "Price",
     "tariffDeliveryDays": "days",
-    "tariffAirShipping": "(air shipping)"
+    "tariffAirShipping": "(air shipping)",
+    "tariffLandShipping": "(land shipping)"
   },
   "login": {
     "title": "Login",
