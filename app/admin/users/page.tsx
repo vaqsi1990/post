@@ -1,4 +1,5 @@
 import AdminShell from '../components/AdminShell';
+import { formatDateDMY } from '../../../lib/formatDate';
 import prisma from '../../../lib/prisma';
 import UsersTable from './components/UsersTable';
 
@@ -20,7 +21,7 @@ export default async function AdminUsersPage() {
   // Format dates on server side to avoid hydration mismatch
   const formattedUsers = users.map((user) => ({
     ...user,
-    createdAt: new Date(user.createdAt).toLocaleDateString('ka-GE'),
+    createdAt: formatDateDMY(user.createdAt),
   }));
 
   return (

@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import bcrypt from 'bcryptjs';
 import { ZodError } from 'zod';
 import { authOptions } from '../../../../lib/auth';
+import { formatDateDMY } from '../../../../lib/formatDate';
 import prisma from '../../../../lib/prisma';
 import { adminCreateUserSchema } from '../../../../lib/validations';
 import { normalizePhone } from '../../../../lib/sms';
@@ -145,7 +146,7 @@ export async function POST(request: NextRequest) {
         message: 'მომხმარებელი წარმატებით დარეგისტრირდა',
         user: {
           ...user,
-          createdAt: new Date(user.createdAt).toLocaleDateString('ka-GE'),
+          createdAt: formatDateDMY(user.createdAt),
         },
       },
       { status: 201 }

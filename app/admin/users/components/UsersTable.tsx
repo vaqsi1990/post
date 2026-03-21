@@ -2,6 +2,7 @@
 
 import { Fragment, useEffect, useState } from 'react';
 import { Link } from '@/i18n/navigation';
+import { formatDateDMY, formatDateTimeDMY } from '@/lib/formatDate';
 
 type User = {
   id: string;
@@ -97,7 +98,7 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
         // Format dates on client side
         const formattedUsers = data.users.map((user: any) => ({
           ...user,
-          createdAt: new Date(user.createdAt).toLocaleDateString('ka-GE'),
+          createdAt: formatDateDMY(user.createdAt),
         }));
         setUsers(formattedUsers);
       }
@@ -144,19 +145,19 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
         ...d,
         user: {
           ...d.user,
-          createdAt: new Date(d.user.createdAt).toLocaleString('ka-GE'),
-          updatedAt: new Date(d.user.updatedAt).toLocaleString('ka-GE'),
+          createdAt: formatDateTimeDMY(d.user.createdAt),
+          updatedAt: formatDateTimeDMY(d.user.updatedAt),
         },
         addresses: Array.isArray(d.addresses)
           ? d.addresses.map((a) => ({
               ...a,
-              createdAt: new Date(a.createdAt).toLocaleString('ka-GE'),
+              createdAt: formatDateTimeDMY(a.createdAt),
             }))
           : [],
         parcels: Array.isArray(d.parcels)
           ? d.parcels.map((p) => ({
               ...p,
-              createdAt: new Date(p.createdAt).toLocaleString('ka-GE'),
+              createdAt: formatDateTimeDMY(p.createdAt),
             }))
           : [],
         parcelsCount: typeof d.parcelsCount === 'number' ? d.parcelsCount : 0,

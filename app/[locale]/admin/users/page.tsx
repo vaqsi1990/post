@@ -1,4 +1,5 @@
 import AdminShell from '@/app/admin/components/AdminShell';
+import { formatDateDMY } from '@/lib/formatDate';
 import prisma from '@/lib/prisma';
 import UsersTable from '@/app/admin/users/components/UsersTable';
 
@@ -21,7 +22,7 @@ export default async function AdminUsersPageLocale(_props: Props) {
 
   const formattedUsers = users.map((user) => ({
     ...user,
-    createdAt: new Date(user.createdAt).toLocaleDateString('ka-GE'),
+    createdAt: formatDateDMY(user.createdAt),
   }));
 
   return (
