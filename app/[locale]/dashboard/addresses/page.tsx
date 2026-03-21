@@ -70,7 +70,12 @@ const ADDRESS_ROWS: AddressRow[] = [
     phone: '+33 7 53 19 86 83',
   },
 
-  { countryKey: 'gr', countryCode: 'GR', adress: '', postalCode: '' },
+  {
+    countryKey: 'gr', countryCode: 'GR', cityKey: 'paris',
+    adress: '7 bis rue decres',
+    postalCode: '75014',
+    phone: '+33 7 53 19 86 83',
+  },
   {
     countryKey: 'es',
     countryCode: 'ES',
@@ -152,10 +157,10 @@ export default async function DashboardAddressesPage({ params }: Props) {
 
             <div className="md:hidden space-y-3">
               {addressList.map((row, i) => (
-               <div key={i}>
-               
-               <div  className="rounded-lg border border-white/10 bg-white/5 p-3 text-sm">
-               <div className="flex items-center justify-between gap-2 mb-2">
+                <div key={i}>
+
+                  <div className="rounded-lg border border-white/10 bg-white/5 p-3 text-sm">
+                    <div className="flex items-center justify-between gap-2 mb-2">
                       <div className="flex items-center gap-2">
                         {(() => {
                           const Flag = FLAGS[row.countryCode];
@@ -171,48 +176,48 @@ export default async function DashboardAddressesPage({ params }: Props) {
                         </span>
                       </div>
                     </div>
-                  {hasUserName ? (
-                    <>
-                      <div className="flex justify-between gap-2 mb-1">
-                        <span className="text-white/90 font-semibold shrink-0">{tAddr('name')}</span>
-                        <span className="text-white/90 text-right break-all">{userFirstName} </span>
-                      </div>
-                      <div className="flex justify-between gap-2 mb-1">
-                        <span className="text-white/90 font-semibold shrink-0">{tAddr('lastname')}</span>
-                        <span className="text-white/90 text-right break-all">{userLastName} </span>
-                      </div>
-                    </>
-                  ) : null}
-                  <div className="flex justify-between gap-2 mb-1">
-                    <span className="text-white/90 font-semibold shrink-0">{tAddr('street')}</span>
-                    <span className="text-white/90 text-right break-all">{row.adress}</span>
-                  </div>
-                  <div className="flex justify-between gap-2 mb-1">
-                    <span className="text-white/90 font-semibold shrink-0">{tAddr('street2')}</span>
-                    <span className="text-white/90 text-right break-words">{userRoomNumber}</span>
-                  </div>
-                  <div className="flex items-start justify-between gap-2 mb-2">
-                    <span className="text-white/90 font-semibold shrink-0">{tAddr('country')}</span>
-                    
-                      <span className="text-white/90 text-[14px] font-semibold">{row.country}</span>
-                  </div>
-                  <div className="flex justify-between gap-2 mb-1">
-                    <span className="text-white/90 font-semibold shrink-0">{tAddr('city')}</span>
-                    <span className="text-white/90 text-right">{row.city}</span>
-                  </div>
-
-                  <div className="flex justify-between gap-2">
-                    <span className="text-white/90 font-semibold shrink-0">{tAddr('postalCode')}</span>
-                    <span className="text-white/90 font-medium">{row.postalCode}</span>
-                  </div>
-                  {row.phone ? (
-                    <div className="flex justify-between gap-2 mt-1">
-                      <span className="text-white/90 font-semibold shrink-0">{tAddr('phone')}</span>
-                      <span className="text-white/90 font-medium">{row.phone}</span>
+                    {hasUserName ? (
+                      <>
+                        <div className="flex justify-between gap-2 mb-1">
+                          <span className="text-white/90 font-semibold shrink-0">{tAddr('name')}</span>
+                          <span className="text-white/90 text-right break-all">{userFirstName} </span>
+                        </div>
+                        <div className="flex justify-between gap-2 mb-1">
+                          <span className="text-white/90 font-semibold shrink-0">{tAddr('lastname')}</span>
+                          <span className="text-white/90 text-right break-all">{userLastName} </span>
+                        </div>
+                      </>
+                    ) : null}
+                    <div className="flex justify-between gap-2 mb-1">
+                      <span className="text-white/90 font-semibold shrink-0">{tAddr('street')}</span>
+                      <span className="text-white/90 text-right break-all">{row.adress}</span>
                     </div>
-                  ) : null}
+                    <div className="flex justify-between gap-2 mb-1">
+                      <span className="text-white/90 font-semibold shrink-0">{tAddr('street2')}</span>
+                      <span className="text-white/90 text-right break-words">{userRoomNumber}</span>
+                    </div>
+                    <div className="flex items-start justify-between gap-2 mb-2">
+                      <span className="text-white/90 font-semibold shrink-0">{tAddr('country')}</span>
+
+                      <span className="text-white/90 text-[14px] font-semibold">{row.country}</span>
+                    </div>
+                    <div className="flex justify-between gap-2 mb-1">
+                      <span className="text-white/90 font-semibold shrink-0">{tAddr('city')}</span>
+                      <span className="text-white/90 text-right">{row.city}</span>
+                    </div>
+
+                    <div className="flex justify-between gap-2">
+                      <span className="text-white/90 font-semibold shrink-0">{tAddr('postalCode')}</span>
+                      <span className="text-white/90 font-medium">{row.postalCode}</span>
+                    </div>
+                    {row.phone ? (
+                      <div className="flex justify-between gap-2 mt-1">
+                        <span className="text-white/90 font-semibold shrink-0">{tAddr('phone')}</span>
+                        <span className="text-white/90 font-medium">{row.phone}</span>
+                      </div>
+                    ) : null}
+                  </div>
                 </div>
-               </div>
               ))}
             </div>
 
