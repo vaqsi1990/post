@@ -1,6 +1,6 @@
 /** Parcel.originCountry ინახება ფორმის კოდით (us, uk, …) ან ISO-სტილით (US, …) */
 const LABEL_BY_CODE: Record<string, string> = {
-  us: 'America',
+  us: 'USA',
 };
 
 export function formatOriginCountryLabel(

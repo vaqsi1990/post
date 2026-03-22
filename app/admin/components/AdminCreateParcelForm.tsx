@@ -280,7 +280,7 @@ export default function AdminCreateParcelForm() {
               required
               value={userEmail}
               onChange={(e) => setUserEmail(e.target.value)}
-              className="w-full placeholder:font-bold placeholder:text-black placeholder:text-[16px] rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
+              className="w-full placeholder:font-normal placeholder:text-black placeholder:text-[14px] rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
               placeholder={t('userEmailPlaceholder')}
             />
           </div>
@@ -293,7 +293,7 @@ export default function AdminCreateParcelForm() {
               type="text"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              className="w-full placeholder:font-bold placeholder:text-black placeholder:text-[16px] rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
+              className="w-full placeholder:font-normal placeholder:text-black placeholder:text-[14px] rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
               placeholder={t('phonePlaceholder')}
             />
           </div>
@@ -307,7 +307,7 @@ export default function AdminCreateParcelForm() {
               required
               value={customerName}
               onChange={(e) => setCustomerName(e.target.value)}
-              className="w-full placeholder:font-bold placeholder:text-black placeholder:text-[16px] rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
+              className="w-full placeholder:font-normal placeholder:text-black placeholder:text-[14px] rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
               placeholder={t('customerNamePlaceholder')}
             />
           </div>
@@ -321,7 +321,7 @@ export default function AdminCreateParcelForm() {
               required
               value={trackingNumber}
               onChange={(e) => setTrackingNumber(e.target.value)}
-              className="w-full placeholder:font-bold placeholder:text-black placeholder:text-[16px] rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
+              className="w-full placeholder:font-normal placeholder:text-black placeholder:text-[14px] rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
               placeholder={t('trackingPlaceholder')}
             />
           </div>
@@ -336,7 +336,7 @@ export default function AdminCreateParcelForm() {
               required
               value={price}
               onChange={(e) => setPrice(e.target.value)}
-              className="w-full placeholder:font-bold placeholder:text-black placeholder:text-[16px] rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
+              className="w-full placeholder:font-normal placeholder:text-black placeholder:text-[14px] rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
               placeholder={t('pricePlaceholder')}
             />
           
@@ -351,7 +351,7 @@ export default function AdminCreateParcelForm() {
               required
               value={onlineShop}
               onChange={(e) => setOnlineShop(e.target.value)}
-              className="w-full placeholder:font-bold placeholder:text-black placeholder:text-[16px] rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
+              className="w-full placeholder:font-normal placeholder:text-black placeholder:text-[14px] rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
               placeholder={t('onlineShopPlaceholder')}
             />
           </div>
@@ -364,7 +364,7 @@ export default function AdminCreateParcelForm() {
               type="text"
               value={city}
               onChange={(e) => setCity(e.target.value)}
-              className="w-full placeholder:font-bold placeholder:text-black placeholder:text-[16px] rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
+              className="w-full placeholder:font-normal placeholder:text-black placeholder:text-[14px] rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
               placeholder={t('cityPlaceholder')}
             />
           </div>
@@ -377,7 +377,7 @@ export default function AdminCreateParcelForm() {
               type="text"
               value={address}
               onChange={(e) => setAddress(e.target.value)}
-              className="w-full placeholder:font-bold placeholder:text-black placeholder:text-[16px] rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
+              className="w-full placeholder:font-normal placeholder:text-black placeholder:text-[14px] rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
               placeholder={t('addressPlaceholder')}
             />
           </div>
@@ -392,7 +392,7 @@ export default function AdminCreateParcelForm() {
               required
               value={quantity}
               onChange={(e) => setQuantity(e.target.value)}
-              className="w-full placeholder:font-bold placeholder:text-black placeholder:text-[16px] rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
+              className="w-full placeholder:font-normal placeholder:text-black placeholder:text-[14px] rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
             />
           </div>
 
@@ -413,7 +413,7 @@ export default function AdminCreateParcelForm() {
             <button
               type="button"
               onClick={() => setCountryOpen((o) => !o)}
-              className="flex w-full items-center gap-3 rounded-lg placeholder:font-bold placeholder:text-black placeholder:text-[16px] border border-gray-300 bg-white px-3 py-2.5 text-left text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
+              className="flex w-full items-center gap-3 rounded-lg placeholder:font-normal placeholder:text-black placeholder:text-[14px] border border-gray-300 bg-white px-3 py-2.5 text-left text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
               aria-expanded={countryOpen}
               aria-haspopup="listbox"
             >
@@ -477,7 +477,7 @@ export default function AdminCreateParcelForm() {
               required
               value={weight}
               onChange={(e) => setWeight(e.target.value)}
-              className="w-full placeholder:font-bold placeholder:text-black placeholder:text-[16px] rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
+              className="w-full placeholder:font-normal placeholder:text-black placeholder:text-[14px] rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
               placeholder={t('weightPlaceholder')}
             />
             {calculated != null && (
@@ -497,7 +497,7 @@ export default function AdminCreateParcelForm() {
             required
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="min-h-[80px] w-full rounded-lg placeholder:font-bold placeholder:text-black placeholder:text-[16px] border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
+            className="min-h-[80px] w-full rounded-lg placeholder:font-normal placeholder:text-black placeholder:text-[14px] border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
           />
         </div>
 
