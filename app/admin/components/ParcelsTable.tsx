@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { formatOriginCountryLabel } from '@/lib/formatOriginCountry';
 
 type Parcel = {
   id: string;
@@ -257,7 +258,7 @@ export default function ParcelsTable({ parcels: initialParcels, currentStatus, o
                 </div>
                 <div className="text-right text-[13px] text-black">
                   <p>{parcel.createdAt}</p>
-                  <p>{parcel.originCountry || '—'}</p>
+                  <p>{formatOriginCountryLabel(parcel.originCountry)}</p>
                 </div>
               </div>
 
@@ -493,7 +494,7 @@ export default function ParcelsTable({ parcels: initialParcels, currentStatus, o
                           <span>{parcel.quantity}</span>
 
                           <span className="text-black">ქვეყანა</span>
-                          <span>{parcel.originCountry || '—'}</span>
+                          <span>{formatOriginCountryLabel(parcel.originCountry)}</span>
 
                           <span className="text-black">წონა</span>
                           <span>

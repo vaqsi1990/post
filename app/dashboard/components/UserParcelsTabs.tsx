@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Link } from '@/i18n/navigation';
+import { formatOriginCountryLabel } from '@/lib/formatOriginCountry';
 
 export type UserParcel = {
   id: string;
@@ -11,6 +12,8 @@ export type UserParcel = {
   shippingAmount: number | null;
   currency: string;
   weight: string;
+  /** წონა კგ-ში — ტარიფის მიბმა */
+  weightKg: number | null;
   originCountry: string | null;
   quantity: number;
   customerName: string;
@@ -18,12 +21,21 @@ export type UserParcel = {
   courierServiceRequested: boolean;
   /** ადმინის მიერ დაყენებული საკურიერო გადასახადი */
   courierFeeAmount: number | null;
-  /** ადმინის მიერ დაყენებული ძირითადი გადასახდელი (ჩამოსული) */
+  /** ადმინის ძირითადი გადასახდელი (რეზერვი) */
   payableAmount: number | null;
+  /** წონა × /admin/tariffs-ის კგ-ის ფასი (აქტიური ტარიფი) */
+  tariffShippingPayable: number | null;
+  /** იმავე ტარიფის 1 კგ-ის ფასი */
+  tariffPricePerKg: number | null;
 };
 
+function baseShippingDue(p: UserParcel): number {
+  if (p.tariffShippingPayable != null) return p.tariffShippingPayable;
+  return p.shippingAmount ?? p.payableAmount ?? 0;
+}
+
 function totalDue(p: UserParcel): number {
-  const base = p.payableAmount ?? 0;
+  const base = baseShippingDue(p);
   const courier =
     p.courierServiceRequested && p.courierFeeAmount != null ? p.courierFeeAmount : 0;
   return Math.round((base + courier) * 100) / 100;
@@ -47,9 +59,9 @@ const COURIER_ERR = 'შენახვა ვერ მოხერხდა. �
 /** საკურიერო ჩართულია, საკურიერო გადასახადი ჯერ არ არის დაყენებული */
 const COURIER_FEE_PENDING_NOTICE =
   'ადმინისტრაცია დააყენებს საკურიერო გადასახადს.';
-/** ჩამოსული — ძირითადი გადასახდელი ჯერ არ არის დაყენებული */
+/** ტარიფი ვერ მოიძებნა (ქვეყანა/წონა ან /admin/tariffs-ში არ არის შესაბამისი ტარიფი) */
 const PAYABLE_AMOUNT_PENDING_NOTICE =
-  'ადმინისტრაცია გეტყვით  გადასახდელ თანხას.';
+  'ტარიფი ვერ მოიძებნა ამ ქვეყნისა და წონისთვის. დაუკავშირდით ადმინისტრაციას.';
 
 export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
   const [activeStatus, setActiveStatus] = useState<string>('pending');
@@ -66,7 +78,11 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
   const hasAnyAmountDue = filtered.some((p) => totalDue(p) > 0);
   /** წითელი გადახდა, როცა სულ გადასახდელი > 0 */
   const showPaymentColumn = showCourierColumn && hasAnyAmountDue;
-  const emptyColSpan = showCourierColumn ? (showPaymentColumn ? 9 : 8) : 6;
+  const emptyColSpan = showCourierColumn
+    ? showPaymentColumn
+      ? 10
+      : 9
+    : 7;
 
   const handleCourierToggle = async (parcel: UserParcel, next: boolean) => {
     if (parcel.status !== 'arrived') return;
@@ -156,6 +172,9 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
                 რაოდენობა
               </th>
               <th className="px-4 py-3 text-left text-[16px] font-semibold text-black">
+                საიდან
+              </th>
+              <th className="px-4 py-3 text-left text-[16px] font-semibold text-black">
                 წონა
               </th>
               <th className="px-4 py-3 text-left text-[16px] font-semibold text-black">
@@ -200,8 +219,11 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
                   <td className="px-4 py-3 text-[15px] text-black">
                     {parcel.customerName}
                   </td>
-                  <td className="px-4 py-3 text-[15px] text-black">
+                  <td className="px-4 py-3 text-[15px] text-black tabular-nums">
                     {parcel.quantity}
+                  </td>
+                  <td className="px-4 py-3 text-[15px] text-black">
+                    {formatOriginCountryLabel(parcel.originCountry)}
                   </td>
                   <td className="px-4 py-3 text-[15px] text-black">
                     {parcel.weight || '—'}
@@ -215,13 +237,22 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
                   </td>
                   {showCourierColumn && (
                     <td className="px-4 py-3 text-[15px] text-black">
-                      <div className="flex max-w-[15rem] flex-col gap-1">
-                        {parcel.payableAmount != null && (
-                          <span className="text-[13px] text-black">
-                            {parcel.payableAmount.toFixed(2)} {parcel.currency}
-                          </span>
-                        )}
-                        {parcel.payableAmount == null && (
+                      <div className="flex max-w-[17rem] flex-col gap-1">
+                        {parcel.tariffShippingPayable != null ? (
+                          <>
+                            <span className="text-[13px] font-medium text-black">
+                              {parcel.tariffShippingPayable.toFixed(2)}{' '}
+                              {parcel.currency}
+                            </span>
+                            {parcel.tariffPricePerKg != null &&
+                              parcel.weightKg != null && (
+                                <span className="text-[12px] text-gray-600">
+                                  ({parcel.tariffPricePerKg.toFixed(2)}{' '}
+                                  {parcel.currency}/კგ × {parcel.weightKg} კგ)
+                                </span>
+                              )}
+                          </>
+                        ) : (
                           <span
                             className="rounded-md border border-rose-200 bg-rose-50 px-2 py-1.5 text-[12px] leading-snug text-rose-900"
                             role="status"
@@ -320,13 +351,17 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
                 </div>
                 <div className="text-right text-[13px] text-black">
                   <p>{parcel.createdAt}</p>
-                  <p>{parcel.originCountry || '—'}</p>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-2 text-[13px] text-black">
                 <span className="text-black">რაოდენობა</span>
-                <span className="text-black">{parcel.quantity}</span>
+                <span className="text-black tabular-nums">{parcel.quantity}</span>
+
+                <span className="text-black">საიდან</span>
+                <span className="text-black">
+                  {formatOriginCountryLabel(parcel.originCountry)}
+                </span>
 
                 <span className="text-black">წონა</span>
                 <span className="text-black">{parcel.weight || '—'}</span>
@@ -341,12 +376,20 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
               {showCourierColumn && parcel.status === 'arrived' && (
                 <div className="mt-3 rounded-lg border border-rose-200 bg-rose-50/90 px-3 py-2.5">
                   <p className="text-[13px] font-semibold text-black">გადასახდელი</p>
-                  {parcel.payableAmount != null && (
-                    <p className="mt-1 text-[13px] text-black">
-                      {parcel.payableAmount.toFixed(2)} {parcel.currency}
-                    </p>
-                  )}
-                  {parcel.payableAmount == null && (
+                  {parcel.tariffShippingPayable != null ? (
+                    <div className="mt-1 space-y-0.5">
+                      <p className="text-[13px] font-medium text-black">
+                        {parcel.tariffShippingPayable.toFixed(2)} {parcel.currency}
+                      </p>
+                      {parcel.tariffPricePerKg != null &&
+                        parcel.weightKg != null && (
+                          <p className="text-[12px] text-gray-600">
+                            ({parcel.tariffPricePerKg.toFixed(2)} {parcel.currency}
+                            /კგ × {parcel.weightKg} კგ)
+                          </p>
+                        )}
+                    </div>
+                  ) : (
                     <p
                       className="mt-2 rounded-md border border-rose-200/80 bg-white/80 px-2 py-1.5 text-[12px] leading-snug text-rose-900"
                       role="status"

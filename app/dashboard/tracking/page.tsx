@@ -3,6 +3,7 @@
 import { useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
+import { formatOriginCountryLabel } from '@/lib/formatOriginCountry';
 
 type ParcelResult = {
   id: string;
@@ -102,7 +103,9 @@ function TrackingContent() {
                   <span className="text-black">წონა</span>
                   <span className="text-black">{result.weight} kg</span>
                   <span className="text-black">ქვეყანა</span>
-                  <span className="text-black">{result.originCountry}</span>
+                  <span className="text-black">
+                    {formatOriginCountryLabel(result.originCountry)}
+                  </span>
                 </div>
               </div>
               {result.tracking.length > 0 && (

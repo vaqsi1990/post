@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { z } from 'zod';
 import { authOptions } from '../../../../lib/auth';
 import prisma from '../../../../lib/prisma';
+import { resolveTariffForParcel } from '../../../../lib/tariffLookup';
 import { utapi } from '../../../../lib/uploadthing';
 
 export const dynamic = 'force-dynamic';
@@ -11,18 +12,6 @@ const MAX_FILE_SIZE = 10 * 1024 * 1024; // 5MB
 const ALLOWED_TYPE = 'application/pdf';
 
 const ORIGIN_COUNTRY_CODES = ['uk', 'us', 'cn', 'it', 'gr', 'es', 'fr', 'de', 'tr'] as const;
-
-const FORM_TO_TARIFF_COUNTRY: Record<string, string> = {
-  uk: 'GB',
-  us: 'US',
-  cn: 'CN',
-  it: 'IT',
-  gr: 'GR',
-  es: 'ES',
-  fr: 'FR',
-  de: 'DE',
-  tr: 'TR',
-};
 
 const createParcelSchema = z.object({
   customerName: z.string().min(1, 'მომხმარებლის სახელი აუცილებელია'),
@@ -96,27 +85,29 @@ export async function POST(request: NextRequest) {
       description,
     });
 
-    const tariffCountry = FORM_TO_TARIFF_COUNTRY[parsed.originCountry];
-    const tariff = await prisma.tariff.findFirst({
-      where: {
-        originCountry: tariffCountry,
-        destinationCountry: 'GE',
+    const tariffs = await prisma.tariff.findMany({
+      where: { isActive: true, destinationCountry: 'GE' },
+      select: {
+        originCountry: true,
+        destinationCountry: true,
+        minWeight: true,
+        maxWeight: true,
+        pricePerKg: true,
         isActive: true,
-        minWeight: { lte: parsed.weight },
-        OR: [
-          { maxWeight: null },
-          { maxWeight: { gte: parsed.weight } },
-        ],
       },
-      orderBy: { minWeight: 'desc' },
     });
-    if (!tariff) {
+    const resolved = resolveTariffForParcel(
+      tariffs,
+      parsed.originCountry,
+      parsed.weight,
+    );
+    if (!resolved) {
       return NextResponse.json(
         { error: 'ამ ქვეყნის ტარიფი ვერ მოიძებნა. გთხოვთ დაუკავშირდეთ ადმინისტრაციას.' },
         { status: 400 },
       );
     }
-    const shippingAmount = Math.round(parsed.weight * tariff.pricePerKg * 100) / 100;
+    const shippingAmount = resolved.shippingTotal;
 
     const userId = session.user.id;
 

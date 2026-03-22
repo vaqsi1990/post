@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import { Link } from '@/i18n/navigation';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { resolveTariffForParcel } from '@/lib/tariffLookup';
 import DashboardHeader from '@/app/dashboard/components/DashboardHeader';
 import UserParcelsTabs, { UserParcel } from '@/app/dashboard/components/UserParcelsTabs';
 import { getTranslations } from 'next-intl/server';
@@ -21,7 +22,7 @@ export default async function DashboardPage({ params }: Props) {
 
   const userId = session.user.id;
 
-  const [parcels, user] = await Promise.all([
+  const [parcels, user, tariffs] = await Promise.all([
     prisma.parcel.findMany({
       where: { userId },
       orderBy: { createdAt: 'desc' },
@@ -30,26 +31,47 @@ export default async function DashboardPage({ params }: Props) {
       where: { id: userId },
       select: { balance: true },
     }),
+    prisma.tariff.findMany({
+      where: { isActive: true, destinationCountry: 'GE' },
+      select: {
+        originCountry: true,
+        destinationCountry: true,
+        minWeight: true,
+        maxWeight: true,
+        pricePerKg: true,
+        isActive: true,
+      },
+    }),
   ]);
 
   const balance = user?.balance ?? 0;
 
-  const formattedParcels: UserParcel[] = parcels.map((parcel) => ({
-    id: parcel.id,
-    trackingNumber: parcel.trackingNumber,
-    status: parcel.status,
-    price: parcel.price,
-    shippingAmount: parcel.shippingAmount ?? null,
-    currency: parcel.currency || 'GEL',
-    weight: parcel.weight != null ? `${parcel.weight} kg` : '',
-    originCountry: parcel.originCountry || null,
-    quantity: parcel.quantity,
-    customerName: parcel.customerName,
-    createdAt: new Date(parcel.createdAt).toLocaleDateString('ka-GE'),
-    courierServiceRequested: parcel.courierServiceRequested,
-    courierFeeAmount: parcel.courierFeeAmount,
-    payableAmount: parcel.payableAmount,
-  }));
+  const formattedParcels: UserParcel[] = parcels.map((parcel) => {
+    const resolved = resolveTariffForParcel(
+      tariffs,
+      parcel.originCountry,
+      parcel.weight,
+    );
+    return {
+      id: parcel.id,
+      trackingNumber: parcel.trackingNumber,
+      status: parcel.status,
+      price: parcel.price,
+      shippingAmount: parcel.shippingAmount ?? null,
+      currency: parcel.currency || 'GEL',
+      weight: parcel.weight != null ? `${parcel.weight} kg` : '',
+      weightKg: parcel.weight ?? null,
+      originCountry: parcel.originCountry || null,
+      quantity: parcel.quantity,
+      customerName: parcel.customerName,
+      createdAt: new Date(parcel.createdAt).toLocaleDateString('ka-GE'),
+      courierServiceRequested: parcel.courierServiceRequested,
+      courierFeeAmount: parcel.courierFeeAmount,
+      payableAmount: parcel.payableAmount,
+      tariffShippingPayable: resolved?.shippingTotal ?? null,
+      tariffPricePerKg: resolved?.pricePerKg ?? null,
+    };
+  });
 
   return (
     <div className="  bg min-h-screen py-8">
