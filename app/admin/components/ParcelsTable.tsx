@@ -538,7 +538,7 @@ export default function ParcelsTable({ parcels: initialParcels, currentStatus, o
 
                           {currentStatus === 'arrived' ? (
                             <>
-                              <span className="text-black">გადასახდელი (ტრანსპორტის თანხა)</span>
+                              <span className="text-black">საკურიერო</span>
                               <span className="flex flex-wrap items-center gap-2">
                                 <input
                                   type="text"

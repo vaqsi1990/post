@@ -42,7 +42,7 @@ const STATUS_OPTIONS: { value: string; label: string }[] = [
   { value: 'cancelled', label: 'გაუქმებული' },
 ];
 
-const COURIER_LABEL = 'საკურიერო მომსახურება';
+const COURIER_LABEL = 'საკურიერო ';
 const COURIER_ERR = 'შენახვა ვერ მოხერხდა. სცადეთ თავიდან.';
 /** საკურიერო ჩართულია, საკურიერო გადასახადი ჯერ არ არის დაყენებული */
 const COURIER_FEE_PENDING_NOTICE =
