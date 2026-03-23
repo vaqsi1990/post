@@ -281,7 +281,7 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
                         {parcel.courierServiceRequested &&
                           parcel.courierFeeAmount != null && (
                             <p className="text-[13px] font-medium text-black">
-                              საკურიერო გადასახადი:{' '}
+                              საკურიერო:{' '}
                               {parcel.courierFeeAmount.toFixed(2)} {parcel.currency}
                             </p>
                           )}
@@ -419,7 +419,7 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
                   {parcel.courierServiceRequested &&
                     parcel.courierFeeAmount != null && (
                       <p className="mt-2 text-[14px] font-medium text-black">
-                        საკურიერო გადასახადი:{' '}
+                        საკურიერო:{' '}
                         {parcel.courierFeeAmount.toFixed(2)} {parcel.currency}
                       </p>
                     )}

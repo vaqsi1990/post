@@ -331,7 +331,7 @@ export default function ParcelsTable({ parcels: initialParcels, currentStatus, o
                     </span>
 
                     <span className="col-span-2 mt-1 border-t border-gray-100 pt-2 text-[12px] font-semibold text-amber-900">
-                      საკურიერო გადასახადი
+                      საკურიერ
                       {parcel.courierServiceRequested ? (
                         <span className="ml-1 font-normal text-amber-800">
                           (მომხმარებელმა მოითხოვა)
@@ -539,7 +539,7 @@ export default function ParcelsTable({ parcels: initialParcels, currentStatus, o
 
                           {currentStatus === 'arrived' ? (
                             <>
-                              <span className="text-black">საკურიერო</span>
+                              <span className="text-black">გადასახდელი</span>
                               <span className="flex flex-wrap items-center gap-2">
                                 <input
                                   type="text"
@@ -571,7 +571,7 @@ export default function ParcelsTable({ parcels: initialParcels, currentStatus, o
                                 </button>
                               </span>
 
-                              <span className="text-black">საკურიერო გადასახადი</span>
+                              <span className="text-black">საკურიერო</span>
                               <span className="flex flex-col gap-1">
                                 {parcel.courierServiceRequested ? (
                                   <span className="text-[12px] text-amber-900">
