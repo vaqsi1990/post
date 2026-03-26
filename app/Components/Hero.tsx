@@ -46,7 +46,6 @@ const Hero = () => {
     [t]
   );
   const [textIndex, setTextIndex] = useState(0);
-  const layer0Ref = useRef<HTMLDivElement>(null);
   const layer1Ref = useRef<HTMLDivElement>(null);
   const layer2Ref = useRef<HTMLDivElement>(null);
   const xAxisRef = useRef<HTMLDivElement>(null);
@@ -106,14 +105,6 @@ const Hero = () => {
         });
       }
 
-      if (layer0Ref.current) {
-        gsap.to(layer0Ref.current, {
-          duration: 10,
-          rotation: left / 200,
-          ease: 'expo.out',
-          overwrite: false,
-        });
-      }
     };
 
     window.addEventListener('mousemove', handleMouseMove);
@@ -142,7 +133,7 @@ const Hero = () => {
       {/* Dark Overlay */}
   
       
-      {/* Hero Text — იცვლება ყოველ 3 წამში */}
+    
       <div className="absolute inset-0 z-20 flex items-center justify-start -translate-y-32 md:-translate-y-20">
         <div className="relative pl-6 md:pl-10 pr-4 max-w-4xl">
           <div className="mb-4 md:mb-6 flex flex-col items-center gap-3 md:flex-row md:items-center md:gap-4">
@@ -152,7 +143,7 @@ const Hero = () => {
               width={256}
               height={256}
               sizes="(max-width: 768px) 160px, 150px"
-              className="w-40 h-40 md:w-[150px] md:h-[150px] object-contain rounded-xl bg-white/5 p-2 ring-1 ring-white/10"
+              className="pointer-events-none w-40 h-40 md:w-[150px] md:h-[150px] object-contain rounded-xl bg-white/5 p-2 ring-1 ring-white/10 transition-none "
               priority
             />
             <div className="min-w-0 w-full md:w-auto">
@@ -221,7 +212,7 @@ const Hero = () => {
      
 
    
-      <div id="background" ref={layer0Ref} className="layer-0"></div>
+      <div id="background" className="layer-0"></div>
       <div id="x-axis" ref={xAxisRef} className="axis"></div>
       <div id="y-axis" ref={yAxisRef} className="axis"></div>
       <div id="planet-1" ref={layer1Ref} className="planet layer-1"></div>
