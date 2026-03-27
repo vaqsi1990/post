@@ -412,7 +412,8 @@
   },
   "locale": {
     "ka": "ქართ",
-    "en": "Eng"
+    "en": "Eng",
+    "ru": "Рус"
   },
   "stores": {
     "title": "Online stores"

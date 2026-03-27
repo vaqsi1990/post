@@ -6,10 +6,12 @@ import { usePathname, useRouter } from '@/i18n/navigation';
 import { routing } from '@/i18n/routing';
 import GE from 'country-flag-icons/react/3x2/GE';
 import GB from 'country-flag-icons/react/3x2/GB';
+import RU from 'country-flag-icons/react/3x2/RU';
 
 const localeConfig: Record<string, { label: string; Flag: React.ComponentType<{ title?: string; className?: string }> }> = {
   ka: { label: 'ქართ', Flag: GE },
   en: { label: 'Eng', Flag: GB },
+  ru: { label: 'Рус', Flag: RU },
 };
 
 export default function LocaleSwitcher() {

@@ -15,6 +15,7 @@ export default async function AdminUsersPageLocale(_props: Props) {
       lastName: true,
       address: true,
       role: true,
+      employeeCountry: true,
       createdAt: true,
       roomNumber: true,
     },

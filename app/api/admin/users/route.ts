@@ -30,6 +30,7 @@ export async function GET() {
         lastName: true,
         address: true,
         role: true,
+        employeeCountry: true,
         createdAt: true,
         roomNumber: true,
       },

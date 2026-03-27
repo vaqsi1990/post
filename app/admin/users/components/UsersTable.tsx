@@ -11,6 +11,7 @@ type User = {
   lastName: string | null;
   address?: string | null;
   role: string;
+  employeeCountry?: string | null;
   createdAt: string; // Formatted date string from server
   roomNumber?: string | null;
 };
@@ -29,6 +30,7 @@ type UserDetails = {
     balance: number;
     roomNumber: string;
     role: string;
+    employeeCountry?: string | null;
     createdAt: string;
     updatedAt: string;
   };
@@ -62,6 +64,28 @@ type UsersTableProps = {
   users: User[];
 };
 
+const ROLE_OPTIONS = ['USER', 'EMPLOYEE', 'ADMIN'] as const;
+
+const ROLE_LABELS: Record<(typeof ROLE_OPTIONS)[number], string> = {
+  USER: 'მომხმარებელი',
+  EMPLOYEE: 'თანამშრომელი',
+  ADMIN: 'ადმინი',
+};
+
+const COUNTRY_OPTIONS = ['GB', 'US', 'CN', 'IT', 'GR', 'ES', 'FR', 'DE', 'TR'] as const;
+const COUNTRY_LABELS: Record<(typeof COUNTRY_OPTIONS)[number], string> = {
+  GB: 'დიდი ბრიტანეთი',
+  US: 'აშშ',
+  CN: 'ჩინეთი',
+  IT: 'იტალია',
+  GR: 'საბერძნეთი',
+  ES: 'ესპანეთი',
+  FR: 'საფრანგეთი',
+  DE: 'გერმანია',
+  TR: 'თურქეთი',
+};
+
+
 const STATUS_LABELS: Record<string, string> = {
   pending: 'მოლოდინში',
   in_transit: 'გზაში',
@@ -76,6 +100,9 @@ const PAGE_SIZE = 12;
 export default function UsersTable({ users: initialUsers }: UsersTableProps) {
   const [users, setUsers] = useState(initialUsers);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [updatingRoleId, setUpdatingRoleId] = useState<string | null>(null);
+  const [pendingRoleById, setPendingRoleById] = useState<Record<string, string>>({});
+  const [pendingCountryById, setPendingCountryById] = useState<Record<string, string>>({});
   const [error, setError] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [detailsLoadingId, setDetailsLoadingId] = useState<string | null>(null);
@@ -101,6 +128,15 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
           createdAt: formatDateDMY(user.createdAt),
         }));
         setUsers(formattedUsers);
+        setPendingCountryById((prev) => {
+          const next = { ...prev };
+          for (const user of formattedUsers) {
+            if (user.employeeCountry) {
+              next[user.id] = user.employeeCountry;
+            }
+          }
+          return next;
+        });
       }
     } catch (error) {
       console.error('Failed to fetch users:', error);
@@ -164,6 +200,9 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
       };
 
       setDetailsById((prev) => ({ ...prev, [userId]: normalized }));
+      if (normalized.user.employeeCountry) {
+        setPendingCountryById((prev) => ({ ...prev, [userId]: normalized.user.employeeCountry as string }));
+      }
     } catch {
       setError('დაფიქსირდა შეცდომა. გთხოვთ სცადოთ თავიდან.');
     } finally {
@@ -197,6 +236,76 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
       setError('დაფიქსირდა შეცდომა. გთხოვთ სცადოთ თავიდან.');
     } finally {
       setDeletingId(null);
+    }
+  };
+
+  const handleChangeRole = async (userId: string) => {
+    const user = users.find((u) => u.id === userId);
+    if (!user) return;
+
+    const nextRole = pendingRoleById[userId] ?? user.role;
+    const nextCountry = pendingCountryById[userId] ?? user.employeeCountry ?? '';
+    const roleChanged = nextRole !== user.role;
+    const countryChanged =
+      nextRole === 'EMPLOYEE' && nextCountry !== (user.employeeCountry ?? '');
+    if (!roleChanged && !countryChanged) return;
+    if (nextRole === 'EMPLOYEE' && !nextCountry) {
+      setError('თანამშრომლისთვის აირჩიეთ ქვეყანა');
+      return;
+    }
+
+    setUpdatingRoleId(userId);
+    setError('');
+
+    try {
+      const res = await fetch(`/api/admin/users/${userId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          role: nextRole,
+          employeeCountry: nextRole === 'EMPLOYEE' ? nextCountry : null,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || 'როლის შეცვლისას მოხდა შეცდომა');
+        return;
+      }
+
+      setUsers((prev) =>
+        prev.map((u) =>
+          u.id === userId
+            ? {
+                ...u,
+                role: nextRole,
+                employeeCountry: nextRole === 'EMPLOYEE' ? nextCountry : null,
+              }
+            : u
+        )
+      );
+      setDetailsById((prev) => {
+        const detail = prev[userId];
+        if (!detail) return prev;
+        return {
+          ...prev,
+          [userId]: {
+            ...detail,
+            user: {
+              ...detail.user,
+              role: nextRole,
+              employeeCountry: nextRole === 'EMPLOYEE' ? nextCountry : null,
+            },
+          },
+        };
+      });
+      setPendingRoleById((prev) => ({ ...prev, [userId]: nextRole }));
+      setPendingCountryById((prev) => ({ ...prev, [userId]: nextCountry }));
+    } catch {
+      setError('დაფიქსირდა შეცდომა. გთხოვთ სცადოთ თავიდან.');
+    } finally {
+      setUpdatingRoleId(null);
     }
   };
 
@@ -323,7 +432,7 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
                         {user.roomNumber != null ? user.roomNumber : '—'}
                       </td>
                       <td className="px-4 py-2 text-[16px] text-black">
-                        {user.role === 'ADMIN' ? 'ადმინი' : 'მომხმარებელი'}
+                        {ROLE_LABELS[(user.role as keyof typeof ROLE_LABELS)] ?? user.role}
                       </td>
                       <td className="px-4 py-2 text-[16px] text-black">
                         {user.createdAt}
@@ -344,7 +453,7 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
                         <button
                           type="button"
                           onClick={() => void handleDelete(user.id, user.email)}
-                          disabled={deletingId === user.id}
+                          disabled={deletingId === user.id || updatingRoleId === user.id}
                           className="rounded-md bg-red-600 px-3 py-1 text-[16px] font-semibold text-white hover:bg-red-700 disabled:opacity-50"
                         >
                           {deletingId === user.id ? 'წაიშლება...' : 'წაშლა'}
@@ -372,13 +481,76 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
                                     <span className="text-gray-600">PO</span>
                                     <span>{d.user.roomNumber}</span>
                                     <span className="text-gray-600">როლი</span>
-                                    <span>{d.user.role === 'ADMIN' ? 'ადმინი' : 'მომხმარებელი'}</span>
+                                    <span>
+                                      {ROLE_LABELS[(d.user.role as keyof typeof ROLE_LABELS)] ?? d.user.role}
+                                    </span>
+                                    <span className="text-gray-600">ქვეყანა (თანამშრომელი)</span>
+                                    <span>
+                                      {d.user.employeeCountry
+                                        ? (COUNTRY_LABELS[
+                                            d.user.employeeCountry as keyof typeof COUNTRY_LABELS
+                                          ] ?? d.user.employeeCountry)
+                                        : '—'}
+                                    </span>
                                     <span className="text-gray-600">ბალანსი</span>
                                     <span>{d.user.balance.toFixed(2)} GEL</span>
                                     <span className="text-gray-600">რეგისტრაცია</span>
                                     <span>{d.user.createdAt}</span>
                                     <span className="text-gray-600">განახლდა</span>
                                     <span>{d.user.updatedAt}</span>
+                                  </div>
+                                  <div className="mt-3 flex flex-wrap items-center gap-2">
+                                    <select
+                                      value={pendingRoleById[user.id] ?? user.role}
+                                      onChange={(e) =>
+                                        setPendingRoleById((prev) => ({ ...prev, [user.id]: e.target.value }))
+                                      }
+                                      disabled={updatingRoleId === user.id || deletingId === user.id}
+                                      className="rounded-md border border-gray-300 bg-white px-2 py-1 text-[14px] text-black disabled:opacity-50"
+                                    >
+                                      {ROLE_OPTIONS.map((role) => (
+                                        <option key={role} value={role}>
+                                          {ROLE_LABELS[role]}
+                                        </option>
+                                      ))}
+                                    </select>
+                                    {(pendingRoleById[user.id] ?? user.role) === 'EMPLOYEE' && (
+                                      <select
+                                        value={pendingCountryById[user.id] ?? user.employeeCountry ?? ''}
+                                        onChange={(e) =>
+                                          setPendingCountryById((prev) => ({
+                                            ...prev,
+                                            [user.id]: e.target.value,
+                                          }))
+                                        }
+                                        disabled={updatingRoleId === user.id || deletingId === user.id}
+                                        className="rounded-md border border-gray-300 bg-white px-2 py-1 text-[14px] text-black disabled:opacity-50"
+                                      >
+                                        <option value="">აირჩიე ქვეყანა</option>
+                                        {COUNTRY_OPTIONS.map((country) => (
+                                          <option key={country} value={country}>
+                                            {COUNTRY_LABELS[country]}
+                                          </option>
+                                        ))}
+                                      </select>
+                                    )}
+                                    <button
+                                      type="button"
+                                      onClick={() => void handleChangeRole(user.id)}
+                                      disabled={
+                                        updatingRoleId === user.id ||
+                                        deletingId === user.id ||
+                                        ((pendingRoleById[user.id] ?? user.role) === user.role &&
+                                          ((pendingRoleById[user.id] ?? user.role) !== 'EMPLOYEE' ||
+                                            (pendingCountryById[user.id] ?? user.employeeCountry ?? '') ===
+                                              (user.employeeCountry ?? ''))) ||
+                                        ((pendingRoleById[user.id] ?? user.role) === 'EMPLOYEE' &&
+                                          !(pendingCountryById[user.id] ?? user.employeeCountry))
+                                      }
+                                      className="rounded-md bg-blue-600 px-3 py-1 text-[14px] font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
+                                    >
+                                      {updatingRoleId === user.id ? 'ინახება...' : 'როლის შეცვლა'}
+                                    </button>
                                   </div>
                                 </div>
 

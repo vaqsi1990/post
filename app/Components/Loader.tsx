@@ -12,10 +12,10 @@ export default function Loader() {
 
   useEffect(() => {
     const handleLoad = () => {
-      // Wait at least 2 seconds before hiding loader
+      // Wait at least 1 second before hiding loader
       setTimeout(() => {
         setIsLoading(false);
-      }, 4000);
+      }, 200);
     };
 
     // Check if page is already loaded
@@ -25,10 +25,10 @@ export default function Loader() {
       window.addEventListener('load', handleLoad);
     }
 
-    // Fallback: hide loader after 3 seconds maximum
+    // Fallback: hide loader after 2.5 seconds maximum
     const fallbackTimer = setTimeout(() => {
       setIsLoading(false);
-    }, 5000);
+    }, 2500);
 
     return () => {
       window.removeEventListener('load', handleLoad);
@@ -39,12 +39,12 @@ export default function Loader() {
   useEffect(() => {
     if (!isLoading) return;
 
-    // Change text every 1.5 seconds
+    // Change text every 0.75 seconds
     const textInterval = setInterval(() => {
       setCurrentTextIndex((prevIndex) => 
         (prevIndex + 1) % loaderTexts.length
       );
-    }, 1500);
+    }, 750);
 
     return () => {
       clearInterval(textInterval);

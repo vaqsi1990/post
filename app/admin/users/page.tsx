@@ -13,6 +13,7 @@ export default async function AdminUsersPage() {
       lastName: true,
       address: true,
       role: true,
+      employeeCountry: true,
       createdAt: true,
       roomNumber: true,
     },

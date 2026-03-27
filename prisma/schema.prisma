@@ -13,6 +13,19 @@ datasource db {
 enum UserRole {
   USER
   ADMIN
+  EMPLOYEE
+}
+
+enum EmployeeCountry {
+  GB
+  US
+  CN
+  IT
+  GR
+  ES
+  FR
+  DE
+  TR
 }
 
 enum ChatSender {
@@ -35,6 +48,7 @@ model User {
   balance           Float    @default(0)  // მომხმარებლის ბალანსი (GEL)
   roomNumber      String?      @unique // მომხმარებლის ოთახის ნომერი (მაგ. PO1, PO2, PO3...)
   role              UserRole @default(USER)
+  employeeCountry   EmployeeCountry?
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 
