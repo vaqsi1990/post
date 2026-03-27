@@ -1,4 +1,4 @@
-@import url("//cdn.web-fonts.ge/fonts/bpg-banner/css/bpg-banner.min.css");
+@import url("https://fonts.googleapis.com/css2?family=TASA+Orbiter:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
 
 :root {
@@ -9,7 +9,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: "BPG Banner", sans-serif;
+  --font-sans: "TASA Orbiter", sans-serif;
 }
 
 .bg {
@@ -24,13 +24,13 @@
 }
 
 * {
-  font-family: "BPG Banner", sans-serif;
+  font-family: var(--font-sans);
 }
 
 body {
   background: white;
 
-  font-family: "BPG Banner", sans-serif;
+  font-family: var(--font-sans);
   overflow-x: hidden;
   width: 100%;
   padding-top: 70px; /* Space for fixed header */
