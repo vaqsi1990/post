@@ -5,7 +5,7 @@ import { notFound } from 'next/navigation';
 import { routing } from '../../i18n/routing';
 import Header from '../Components/Header';
 import Footer from '../Components/Footer';
-import Loader from '../Components/Loader';
+
 import { Metadata } from 'next';
 
 type Props = {
@@ -42,7 +42,7 @@ export default async function LocaleLayout({ children, params }: Props) {
 
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
-      <Loader />
+   
       <Header />
       {children}
       <Footer />
