@@ -19,10 +19,6 @@ const STORAGE_KEY = 'chat_thread_id';
 
 export default function ChatWidget() {
   const t = useTranslations('chat');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
   const [message, setMessage] = useState('');
   const [threadId, setThreadId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -128,12 +124,6 @@ export default function ChatWidget() {
       return;
     }
 
-    // ახალი ჩათის დაწყებისას სავალდებულო ველები
-    if (!threadId && (!firstName || !lastName || !email || !phone)) {
-      setError('გთხოვთ შეავსოთ ყველა ველი.');
-      return;
-    }
-
     setLoading(true);
     try {
       const res = await fetch('/api/chat/webhook', {
@@ -141,10 +131,6 @@ export default function ChatWidget() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           threadId: threadId ?? undefined,
-          firstName,
-          lastName,
-          email,
-          phone,
           message,
         }),
       });
@@ -153,20 +139,6 @@ export default function ChatWidget() {
         details?: { field: string; message: string }[];
       };
       if (!res.ok || !data.threadId) {
-        if (data.error === 'Validation error' && Array.isArray(data.details)) {
-          const first = data.details[0];
-          const fieldLabel =
-            first?.field === 'email'
-              ? 'ელფოსტა'
-              : first?.field === 'phone'
-              ? 'ტელეფონი'
-              : first?.field === 'firstName'
-              ? 'სახელი'
-              : first?.field === 'lastName'
-              ? 'გვარი'
-              : 'ველი';
-          throw new Error(`${fieldLabel}: ${first?.message || 'არასწორი მნიშვნელობა.'}`);
-        }
         throw new Error(data.error || 'შეტყობინება ვერ გაიგზავნა');
       }
       setThreadId(data.threadId);
@@ -275,60 +247,6 @@ export default function ChatWidget() {
              
 
               <form onSubmit={handleSubmit} className="space-y-3">
-                {!threadId && (
-                  <>
-                    <div className="grid grid-cols-2 gap-2">
-                      <label className="space-y-1 text-[16px] text-gray-600">
-                        <span>{t('firstName')}</span>
-                        <input
-                          placeholder="მაგ. ნიკა"
-                          id="chat-firstName"
-                          type="text"
-                          value={firstName}
-                          onChange={(e) => setFirstName(e.target.value)}
-                          className="w-full rounded-xl border border-gray-300 bg-white px-3 py-1.5 text-[13px] text-black shadow-sm focus:outline-none focus:ring-2 focus:ring-black"
-                        />
-                      </label>
-                      <label className="space-y-1 text-[15px] text-gray-600">
-                        <span>{t('lastName')}</span>
-                        <input
-                          placeholder="გვარი"
-                          id="chat-lastName"
-                          type="text"
-                          value={lastName}
-                          onChange={(e) => setLastName(e.target.value)}
-                          className="w-full rounded-xl border border-gray-300 bg-white px-3 py-1.5 text-[13px] text-black shadow-sm focus:outline-none focus:ring-2 focus:ring-black"
-                        />
-                      </label>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-2">
-                      <label className="space-y-1 text-[15px] text-gray-600">
-                        <span>{t('email')}</span>
-                        <input
-                          placeholder="you@example.com"
-                          id="chat-email"
-                          type="email"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          className="w-full rounded-xl border border-gray-300 bg-white px-3 py-1.5 text-[13px] text-black shadow-sm focus:outline-none focus:ring-2 focus:ring-black"
-                        />
-                      </label>
-                      <label className="space-y-1 text-[15px] text-gray-600">
-                        <span>{t('phone')}</span>
-                        <input
-                          placeholder="(+995) 5XX XX XX XX"
-                          id="chat-phone"
-                          type="tel"
-                          value={phone}
-                          onChange={(e) => setPhone(e.target.value)}
-                          className="w-full rounded-xl border border-gray-300 bg-white px-3 py-1.5 text-[13px] text-black shadow-sm focus:outline-none focus:ring-2 focus:ring-black"
-                        />
-                      </label>
-                    </div>
-                  </>
-                )}
-
                 <label className="space-y-1 text-[15px] text-gray-600">
                   <span>{t('message')}</span>
                   <textarea

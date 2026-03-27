@@ -11,13 +11,6 @@ const baseSchema = z.object({
   message: z.string().min(1),
 });
 
-const newThreadFieldsSchema = z.object({
-  firstName: z.string().min(1),
-  lastName: z.string().min(1),
-  email: z.string().email(),
-  phone: z.string().min(5),
-});
-
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
@@ -50,13 +43,15 @@ export async function POST(request: NextRequest) {
         );
       }
     } else {
-      // Validate required fields for new thread
-      const info = newThreadFieldsSchema.parse({
-        firstName: data.firstName,
-        lastName: data.lastName,
-        email: data.email,
-        phone: data.phone,
-      });
+      // Chat now starts immediately without requiring profile fields.
+      // If optional fields are missing, use safe defaults.
+      const fallbackId = Date.now();
+      const info = {
+        firstName: data.firstName?.trim() || 'Guest',
+        lastName: data.lastName?.trim() || 'User',
+        email: data.email?.trim() || `guest-${fallbackId}@chat.local`,
+        phone: data.phone?.trim() || `guest-${fallbackId}`,
+      };
 
       // Create new thread
       const thread = await prisma.chatThread.create({
