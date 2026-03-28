@@ -7,10 +7,9 @@ import { motion } from "framer-motion";
 type Props = {
   title: string;
   text: string;
-  isKa: boolean;
 };
 
-export default function GuideSection({ title, text, isKa }: Props) {
+export default function GuideSection({ title, text }: Props) {
   const lines = text.split(". ").filter(Boolean);
 
   return (
@@ -53,7 +52,7 @@ export default function GuideSection({ title, text, isKa }: Props) {
           >
             <Image
               src="/helper.png"
-              alt={isKa ? "ონლაინ გიდი" : "Online guide"}
+              alt={title}
               width={640}
               height={640}
               className="h-full w-full object-cover"

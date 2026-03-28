@@ -9,7 +9,6 @@ type Props = {
 export default async function ConditionsPage({ params, searchParams }: Props) {
   const { locale } = await params;
   const { section } = await searchParams;
-  const isKa = locale === "ka";
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -17,7 +16,7 @@ export default async function ConditionsPage({ params, searchParams }: Props) {
         id="conditions"
         className="w-full pt-14 mt-14 md:pt-20 pb-16 md:pb-24 px-4"
       >
-        <ConditionsAccordion isKa={isKa} sectionId={section} />
+        <ConditionsAccordion locale={locale} sectionId={section} />
       </section>
     </div>
   );

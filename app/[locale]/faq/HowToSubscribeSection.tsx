@@ -5,21 +5,22 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 
 type Props = {
-  isKa: boolean;
-
+  locale: string;
   steps: string[];
- 
 };
 
-export default function HowToSubscribeSection({
-  isKa,
- 
-  steps,
+const IMAGE_ALT: Record<string, string> = {
+  ka: "როგორ გამოვიწერო - ნაბიჯები",
+  en: "How to order — steps",
+  ru: "Как оформить заказ — шаги",
+};
 
-}: Props) {
+export default function HowToSubscribeSection({ locale, steps }: Props) {
+  const lang = locale === "ka" ? "ka" : locale === "ru" ? "ru" : "en";
+  const alt = IMAGE_ALT[lang] ?? IMAGE_ALT.en;
+
   return (
     <div className="max-w-5xl mx-auto">
-    
       <motion.div
         className="mb-8 md:mb-10 flex justify-center"
         initial={{ opacity: 0, y: 30 }}
@@ -30,7 +31,7 @@ export default function HowToSubscribeSection({
         <div className="relative w-full max-w-3xl overflow-hidden rounded-2xl">
           <Image
             src="/how.png"
-            alt={isKa ? "როგორ გამოვიწერო - ნაბიჯები" : "How to subscribe - steps"}
+            alt={alt}
             width={1200}
             height={675}
             className="h-auto w-full object-cover"
@@ -42,7 +43,7 @@ export default function HowToSubscribeSection({
       <div className="grid gap-4 md:gap-6 md:grid-cols-2">
         {steps.map((step, index) => (
           <motion.div
-            key={step}
+            key={`${lang}-${index}`}
             className="flex items-start gap-3 rounded-xl bg-white shadow-sm border border-gray-100 p-4 md:p-5"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -58,10 +59,6 @@ export default function HowToSubscribeSection({
           </motion.div>
         ))}
       </div>
-
-
-
     </div>
   );
 }
-

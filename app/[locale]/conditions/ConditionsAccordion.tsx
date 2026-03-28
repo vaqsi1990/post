@@ -5,12 +5,12 @@ import { motion } from "framer-motion";
 import { getConditionsSections } from "./conditionsSections";
 
 type Props = {
-  isKa: boolean;
+  locale: string;
   sectionId?: string;
 };
 
-export default function ConditionsAccordion({ isKa, sectionId }: Props) {
-  const allSections = getConditionsSections(isKa);
+export default function ConditionsAccordion({ locale, sectionId }: Props) {
+  const allSections = getConditionsSections(locale);
   const sections =
     sectionId && allSections.some((s) => s.id === sectionId)
       ? allSections.filter((s) => s.id === sectionId)
