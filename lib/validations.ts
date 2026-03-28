@@ -1,11 +1,11 @@
 import { z } from 'zod';
+import { GEORGIAN_CITY_SET } from './georgianCities';
 
 /** Latin letters (English keyboard / ASCII), spaces, hyphen, apostrophe, period — for names */
 const LATIN_NAME_REGEX = /^[A-Za-z][A-Za-z\s'.-]*$/;
 
 const MSG_LATIN_NAME =
   'შეიყვანეთ მხოლოდ ლათინური ასოები (ინგლისური კლავიატურა)';
-const MSG_GEORGIAN_CITY = 'ქალაქი უნდა იყოს ქართული ასოებით';
 const MSG_GEORGIAN_ADDRESS = 'მისამართი უნდა იყოს ქართული ასოებით';
 
 /** Georgian script block + digits, spaces, common address punctuation */
@@ -58,7 +58,13 @@ const registerBaseSchema = z.object({
     .min(11, 'პირადი ნომერი უნდა იყოს 11 ციფრი')
     .max(11, 'პირადი ნომერი უნდა იყოს 11 ციფრი')
     .regex(/^\d+$/, 'პირადი ნომერი უნდა შეიცავდეს მხოლოდ ციფრებს'),
-  city: georgianTextField('ქალაქი აუცილებელია', MSG_GEORGIAN_CITY),
+  city: z
+    .string()
+    .trim()
+    .min(1, 'ქალაქი აუცილებელია')
+    .refine((val) => GEORGIAN_CITY_SET.has(val), {
+      message: 'აირჩიეთ ქალაქი სიიდან',
+    }),
   address: georgianTextField('მისამართი აუცილებელია', MSG_GEORGIAN_ADDRESS),
   termsAccepted: z
     .boolean()

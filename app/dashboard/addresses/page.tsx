@@ -88,7 +88,7 @@ export default async function DashboardAddressesPage() {
   ];
 
   return (
-    <div className="bg-[#010002] py-4 sm:py-8 text-white">
+    <div className=" py-4 sm:py-8 text-white">
       <div className="mx-auto mt-16 sm:mt-20 md:mt-24 w-full max-w-3xl px-3 sm:px-4">
         <main className="rounded-xl sm:rounded-2xl border border-white/10 bg-[#121311] p-4 sm:p-6">
           <div className="pb-4 sm:pb-6 border-b border-white/10">

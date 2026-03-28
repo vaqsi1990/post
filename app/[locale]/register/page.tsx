@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter, Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
 import { ZodError } from 'zod';
+import { REGISTRATION_CITIES } from '@/lib/georgianCities';
 import { hasGeorgianLetter, hasLatinLetter, registerSchema } from '@/lib/validations';
 import type { RegisterInput } from '@/lib/validations';
 
@@ -11,6 +12,7 @@ const RegisterPage = () => {
   const router = useRouter();
   const t = useTranslations('register');
   const tCommon = useTranslations('common');
+  const tCities = useTranslations('cities');
   const [formData, setFormData] = useState<RegisterInput & { confirmPassword: string }>({
     email: '',
     password: '',
@@ -44,6 +46,19 @@ const RegisterPage = () => {
         const newErrors = { ...prev };
         delete newErrors[name];
         return newErrors;
+      });
+    }
+    setSubmitError('');
+  };
+
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (errors[name]) {
+      setErrors((prev) => {
+        const next = { ...prev };
+        delete next[name];
+        return next;
       });
     }
     setSubmitError('');
@@ -283,26 +298,22 @@ const RegisterPage = () => {
 
             <div>
               <label htmlFor="city" className="block text-[16px] font-medium text-black mb-1">{t('city')}</label>
-              <p className="mb-1 text-[13px] text-gray-600">{t('georgianFieldHint')}</p>
-              <input
+              <p className="mb-1 text-[13px] text-gray-600">{t('cityDropdownHint')}</p>
+              <select
                 id="city"
                 name="city"
-                type="text"
-                lang="ka"
                 required
                 value={formData.city}
-                onChange={handleChange}
-                className={`appearance-none relative block w-full px-3 py-2 border ${errors.city ? 'border-red-300 text-black' : 'border-gray-300 text-black'} placeholder-gray-500 rounded-md focus:outline-none focus:ring-black focus:border-black sm:text-[16px]`}
-                placeholder={t('cityPlaceholder')}
-              />
-              {hasLatinLetter(formData.city) && (
-                <p
-                  role="status"
-                  className="mt-1 text-[13px] leading-snug text-red-600"
-                >
-                  {t('georgianLatinWarning')}
-                </p>
-              )}
+                onChange={handleSelectChange}
+                className={`appearance-none relative block w-full px-3 py-2 border bg-white ${errors.city ? 'border-red-300 text-black' : 'border-gray-300 text-black'} rounded-md focus:outline-none focus:ring-black focus:border-black sm:text-[16px]`}
+              >
+                <option value="">{t('citySelectPlaceholder')}</option>
+                {REGISTRATION_CITIES.map(({ id, nameKa }) => (
+                  <option key={id} value={nameKa}>
+                    {tCities(id)}
+                  </option>
+                ))}
+              </select>
               {errors.city && <p className="mt-1 text-[16px] text-red-600">{errors.city}</p>}
             </div>
 
