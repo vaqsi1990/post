@@ -262,7 +262,19 @@ export default function ChatWidget() {
             </div>
 
             <div className="space-y-3 bg-gradient-to-b from-gray-50 via-white to-gray-50 px-4 py-3">
-             
+              {!threadId && (
+                <div className="rounded-2xl border border-indigo-100/80 bg-gradient-to-br from-white via-indigo-50/40 to-white px-3 py-3 text-center shadow-sm">
+                  <p className="text-[13px] font-semibold leading-snug text-gray-900">
+                    {t('welcomeLine1')}
+                  </p>
+                  <p className="mt-2 text-[12px] leading-snug text-gray-700">
+                    {t('welcomeLine2')}
+                  </p>
+                  <p className="mt-2 text-[12px] leading-snug text-gray-700">
+                    {t('welcomeLine3')}
+                  </p>
+                </div>
+              )}
 
               {/* Messages from you and admin; header: authed = name, room, email; guest = name, email */}
               {(threadId ||

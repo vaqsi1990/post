@@ -56,7 +56,7 @@
     "settings": "Settings"
   },
   "chat": {
-    "start": "Start",
+    "start": "Live Chat",
     "title": "Chat with admin",
     "placeholder": "Enter your message...",
     "send": "Send",
@@ -74,7 +74,10 @@
     "success": "Success",
     "roomNumber": "Room number",
     "guestFieldsRequired": "Please enter your first name, last name and email.",
-    "messageSent": "Message sent. Your conversation continues in this window."
+    "messageSent": "Message sent. Your conversation continues in this window.",
+    "welcomeLine1": "Hello 👋",
+    "welcomeLine2": "Get pricing and conditions quickly ⏱️",
+    "welcomeLine3": "Write to us now 😊"
   },
   "header": {
     "services": "Services",
