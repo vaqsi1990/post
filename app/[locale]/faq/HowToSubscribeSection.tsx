@@ -53,7 +53,7 @@ export default function HowToSubscribeSection({ locale, steps }: Props) {
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-pink-500 to-indigo-500 text-white text-sm font-bold shrink-0">
               {index + 1}
             </div>
-            <p className="text-black md:text-[16px] text-[14px] leading-relaxed">
+            <p className="text-black md:text-[18px] text-[14px] ">
               {step}
             </p>
           </motion.div>

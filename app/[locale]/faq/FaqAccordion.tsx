@@ -142,7 +142,7 @@ export default function FaqAccordion({ locale }: Props) {
                     exit={{ height: 0, opacity: 0 }}
                     transition={{ duration: 0.2, ease: "easeOut" }}
                   >
-                    <div className="px-4 md:px-6 pb-4 md:pb-5 pt-0 md:pt-2 text-left  text-black md:text-[16px] text-[14px] leading-relaxed border-t border-gray-100 bg-gradient-to-b from-white to-purple-50/40">
+                    <div className="px-4 md:px-6 pb-4 md:pb-5 pt-0 md:pt-2 text-left  text-black md:text-[18px] text-[14px]  border-t border-gray-100 bg-gradient-to-b from-white to-purple-50/40">
                       {item.answer}
                     </div>
                   </motion.div>
