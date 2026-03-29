@@ -54,7 +54,10 @@
     "email": "ელ-ფოსტა",
     "phone": "ტელეფონი",
     "message": "შეტყობინება",
-    "success": "წარმატებით"
+    "success": "წარმატებით",
+    "roomNumber": "ოთახის ნომერი",
+    "guestFieldsRequired": "შეავსეთ სახელი, გვარი და ელ-ფოსტა.",
+    "messageSent": "შეტყობინება გაიგზავნა. დიალოგი გრძელდება ამავე ფანჯარიდან."
   },
   "common": {
     "menu": "მენიუ",
@@ -102,6 +105,7 @@
     "thirdPartyPickup": "ამანათის გაცემა მესამე პირზე",
     "confidentiality": "კონფიდენციალურობა",
     "declarantService": "დეკლარანტის მომსახურება",
+    "prohibitedItemsList": "აკრძალული ნივთების სია",
     "whyPostify": "რატომ Postifly?",
     "howWeightCalculated": "როგორ ითვლება ამანათის წონა?",
     "whenSubjectToCustoms": "რა შემთხვევაში ექვემდებარება განბაჟებას გზავნილი?",

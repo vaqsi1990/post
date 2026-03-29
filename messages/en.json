@@ -71,7 +71,10 @@
     "email": "Email",
     "phone": "Phone",
     "message": "Message",
-    "success": "Success"
+    "success": "Success",
+    "roomNumber": "Room number",
+    "guestFieldsRequired": "Please enter your first name, last name and email.",
+    "messageSent": "Message sent. Your conversation continues in this window."
   },
   "header": {
     "services": "Services",
@@ -102,6 +105,7 @@
     "thirdPartyPickup": "Parcel release to third party",
     "confidentiality": "Confidentiality",
     "declarantService": "Declarant service",
+    "prohibitedItemsList": "List of prohibited items",
     "whyPostify": "Why Postifly?",
     "howWeightCalculated": "How is parcel weight calculated?",
     "whenSubjectToCustoms": "When is a shipment subject to customs?",

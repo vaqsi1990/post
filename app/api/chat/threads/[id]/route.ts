@@ -28,6 +28,11 @@ export async function GET(
     });
 
     return NextResponse.json({
+      thread: {
+        firstName: thread.firstName,
+        lastName: thread.lastName,
+        email: thread.email,
+      },
       messages: messages.map((m) => ({
         id: m.id,
         sender: m.sender,

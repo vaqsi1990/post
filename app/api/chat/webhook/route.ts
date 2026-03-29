@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
 import { z } from 'zod';
 import prisma from '@/lib/prisma';
+import { authOptions } from '@/lib/auth';
 
 const baseSchema = z.object({
   threadId: z.string().optional(),
@@ -28,6 +30,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const data = baseSchema.parse(body);
+    const session = await getServerSession(authOptions);
 
     let threadId = data.threadId;
 
@@ -43,27 +46,71 @@ export async function POST(request: NextRequest) {
         );
       }
     } else {
-      // Chat now starts immediately without requiring profile fields.
-      // If optional fields are missing, use safe defaults.
-      const fallbackId = Date.now();
-      const info = {
-        firstName: data.firstName?.trim() || 'Guest',
-        lastName: data.lastName?.trim() || 'User',
-        email: data.email?.trim() || `guest-${fallbackId}@chat.local`,
-        phone: data.phone?.trim() || `guest-${fallbackId}`,
-      };
+      if (session?.user?.id) {
+        const user = await prisma.user.findUnique({
+          where: { id: session.user.id },
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            phone: true,
+          },
+        });
+        if (!user) {
+          return NextResponse.json(
+            { error: 'Unauthorized' },
+            { status: 401, headers: corsHeaders }
+          );
+        }
+        const firstName = user.firstName?.trim() || 'User';
+        const lastName = user.lastName?.trim() || '—';
+        const phone =
+          user.phone?.trim() || `user-${user.id.slice(0, 10)}`;
 
-      // Create new thread
-      const thread = await prisma.chatThread.create({
-        data: {
-          firstName: info.firstName,
-          lastName: info.lastName,
-          email: info.email,
-          phone: info.phone,
-          status: 'open',
-        },
-      });
-      threadId = thread.id;
+        const thread = await prisma.chatThread.create({
+          data: {
+            firstName,
+            lastName,
+            email: user.email,
+            phone,
+            userId: user.id,
+            status: 'open',
+          },
+        });
+        threadId = thread.id;
+      } else {
+        const guestFirst = data.firstName?.trim();
+        const guestLast = data.lastName?.trim();
+        const guestEmail = data.email?.trim();
+        if (!guestFirst || !guestLast || !guestEmail) {
+          return NextResponse.json(
+            {
+              error:
+                'შეავსეთ სახელი, გვარი და ელ-ფოსტა ახალი საუბრის დასაწყებად.',
+            },
+            { status: 400, headers: corsHeaders }
+          );
+        }
+        const emailParsed = z.string().email().safeParse(guestEmail);
+        if (!emailParsed.success) {
+          return NextResponse.json(
+            { error: 'ელ-ფოსტის ფორმატი არასწორია.' },
+            { status: 400, headers: corsHeaders }
+          );
+        }
+        const fallbackId = Date.now();
+        const thread = await prisma.chatThread.create({
+          data: {
+            firstName: guestFirst,
+            lastName: guestLast,
+            email: guestEmail,
+            phone: data.phone?.trim() || `guest-${fallbackId}`,
+            status: 'open',
+          },
+        });
+        threadId = thread.id;
+      }
     }
 
     // Create user message

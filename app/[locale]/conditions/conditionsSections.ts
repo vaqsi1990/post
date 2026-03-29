@@ -65,6 +65,28 @@ export const sectionsKa: SectionItem[] = [
     content:
       "კომპანია Postifly მომხმარებლებს სადეკლარანტო მომსახურებას გაუწევს უფასოდ. დეკლარაციის დაბეჭდვა უფასოა როგორც ფიზიკურ, ასევე იურიდიული პირებისთვის.",
   },
+  {
+    id: "prohibited-items",
+    title: "აკრძალული ნივთების სია",
+    content:
+      "კომპანია Postifly არ ახორციელებს იმ ნივთების გადაზიდვას, რომელთა ტრანსპორტირება საქართველოს კანონმდებლობით ან საერთაშორისო წესებით არის აკრძალული. მათ შორის:",
+    listItems: [
+      "რეალური ფული, მონეტები ან ბანკნოტები",
+      "საბანკო და საკრედიტო ბარათები და სხვა ფასიანი ქაღალდები",
+      "საკვები პროდუქცია",
+      "ფეთქებადი ნივთიერებები",
+      "მიწა და ნერგები მიწით",
+      "პორნოგრაფიული სახის პროდუქცია",
+      "ცოცხალი ცხოველები",
+      "ნებისმიერი სახის ნარკოტიკი, ნარკოტიკული ნივთიერებების შემცველი პროდუქცია",
+      "ნარკოტიკული ან ფსიქოტროპული ნივთიერებების შემცველი მცენარეები ან მათი თესლი",
+      "ფსიქოტროპული ნივთიერებები",
+      "წამლები (10 შეკვრაზე მეტი)",
+      "მცენარეების თესლები (25 გრამზე მეტი)",
+    ],
+    contentAfterList:
+      "",
+  },
 ];
 
 export const sectionsRu: SectionItem[] = [
@@ -117,13 +139,34 @@ export const sectionsRu: SectionItem[] = [
       "тариф на перевозку и возмещение, согласованный только с заказчиком",
       "финансовые документы, например счёт (инвойс)",
     ],
-    contentAfterList: "Спасибо, что пользуетесь нашим сервисом.",
+ 
   },
   {
     id: "declarant-service",
     title: "Услуги декларанта",
     content:
       "Компания Postifly оказывает пользователям услуги декларанта бесплатно. Печать декларации бесплатна как для физических, так и для юридических лиц.",
+  },
+  {
+    id: "prohibited-items",
+    title: "Список запрещённых товаров",
+    content:
+      "Компания Postifly не перевозит товары, транспортировка которых запрещена законодательством Грузии или международными правилами. К ним относятся, в том числе:",
+    listItems: [
+      "реальные деньги, монеты или банкноты",
+      "банковские и кредитные карты и другие ценные бумаги",
+      "продукты питания",
+      "взрывчатые вещества",
+      "земля и саженцы с комом земли",
+      "продукция порнографического характера",
+      "живые животные",
+      "наркотики любого вида, продукция, содержащая наркотические вещества",
+      "растения или их семена, содержащие наркотические или психотропные вещества",
+      "психотропные вещества",
+      "лекарства (более 10 упаковок)",
+      "семена растений (более 25 граммов)",
+    ],
+   
   },
 ];
 
@@ -184,6 +227,27 @@ export const sectionsEn: SectionItem[] = [
     title: "Declarant Service",
     content:
       "Postifly provides declarant services to customers free of charge. Printing the declaration is free for both individuals and legal entities.",
+  },
+  {
+    id: "prohibited-items",
+    title: "List of prohibited items",
+    content:
+      "Postifly does not transport goods whose carriage is prohibited by Georgian law or international shipping rules. These include, among others:",
+    listItems: [
+      "real money, coins or banknotes",
+      "bank and credit cards and other valuable papers",
+      "food products",
+      "explosive substances",
+      "soil and seedlings with soil",
+      "pornographic material",
+      "live animals",
+      "any narcotics, products containing narcotic substances",
+      "plants or seeds containing narcotic or psychotropic substances",
+      "psychotropic substances",
+      "medicines (more than 10 packs)",
+      "plant seeds (more than 25 grams)",
+    ],
+
   },
 ];
 

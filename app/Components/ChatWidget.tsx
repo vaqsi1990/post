@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, type FormEvent } from 'react';
+import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 type WebhookResponse = {
   threadId: string;
@@ -15,11 +16,23 @@ type ChatMessage = {
   createdAt: string;
 };
 
+type ThreadContact = {
+  firstName: string;
+  lastName: string;
+  email: string;
+};
+
 const STORAGE_KEY = 'chat_thread_id';
 
 export default function ChatWidget() {
   const t = useTranslations('chat');
+  const { data: session, status: sessionStatus } = useSession();
+  const isAuthed = sessionStatus === 'authenticated';
+  const isGuest = sessionStatus === 'unauthenticated';
   const [message, setMessage] = useState('');
+  const [guestFirstName, setGuestFirstName] = useState('');
+  const [guestLastName, setGuestLastName] = useState('');
+  const [guestEmail, setGuestEmail] = useState('');
   const [threadId, setThreadId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [loadingMessages, setLoadingMessages] = useState(false);
@@ -27,7 +40,22 @@ export default function ChatWidget() {
   const [success, setSuccess] = useState('');
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [threadContact, setThreadContact] = useState<ThreadContact | null>(null);
   const pollRef = useRef<number | null>(null);
+
+  const guestPreview: ThreadContact | null =
+    isGuest &&
+    guestFirstName.trim() &&
+    guestLastName.trim() &&
+    guestEmail.trim()
+      ? {
+          firstName: guestFirstName.trim(),
+          lastName: guestLastName.trim(),
+          email: guestEmail.trim(),
+        }
+      : null;
+
+  const guestHeaderInfo = threadContact ?? guestPreview;
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -50,6 +78,7 @@ export default function ChatWidget() {
         // ვასუფთავებთ ლოკალურ სტატუსს, რომ ახალი დიალოგი შეიქმნას.
         setMessages([]);
         setThreadId(null);
+        setThreadContact(null);
         if (typeof window !== 'undefined') {
           window.localStorage.removeItem(STORAGE_KEY);
         }
@@ -60,6 +89,18 @@ export default function ChatWidget() {
         throw new Error(data.error || 'შეტყობინებების წამოღება ვერ მოხერხდა');
       }
       const incoming: ChatMessage[] = Array.isArray(data.messages) ? data.messages : [];
+      if (
+        data.thread &&
+        typeof data.thread.firstName === 'string' &&
+        typeof data.thread.lastName === 'string' &&
+        typeof data.thread.email === 'string'
+      ) {
+        setThreadContact({
+          firstName: data.thread.firstName,
+          lastName: data.thread.lastName,
+          email: data.thread.email,
+        });
+      }
 
       // თუ არაფერი შეცვლილა, state არ განვაახლოთ რომ ზედმეტი რერენდერი არ იყოს
       if (
@@ -124,15 +165,32 @@ export default function ChatWidget() {
       return;
     }
 
+    if (!threadId && isGuest) {
+      const fn = guestFirstName.trim();
+      const ln = guestLastName.trim();
+      const em = guestEmail.trim();
+      if (!fn || !ln || !em) {
+        setError(t('guestFieldsRequired'));
+        return;
+      }
+    }
+
     setLoading(true);
     try {
+      const payload: Record<string, unknown> = {
+        threadId: threadId ?? undefined,
+        message,
+      };
+      if (!threadId && isGuest) {
+        payload.firstName = guestFirstName.trim();
+        payload.lastName = guestLastName.trim();
+        payload.email = guestEmail.trim();
+      }
+
       const res = await fetch('/api/chat/webhook', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          threadId: threadId ?? undefined,
-          message,
-        }),
+        body: JSON.stringify(payload),
       });
       const data = (await res.json()) as Partial<WebhookResponse> & {
         error?: string;
@@ -146,7 +204,17 @@ export default function ChatWidget() {
         window.localStorage.setItem(STORAGE_KEY, data.threadId);
       }
       setMessage('');
-      setSuccess('შეტყობინება გაიგზავნა. დიალოგი გრძელდება ამავე ფანჯარიდან.');
+      setSuccess(t('messageSent'));
+      if (!threadId && isGuest) {
+        setThreadContact({
+          firstName: guestFirstName.trim(),
+          lastName: guestLastName.trim(),
+          email: guestEmail.trim(),
+        });
+        setGuestFirstName('');
+        setGuestLastName('');
+        setGuestEmail('');
+      }
 
       // თავიდან წამოიღე საუბარი (სპინერის გარეშე, რომ UI არ "გახტეს")
       if (data.threadId) {
@@ -196,46 +264,77 @@ export default function ChatWidget() {
             <div className="space-y-3 bg-gradient-to-b from-gray-50 via-white to-gray-50 px-4 py-3">
              
 
-              {/* Messages from you and admin */}
-              {threadId && (
-                <div className="h-[250px] space-y-2 overflow-y-auto rounded-2xl border border-gray-200 bg-white/70 p-3">
-                  {messages.length === 0 ? (
-                    <p className="text-[12px] text-gray-600">
-                      {t('noAnswer')}
-                    </p>
-                  ) : (
-                    messages.map((m) => (
-                      <div
-                        key={m.id}
-                        className={`flex w-full ${
-                          m.sender === 'ADMIN'
-                            ? 'justify-end'
-                            : 'justify-start'
-                        }`}
-                      >
-                        <div
-                          className={`max-w-[80%] rounded-2xl px-3 py-1.5 text-[12px] shadow-sm ${
-                            m.sender === 'ADMIN'
-                              ? 'bg-black text-white'
-                              : 'bg-gray-100 text-gray-900'
-                          }`}
-                        >
-                          <p className="whitespace-pre-wrap break-words">
-                            {m.text}
-                          </p>
-                          <p
-                            className={`mt-1 text-right text-[10px] ${
+              {/* Messages from you and admin; header: authed = name, room, email; guest = name, email */}
+              {(threadId ||
+                (isAuthed && session?.user) ||
+                (isGuest && guestHeaderInfo)) && (
+                <div className="flex h-[250px] flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white/70">
+                  {isAuthed && session?.user && (
+                    <div className="shrink-0 border-b border-gray-200 bg-gray-50/90 px-3 py-2">
+                      <p className="text-[12px] font-semibold text-gray-900">
+                        {session.user.name?.trim() || session.user.email}
+                      </p>
+                      <p className="text-[11px] text-gray-600">
+                        {t('roomNumber')}:{' '}
+                        {session.user.roomNumber?.trim() || '—'}
+                      </p>
+                    </div>
+                  )}
+                  {isGuest && guestHeaderInfo && (
+                    <div className="shrink-0 border-b border-gray-200 bg-gray-50/90 px-3 py-2">
+                      <p className="text-[12px] font-semibold text-gray-900">
+                        {guestHeaderInfo.firstName} {guestHeaderInfo.lastName}
+                      </p>
+                      <p className="mt-0.5 break-all text-[11px] text-gray-600">
+                        {guestHeaderInfo.email}
+                      </p>
+                    </div>
+                  )}
+                  <div className="min-h-0 flex-1 space-y-2 overflow-y-auto p-3">
+                    {threadId ? (
+                      messages.length === 0 ? (
+                        <p className="text-[12px] text-gray-600">
+                          {t('noAnswer')}
+                        </p>
+                      ) : (
+                        messages.map((m) => (
+                          <div
+                            key={m.id}
+                            className={`flex w-full ${
                               m.sender === 'ADMIN'
-                                ? 'text-gray-300'
-                                : 'text-gray-500'
+                                ? 'justify-end'
+                                : 'justify-start'
                             }`}
                           >
-                            {m.createdAt}
-                          </p>
-                        </div>
-                      </div>
-                    ))
-                  )}
+                            <div
+                              className={`max-w-[80%] rounded-2xl px-3 py-1.5 text-[12px] shadow-sm ${
+                                m.sender === 'ADMIN'
+                                  ? 'bg-black text-white'
+                                  : 'bg-gray-100 text-gray-900'
+                              }`}
+                            >
+                              <p className="whitespace-pre-wrap break-words">
+                                {m.text}
+                              </p>
+                              <p
+                                className={`mt-1 text-right text-[10px] ${
+                                  m.sender === 'ADMIN'
+                                    ? 'text-gray-300'
+                                    : 'text-gray-500'
+                                }`}
+                              >
+                                {m.createdAt}
+                              </p>
+                            </div>
+                          </div>
+                        ))
+                      )
+                    ) : (
+                      <p className="text-[12px] text-gray-600">
+                        {t('noAnswer')}
+                      </p>
+                    )}
+                  </div>
                 </div>
               )}
 
@@ -244,7 +343,41 @@ export default function ChatWidget() {
                   <p className="text-[13px] text-red-800">{error}</p>
                 </div>
               )}
-             
+
+              {isGuest && !threadId && (
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                  <label className="space-y-1 text-[13px] text-gray-600">
+                    <span>{t('firstName')} *</span>
+                    <input
+                      type="text"
+                      value={guestFirstName}
+                      onChange={(e) => setGuestFirstName(e.target.value)}
+                      autoComplete="given-name"
+                      className="w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-[13px] text-black shadow-sm focus:outline-none focus:ring-2 focus:ring-black"
+                    />
+                  </label>
+                  <label className="space-y-1 text-[13px] text-gray-600">
+                    <span>{t('lastName')} *</span>
+                    <input
+                      type="text"
+                      value={guestLastName}
+                      onChange={(e) => setGuestLastName(e.target.value)}
+                      autoComplete="family-name"
+                      className="w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-[13px] text-black shadow-sm focus:outline-none focus:ring-2 focus:ring-black"
+                    />
+                  </label>
+                  <label className="col-span-full space-y-1 text-[13px] text-gray-600">
+                    <span>{t('email')} *</span>
+                    <input
+                      type="email"
+                      value={guestEmail}
+                      onChange={(e) => setGuestEmail(e.target.value)}
+                      autoComplete="email"
+                      className="w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-[13px] text-black shadow-sm focus:outline-none focus:ring-2 focus:ring-black"
+                    />
+                  </label>
+                </div>
+              )}
 
               <form onSubmit={handleSubmit} className="space-y-3">
                 <label className="space-y-1 text-[15px] text-gray-600">
@@ -283,6 +416,7 @@ export default function ChatWidget() {
                             );
                             setMessages([]);
                             setThreadId(null);
+                            setThreadContact(null);
                             if (typeof window !== 'undefined') {
                               window.localStorage.removeItem(STORAGE_KEY);
                             }
@@ -301,7 +435,7 @@ export default function ChatWidget() {
                     )}
                     <button
                       type="submit"
-                      disabled={loading}
+                      disabled={loading || sessionStatus === 'loading'}
                       className="inline-flex items-center gap-1 rounded-full bg-black px-4 py-1.5 text-[13px] md:text-[15px] font-semibold text-white shadow-sm transition hover:bg-gray-900 disabled:cursor-not-allowed disabled:opacity-60"
                     >
                       {loading ? t('loading') : t('send')}

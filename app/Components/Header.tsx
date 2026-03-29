@@ -27,6 +27,7 @@ const conditionsLinks: NavLinkItem[] = [
   { href: '/conditions?section=third-party-pickup', labelKey: 'header.thirdPartyPickup' },
   { href: '/conditions?section=confidentiality', labelKey: 'header.confidentiality' },
   { href: '/conditions?section=declarant-service', labelKey: 'header.declarantService' },
+  { href: '/conditions?section=prohibited-items', labelKey: 'header.prohibitedItemsList' },
 ];
 
 

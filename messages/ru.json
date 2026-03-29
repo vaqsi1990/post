@@ -71,7 +71,10 @@
     "email": "Эл. почта",
     "phone": "Телефон",
     "message": "Сообщение",
-    "success": "Успешно"
+    "success": "Успешно",
+    "roomNumber": "Номер комнаты",
+    "guestFieldsRequired": "Укажите имя, фамилию и электронную почту.",
+    "messageSent": "Сообщение отправлено. Диалог продолжается в этом окне."
   },
   "header": {
     "services": "Сервисы",
@@ -102,6 +105,7 @@
     "thirdPartyPickup": "Выдача посылки третьему лицу",
     "confidentiality": "Конфиденциальность",
     "declarantService": "Услуга декларанта",
+    "prohibitedItemsList": "Список запрещённых товаров",
     "whyPostify": "Почему Postifly?",
     "howWeightCalculated": "Как рассчитывается вес посылки?",
     "whenSubjectToCustoms": "Когда отправление подлежит таможенному оформлению?",
