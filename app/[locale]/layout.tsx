@@ -7,6 +7,7 @@ import Header from '../Components/Header';
 import Footer from '../Components/Footer';
 
 import { Metadata } from 'next';
+import ChatWidget from '../Components/ChatWidget';
 
 type Props = {
   children: React.ReactNode;
@@ -44,7 +45,7 @@ export default async function LocaleLayout({ children, params }: Props) {
     <NextIntlClientProvider locale={locale} messages={messages}>
       <Header />
       <div className="flex min-h-[100vh] flex-col">
-        <main className="flex flex-1 flex-col">{children}</main>
+        <main className="flex flex-1 flex-col">   <ChatWidget />  {children}</main>
         <Footer />
       </div>
     </NextIntlClientProvider>
