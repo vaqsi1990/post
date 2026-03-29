@@ -39,7 +39,7 @@ export default function ConditionsAccordion({ locale, sectionId }: Props) {
                 {section.title}
               </h2>
             </div>
-            <div className="border-t border-gray-100 px-4 pb-4 pt-0 text-[14px] leading-relaxed text-black md:px-6 md:pb-5 md:text-[16px] md:text-justify">
+            <div className="border-t border-gray-100 px-4 pb-4 pt-0 text-[14px] leading-relaxed text-black md:px-6 md:pb-5 md:text-[18px] md:text-justify">
               {section.content}
             </div>
           </motion.article>

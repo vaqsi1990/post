@@ -39,7 +39,7 @@ export const sectionsKa: SectionItem[] = [
     id: "confidentiality",
     title: "კონფიდენციალურობა",
     content:
-      "მომხმარებლის შესახებ, ნებისმიერი სახის ინფორმაცია, რომელიც ინახება კომპანია Postifly-ის ბაზაში წარმოადგენს კონფიდენციალურ მასალას. კომპანია Postifly აღნიშნულ ინფორმაციას არ გადასცემს მესამე პირს, თუ ამას არ მოითხოვს სახელმწიფოს წარმომადგენელი ორგანო, შესაბამისი მოთხოვნის საფუძველზე. აღნიშნული ინფორმაცია ინახება ბაზებში და დაცულია უცხო პირებისგან. თავის მხრივ, მომხმარებელი ვალდებულია არ გადასცეს მესამე პირს ისეთი ინფორმაცია როგორიცაა: ა) ტრანსპორტირების ანაზღაურების ტარიფი, რომელიც შეთანხმებულია მხოლოდ დამკვეთთან; ბ) ფინანსური დოკუმენტები, როგორიცაა ინვოისი. ",
+      "მომხმარებლის შესახებ, ნებისმიერი სახის ინფორმაცია, რომელიც ინახება კომპანია Postifly-ის ბაზაში წარმოადგენს კონფიდენციალურ მასალას. კომპანია Postifly აღნიშნულ ინფორმაციას არ გადასცემს მესამე პირს, თუ ამას არ მოითხოვს სახელმწიფოს წარმომადგენელი ორგანო, შესაბამისი მოთხოვნის საფუძველზე. აღნიშნული ინფორმაცია ინახება ბაზებში და დაცულია უცხო პირებისგან. თავის მხრივ, მომხმარებელი ვალდებულია არ გადასცეს მესამე პირს ისეთი ინფორმაცია როგორიცაა:  ტრანსპორტირების ანაზღაურების ტარიფი, რომელიც შეთანხმებულია მხოლოდ დამკვეთთან;  ფინანსური დოკუმენტები, როგორიცაა ინვოისი. ",
   },
   {
     id: "declarant-service",
@@ -84,7 +84,7 @@ export const sectionsRu: SectionItem[] = [
     id: "confidentiality",
     title: "Конфиденциальность",
     content:
-      "Любые сведения о пользователе, хранящиеся в базе компании Postifly, являются конфиденциальными. Postifly не передаёт эту информацию третьим лицам, если этого не требует государственный орган на основании надлежащего запроса. Информация хранится в базах данных и защищена от постороннего доступа. Пользователь, в свою очередь, обязан не передавать третьим лицам: а) тариф на перевозку и возмещение, согласованный только с заказчиком; б) финансовые документы, например счёт (инвойс). Спасибо, что пользуетесь нашим сервисом.",
+      "Любые сведения о пользователе, хранящиеся в базе компании Postifly, являются конфиденциальными. Postifly не передаёт эту информацию третьим лицам, если этого не требует государственный орган на основании надлежащего запроса. Информация хранится в базах данных и защищена от постороннего доступа. Пользователь, в свою очередь, обязан не передавать третьим лицам:  тариф на перевозку и возмещение, согласованный только с заказчиком;  финансовые документы, например счёт (инвойс). Спасибо, что пользуетесь нашим сервисом.",
   },
   {
     id: "declarant-service",
@@ -129,7 +129,7 @@ export const sectionsEn: SectionItem[] = [
     id: "confidentiality",
     title: "Confidentiality",
     content:
-      "Any information about the customer stored in Postifly's database is confidential material. Postifly does not disclose this information to third parties unless this is required by a state authority on the basis of an appropriate request. This information is stored in databases and protected from unauthorized persons. In turn, the customer is obliged not to disclose to third parties such information as: (a) the transportation tariff, which is agreed only with the customer; (b) financial documents such as an invoice. Thank you for using our service.",
+      "Any information about the customer stored in Postifly's database is confidential material. Postifly does not disclose this information to third parties unless this is required by a state authority on the basis of an appropriate request. This information is stored in databases and protected from unauthorized persons. In turn, the customer is obliged not to disclose to third parties such information as:  the transportation tariff, which is agreed only with the customer;  financial documents such as an invoice. Thank you for using our service.",
   },
   {
     id: "declarant-service",
