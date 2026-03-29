@@ -40,7 +40,17 @@ export default function ConditionsAccordion({ locale, sectionId }: Props) {
               </h2>
             </div>
             <div className="border-t border-gray-100 px-4 pb-4 pt-0 text-[14px] leading-relaxed text-black md:px-6 md:pb-5 md:text-[18px] md:text-justify">
-              {section.content}
+              <p className="m-0">{section.content}</p>
+              {section.listItems && section.listItems.length > 0 ? (
+                <ul className="conditions-section-list mt-3 list-disc space-y-1.5 pl-5 md:mt-4 md:pl-6">
+                  {section.listItems.map((item, i) => (
+                    <li key={`${section.id}-li-${i}`}>{item}</li>
+                  ))}
+                </ul>
+              ) : null}
+              {section.contentAfterList ? (
+                <p className="mt-3 m-0 md:mt-4">{section.contentAfterList}</p>
+              ) : null}
             </div>
           </motion.article>
         ))}

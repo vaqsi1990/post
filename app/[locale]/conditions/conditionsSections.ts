@@ -2,6 +2,10 @@ export type SectionItem = {
   id: string;
   title: string;
   content: string;
+  /** Optional list rendered as <ul> after the paragraph */
+  listItems?: string[];
+  /** Optional paragraph after the list (e.g. closing thanks) */
+  contentAfterList?: string;
 };
 
 export const sectionsKa: SectionItem[] = [
@@ -21,7 +25,7 @@ export const sectionsKa: SectionItem[] = [
     id: "calculation-rules",
     title: "დაანგარიშების წესი",
     content:
-      "ამანათის ტრანსპორტირების ღირებულება გამოითვლება ამანათის რეალური წონის მიხედვით. წონის დამრგვალება ხდება 1 კილომდე, მინიმალური წონა შეადგენს 1 კილოს.კომპანია Postifly მოცულობით ითვლის მხოლოდ განსაკუთრებული გაბარიტების მქონე ნივთებს და ღირებულების განსაზღვრა მოხდება შეთანხმებით.",
+      "ამანათის ტრანსპორტირების ღირებულება გამოითვლება ამანათის რეალური წონის მიხედვით. წონის დამრგვალება ხდება 1 კილომდე, მინიმალური წონა შეადგენს 1 კილოგრამს.კომპანია Postifly მოცულობით ითვლის მხოლოდ განსაკუთრებული გაბარიტების მქონე ნივთებს და ღირებულების განსაზღვრა მოხდება შეთანხმებით.",
   },
   {
     id: "declaration-service",
@@ -33,13 +37,23 @@ export const sectionsKa: SectionItem[] = [
     id: "third-party-pickup",
     title: "ამანათის გაცემა მესამე პირზე",
     content:
-      "ამანათის გაცემა მესამე პირზე ხდება შემდეგი დოკუმენტაციის წარდგენის შემდეგ: პირადობის მოწმობა, პირადობის მოწმობის ასლი, პიროვნების დამადასტურებელი სხვა დოკუმენტი, მინდობილობა.",
+      "ამანათის გაცემა მესამე პირზე ხდება შემდეგი დოკუმენტაციის წარდგენის შემდეგ:",
+    listItems: [
+      "პირადობის მოწმობა",
+      "პირადობის მოწმობის ასლი",
+      "პიროვნების დამადასტურებელი სხვა დოკუმენტი",
+      "მინდობილობა",
+    ],
   },
   {
     id: "confidentiality",
     title: "კონფიდენციალურობა",
     content:
-      "მომხმარებლის შესახებ, ნებისმიერი სახის ინფორმაცია, რომელიც ინახება კომპანია Postifly-ის ბაზაში წარმოადგენს კონფიდენციალურ მასალას. კომპანია Postifly აღნიშნულ ინფორმაციას არ გადასცემს მესამე პირს, თუ ამას არ მოითხოვს სახელმწიფოს წარმომადგენელი ორგანო, შესაბამისი მოთხოვნის საფუძველზე. აღნიშნული ინფორმაცია ინახება ბაზებში და დაცულია უცხო პირებისგან. თავის მხრივ, მომხმარებელი ვალდებულია არ გადასცეს მესამე პირს ისეთი ინფორმაცია როგორიცაა:  ტრანსპორტირების ანაზღაურების ტარიფი, რომელიც შეთანხმებულია მხოლოდ დამკვეთთან;  ფინანსური დოკუმენტები, როგორიცაა ინვოისი. ",
+      "მომხმარებლის შესახებ, ნებისმიერი სახის ინფორმაცია, რომელიც ინახება კომპანია Postifly-ის ბაზაში წარმოადგენს კონფიდენციალურ მასალას. კომპანია Postifly აღნიშნულ ინფორმაციას არ გადასცემს მესამე პირს, თუ ამას არ მოითხოვს სახელმწიფოს წარმომადგენელი ორგანო, შესაბამისი მოთხოვნის საფუძველზე. აღნიშნული ინფორმაცია ინახება ბაზებში და დაცულია უცხო პირებისგან. თავის მხრივ, მომხმარებელი ვალდებულია არ გადასცეს მესამე პირს ისეთი ინფორმაცია როგორიცაა:",
+    listItems: [
+      "ტრანსპორტირების ანაზღაურების ტარიფი, რომელიც შეთანხმებულია მხოლოდ დამკვეთთან",
+      "ფინანსური დოკუმენტები, როგორიცაა ინვოისი",
+    ],
   },
   {
     id: "declarant-service",
@@ -78,13 +92,24 @@ export const sectionsRu: SectionItem[] = [
     id: "third-party-pickup",
     title: "Выдача посылки третьему лицу",
     content:
-      "Посылка выдаётся третьему лицу при предъявлении следующих документов: удостоверение личности, копия удостоверения, иной документ, удостоверяющий личность, доверенность.",
+      "Посылка выдаётся третьему лицу при предъявлении следующих документов:",
+    listItems: [
+      "удостоверение личности",
+      "копия удостоверения",
+      "иной документ, удостоверяющий личность",
+      "доверенность",
+    ],
   },
   {
     id: "confidentiality",
     title: "Конфиденциальность",
     content:
-      "Любые сведения о пользователе, хранящиеся в базе компании Postifly, являются конфиденциальными. Postifly не передаёт эту информацию третьим лицам, если этого не требует государственный орган на основании надлежащего запроса. Информация хранится в базах данных и защищена от постороннего доступа. Пользователь, в свою очередь, обязан не передавать третьим лицам:  тариф на перевозку и возмещение, согласованный только с заказчиком;  финансовые документы, например счёт (инвойс). Спасибо, что пользуетесь нашим сервисом.",
+      "Любые сведения о пользователе, хранящиеся в базе компании Postifly, являются конфиденциальными. Postifly не передаёт эту информацию третьим лицам, если этого не требует государственный орган на основании надлежащего запроса. Информация хранится в базах данных и защищена от постороннего доступа. Пользователь, в свою очередь, обязан не передавать третьим лицам:",
+    listItems: [
+      "тариф на перевозку и возмещение, согласованный только с заказчиком",
+      "финансовые документы, например счёт (инвойс)",
+    ],
+    contentAfterList: "Спасибо, что пользуетесь нашим сервисом.",
   },
   {
     id: "declarant-service",
@@ -123,13 +148,24 @@ export const sectionsEn: SectionItem[] = [
     id: "third-party-pickup",
     title: "Parcel Release to a Third Party",
     content:
-      "A parcel may be released to a third party upon presentation of the following documents: identity card, copy of the identity card, another identity document, and a power of attorney.",
+      "A parcel may be released to a third party upon presentation of the following documents:",
+    listItems: [
+      "identity card",
+      "copy of the identity card",
+      "another identity document",
+      "power of attorney",
+    ],
   },
   {
     id: "confidentiality",
     title: "Confidentiality",
     content:
-      "Any information about the customer stored in Postifly's database is confidential material. Postifly does not disclose this information to third parties unless this is required by a state authority on the basis of an appropriate request. This information is stored in databases and protected from unauthorized persons. In turn, the customer is obliged not to disclose to third parties such information as:  the transportation tariff, which is agreed only with the customer;  financial documents such as an invoice. Thank you for using our service.",
+      "Any information about the customer stored in Postifly's database is confidential material. Postifly does not disclose this information to third parties unless this is required by a state authority on the basis of an appropriate request. This information is stored in databases and protected from unauthorized persons. In turn, the customer is obliged not to disclose to third parties such information as:",
+    listItems: [
+      "the transportation tariff, which is agreed only with the customer",
+      "financial documents such as an invoice",
+    ],
+    contentAfterList: "Thank you for using our service.",
   },
   {
     id: "declarant-service",
