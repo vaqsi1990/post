@@ -12,7 +12,7 @@ const Page = () => {
       <Hero />
       <Services />
       <Tariffs />
-      <HomeMarqueeBand />
+      {/* <HomeMarqueeBand /> */}
     
     </div>
   );

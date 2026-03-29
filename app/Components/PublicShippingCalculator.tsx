@@ -61,7 +61,7 @@ export default function PublicShippingCalculator() {
 
   return (
     <div className="mx-auto w-full max-w-2xl px-1">
-      <h1 className="mb-8 text-center text-[20px] font-extrabold tracking-tight text-black md:text-[28px]">
+      <h1 className="mb-8 text-center text-[20px] font-extrabold tracking-tight text-[#3a5bff] md:text-[28px]">
         {t('title')}
       </h1>
 

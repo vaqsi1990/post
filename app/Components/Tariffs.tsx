@@ -178,13 +178,13 @@ export default function Tariffs() {
             <table className="w-full min-w-[280px]">
               <thead>
                 <tr className="border-b border-indigo-100/80 bg-gradient-to-r from-indigo-100/90 via-white to-pink-100/80">
-                  <th className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-700 sm:px-4 sm:py-4 md:px-8 md:py-5 md:text-sm md:normal-case md:tracking-normal md:text-[18px] md:font-semibold md:text-gray-800">
+                  <th className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[#3a5bff] sm:px-4 sm:py-4 md:px-8 md:py-5 md:text-sm md:normal-case md:tracking-normal md:text-[18px] md:font-semibold ">
                     {t('tariffCountry')}
                   </th>
-                  <th className="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-700 sm:px-4 sm:py-4 md:px-8 md:py-5 md:text-sm md:normal-case md:tracking-normal md:text-[18px] md:font-semibold md:text-gray-800">
+                  <th className="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wider text-[#3a5bff] sm:px-4 sm:py-4 md:px-8 md:py-5 md:text-sm md:normal-case md:tracking-normal md:text-[18px] md:font-semibold ">
                     {t('tariffDelivery')}
                   </th>
-                  <th className="px-3 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-700 sm:px-4 sm:py-4 md:px-8 md:py-5 md:text-sm md:normal-case md:tracking-normal md:text-[18px] md:font-semibold md:text-gray-800">
+                  <th className="px-3 py-3 text-right text-xs font-semibold uppercase tracking-wider text-[#3a5bff] sm:px-4 sm:py-4 md:px-8 md:py-5 md:text-sm md:normal-case md:tracking-normal md:text-[18px] md:font-semibold ">
                     {t('tariffPrice')}
                   </th>
                 </tr>

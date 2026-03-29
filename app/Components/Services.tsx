@@ -75,9 +75,7 @@ const Services = () => {
         className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-black/25"
         aria-hidden
       />
-      <span className="absolute left-4 top-4 z-10 font-bold tracking-tight text-white text-3xl sm:text-4xl md:text-[2.75rem] leading-none">
-        {s.num}
-      </span>
+   
     </div>
   );
 
