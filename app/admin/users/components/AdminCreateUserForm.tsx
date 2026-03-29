@@ -15,6 +15,7 @@ const initialForm: AdminCreateUserInput & { confirmPassword: string } = {
   personalIdNumber: '',
   city: '',
   address: '',
+  postalIndex: '',
   role: 'USER',
 };
 
@@ -35,6 +36,8 @@ export default function AdminCreateUserForm() {
     personalId: isRu ? 'Личный номер *' : isEn ? 'Personal ID *' : 'პირადი ნომერი *',
     personalIdPlaceholder: isRu ? '11 цифр' : isEn ? '11 digits' : '11 ციფრი',
     city: isRu ? 'Город' : isEn ? 'City' : 'ქალაქი',
+    postalIndex: isRu ? 'Почтовый индекс' : isEn ? 'Postal index' : 'ინდექსის ნომერი',
+    postalIndexHint: isRu ? '4 цифры (необязательно)' : isEn ? '4 digits (optional)' : '4 ციფრი (არასავალდებულო)',
     address: isRu ? 'Адрес' : isEn ? 'Address' : 'მისამართი',
     role: isRu ? 'Роль' : isEn ? 'Role' : 'როლი',
     user: isRu ? 'Пользователь' : isEn ? 'User' : 'მომხმარებელი',
@@ -79,6 +82,7 @@ export default function AdminCreateUserForm() {
           personalIdNumber: form.personalIdNumber,
           city: form.city?.trim() || undefined,
           address: form.address?.trim() || undefined,
+          postalIndex: form.postalIndex?.trim() || undefined,
           role: form.role,
         }),
       });
@@ -206,6 +210,25 @@ export default function AdminCreateUserForm() {
             onChange={handleChange}
             className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
           />
+        </div>
+        <div>
+          <label className="mb-1 block text-[14px] font-semibold text-black">{t.postalIndex}</label>
+          <p className="mb-1 text-[12px] text-gray-600">{t.postalIndexHint}</p>
+          <input
+            type="text"
+            name="postalIndex"
+            inputMode="numeric"
+            maxLength={4}
+            value={form.postalIndex}
+            onChange={(e) => {
+              const v = e.target.value.replace(/\D/g, '').slice(0, 4);
+              setForm((prev) => ({ ...prev, postalIndex: v }));
+              if (errors.postalIndex) setErrors((prev) => ({ ...prev, postalIndex: '' }));
+            }}
+            className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-[15px] text-black tabular-nums focus:outline-none focus:ring-2 focus:ring-gray-400"
+            placeholder="0108"
+          />
+          {errors.postalIndex && <p className="mt-1 text-[13px] text-red-600">{errors.postalIndex}</p>}
         </div>
         <div>
           <label className="mb-1 block text-[14px] font-semibold text-black">{t.address}</label>

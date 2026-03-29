@@ -66,6 +66,11 @@ const registerBaseSchema = z.object({
       message: 'აირჩიეთ ქალაქი სიიდან',
     }),
   address: georgianTextField('მისამართი აუცილებელია', MSG_GEORGIAN_ADDRESS),
+  postalIndex: z
+    .string()
+    .trim()
+    .length(4, 'ინდექსის ნომერი უნდა იყოს 4 ციფრი')
+    .regex(/^\d{4}$/, 'ინდექსის ნომერი მხოლოდ ციფრებით'),
   termsAccepted: z
     .boolean()
     .refine((value) => value === true, 'გთხოვთ დაეთანხმოთ წესებს და პირობებს'),
@@ -104,6 +109,13 @@ export const adminCreateUserSchema = z.object({
     .regex(/^\d+$/, 'პირადი ნომერი უნდა შეიცავდეს მხოლოდ ციფრებს'),
   city: z.string().optional(),
   address: z.string().optional(),
+  postalIndex: z
+    .string()
+    .trim()
+    .optional()
+    .refine((v) => v === undefined || v === '' || /^\d{4}$/.test(v), {
+      message: 'ინდექსის ნომერი უნდა იყოს 4 ციფრი',
+    }),
   role: z.enum(['USER', 'ADMIN']).default('USER'),
 });
 

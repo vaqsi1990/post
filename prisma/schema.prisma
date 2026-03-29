@@ -45,6 +45,8 @@ model User {
   personalIdNumber  String   @unique
   city              String?
   address           String?
+  /// საფოსტო ინდექსი (4 ციფრი, საქართველო)
+  postalIndex       String?
   termsAcceptedAt   DateTime?
   balance           Float    @default(0)  // მომხმარებლის ბალანსი (GEL)
   roomNumber      String?      @unique // მომხმარებლის ოთახის ნომერი (მაგ. PO1, PO2, PO3...)

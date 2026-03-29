@@ -13,6 +13,13 @@ const updateAdminSettingsSchema = z
     city: z.string().max(200).optional().nullable(),
     address: z.string().max(500).optional().nullable(),
     personalIdNumber: z.string().min(1, 'პირადი ნომერი აუცილებელია').max(50).optional(),
+    postalIndex: z
+      .string()
+      .trim()
+      .optional()
+      .refine((v) => v === undefined || v === '' || /^\d{4}$/.test(v), {
+        message: 'ინდექსის ნომერი უნდა იყოს 4 ციფრი',
+      }),
     currentPassword: z.string().min(1, 'მიმდინარე პაროლი აუცილებელია').optional(),
     newPassword: z.string().min(6, 'ახალი პაროლი უნდა იყოს მინიმუმ 6 სიმბოლო').optional(),
     confirmNewPassword: z.string().min(1, 'გაიმეორეთ ახალი პაროლი').optional(),
@@ -110,6 +117,7 @@ export async function PUT(request: NextRequest) {
       city?: string | null;
       address?: string | null;
       personalIdNumber?: string;
+      postalIndex?: string | null;
       password?: string;
     } = {};
 
@@ -119,6 +127,9 @@ export async function PUT(request: NextRequest) {
     if (data.city !== undefined) updateData.city = data.city ?? null;
     if (data.address !== undefined) updateData.address = data.address ?? null;
     if (typeof data.personalIdNumber === 'string') updateData.personalIdNumber = data.personalIdNumber;
+    if (data.postalIndex !== undefined) {
+      updateData.postalIndex = data.postalIndex?.trim() ? data.postalIndex.trim() : null;
+    }
 
     if (data.newPassword) {
       updateData.password = await bcrypt.hash(data.newPassword, 10);

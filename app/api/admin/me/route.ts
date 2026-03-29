@@ -25,6 +25,7 @@ export async function GET() {
       city: true,
       address: true,
       personalIdNumber: true,
+      postalIndex: true,
       createdAt: true,
       updatedAt: true,
     },

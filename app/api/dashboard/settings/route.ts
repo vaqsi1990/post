@@ -7,10 +7,19 @@ import prisma from '../../../../lib/prisma';
 
 export const dynamic = 'force-dynamic';
 
+const postalIndexOptionalSchema = z
+  .string()
+  .trim()
+  .optional()
+  .refine((v) => v === undefined || v === '' || /^\d{4}$/.test(v), {
+    message: 'ინდექსის ნომერი უნდა იყოს 4 ციფრი',
+  });
+
 const updateProfileSchema = z.object({
   firstName: z.string().max(100).optional(),
   lastName: z.string().max(100).optional(),
   phone: z.string().max(20).optional().nullable(),
+  postalIndex: postalIndexOptionalSchema,
 });
 
 const changePasswordSchema = z.object({
@@ -38,6 +47,7 @@ export async function GET() {
       phone: true,
       phoneVerified: true,
       personalIdNumber: true,
+      postalIndex: true,
       createdAt: true,
     },
   });
@@ -54,6 +64,7 @@ export async function GET() {
       phone: user.phone ?? '',
       phoneVerified: user.phoneVerified,
       personalIdNumber: user.personalIdNumber,
+      postalIndex: user.postalIndex ?? '',
       createdAt: new Date(user.createdAt).toISOString(),
     },
   });
@@ -107,6 +118,9 @@ export async function PATCH(request: NextRequest) {
         ...(data.firstName !== undefined && { firstName: data.firstName || null }),
         ...(data.lastName !== undefined && { lastName: data.lastName || null }),
         ...(data.phone !== undefined && { phone: data.phone || null }),
+        ...(data.postalIndex !== undefined && {
+          postalIndex: data.postalIndex?.trim() ? data.postalIndex.trim() : null,
+        }),
       },
     });
     return NextResponse.json({ message: 'პროფილი განახლდა' });

@@ -23,6 +23,7 @@ export default async function DashboardSettingsPage() {
       phone: true,
       phoneVerified: true,
       personalIdNumber: true,
+      postalIndex: true,
     },
   });
 
@@ -35,6 +36,7 @@ export default async function DashboardSettingsPage() {
     phone: user.phone ?? '',
     phoneVerified: user.phoneVerified ?? false,
     personalIdNumber: user.personalIdNumber,
+    postalIndex: user.postalIndex ?? '',
   };
 
   return (

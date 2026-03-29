@@ -201,6 +201,7 @@ export async function POST(request: NextRequest) {
             phone: parsed.phone || undefined,
             city: parsed.city || undefined,
             address: parsed.address || undefined,
+            postalIndex: null,
             roomNumber,
           },
           select: { id: true, phone: true },

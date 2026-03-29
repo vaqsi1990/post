@@ -23,6 +23,7 @@ const RegisterPage = () => {
     otpCode: '',
     personalIdNumber: '',
     city: '',
+    postalIndex: '',
     address: '',
     termsAccepted: false,
   });
@@ -123,6 +124,7 @@ const RegisterPage = () => {
         otpCode: validatedData.otpCode,
         personalIdNumber: validatedData.personalIdNumber,
         city: validatedData.city,
+        postalIndex: validatedData.postalIndex,
         address: validatedData.address,
         termsAccepted: validatedData.termsAccepted,
       };
@@ -188,8 +190,8 @@ const RegisterPage = () => {
 
           <div className="rounded-md space-y-4">
             <div>
-              <label htmlFor="firstName" className="block text-[16px] font-medium text-black mb-1">{t('firstName')}</label>
-              <p className="mb-1 text-[13px] text-gray-600">{t('nameLatinHint')}</p>
+              <label htmlFor="firstName" className="block text-[18px] font-medium text-black mb-1">{t('firstName')}</label>
+              <p className="mb-1 text-[15px] text-gray-600">{t('nameLatinHint')}</p>
               <input
                 id="firstName"
                 name="firstName"
@@ -214,8 +216,8 @@ const RegisterPage = () => {
             </div>
 
             <div>
-              <label htmlFor="lastName" className="block text-[16px] font-medium text-black mb-1">{t('lastName')}</label>
-              <p className="mb-1 text-[13px] text-gray-600">{t('nameLatinHint')}</p>
+              <label htmlFor="lastName" className="block text-[18px] font-medium text-black mb-1">{t('lastName')}</label>
+              <p className="mb-1 text-[15px] text-gray-600">{t('nameLatinHint')}</p>
               <input
                 id="lastName"
                 name="lastName"
@@ -240,7 +242,7 @@ const RegisterPage = () => {
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-[16px] font-medium text-black mb-1">{t('email')}</label>
+              <label htmlFor="email" className="block text-[18px] font-medium text-black mb-1">{t('email')}</label>
               <input
                 id="email"
                 name="email"
@@ -256,7 +258,7 @@ const RegisterPage = () => {
             </div>
 
             <div>
-              <label htmlFor="phone" className="block text-[16px] font-medium text-black mb-1">{t('phone')}</label>
+              <label htmlFor="phone" className="block text-[18px] font-medium text-black mb-1">{t('phone')}</label>
               <div className="flex gap-2">
                 <input
                   id="phone"
@@ -281,7 +283,7 @@ const RegisterPage = () => {
             </div>
 
             <div>
-              <label htmlFor="personalIdNumber" className="block text-[16px] font-medium text-black mb-1">{t('personalIdNumber')}</label>
+              <label htmlFor="personalIdNumber" className="block text-[18px] font-medium text-black mb-1">{t('personalIdNumber')}</label>
               <input
                 id="personalIdNumber"
                 name="personalIdNumber"
@@ -297,8 +299,8 @@ const RegisterPage = () => {
             </div>
 
             <div>
-              <label htmlFor="city" className="block text-[16px] font-medium text-black mb-1">{t('city')}</label>
-              <p className="mb-1 text-[13px] text-gray-600">{t('cityDropdownHint')}</p>
+              <label htmlFor="city" className="block text-[18px] font-medium text-black mb-1">{t('city')}</label>
+              <p className="mb-1 text-[15px] text-gray-600">{t('cityDropdownHint')}</p>
               <select
                 id="city"
                 name="city"
@@ -318,8 +320,31 @@ const RegisterPage = () => {
             </div>
 
             <div>
-              <label htmlFor="address" className="block text-[16px] font-medium text-black mb-1">{t('address')}</label>
-              <p className="mb-1 text-[13px] text-gray-600">{t('georgianFieldHint')}</p>
+              <label htmlFor="postalIndex" className="block text-[18px] font-medium text-black mb-1">
+                {t('postalIndex')}
+              </label>
+              <input
+                id="postalIndex"
+                name="postalIndex"
+                type="text"
+                inputMode="numeric"
+                maxLength={4}
+                required
+                value={formData.postalIndex}
+                onChange={(e) => {
+                  const v = e.target.value.replace(/\D/g, '').slice(0, 4);
+                  setFormData((prev) => ({ ...prev, postalIndex: v }));
+                  if (errors.postalIndex) setErrors((prev) => ({ ...prev, postalIndex: '' }));
+                }}
+                className={`appearance-none relative block w-full px-3 py-2 border ${errors.postalIndex ? 'border-red-300 text-black' : 'border-gray-300 text-black'} placeholder-gray-500 rounded-md focus:outline-none focus:ring-black focus:border-black sm:text-[16px]`}
+                placeholder={t('postalIndexPlaceholder')}
+              />
+              {errors.postalIndex && <p className="mt-1 text-[16px] text-red-600">{errors.postalIndex}</p>}
+            </div>
+
+            <div>
+              <label htmlFor="address" className="block text-[18px] font-medium text-black mb-1">{t('address')}</label>
+              <p className="mb-1 text-[15px] text-gray-600">{t('georgianFieldHint')}</p>
               <input
                 id="address"
                 name="address"
@@ -343,7 +368,7 @@ const RegisterPage = () => {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-[16px] font-medium text-black mb-1">{t('password')}</label>
+              <label htmlFor="password" className="block text-[18px] font-medium text-black mb-1">{t('password')}</label>
               <div className="relative">
                 <input
                   id="password"
@@ -368,7 +393,7 @@ const RegisterPage = () => {
             </div>
 
             <div>
-              <label htmlFor="confirmPassword" className="block text-[16px] font-medium text-black mb-1">{t('repeatPassword')}</label>
+              <label htmlFor="confirmPassword" className="block text-[18px] font-medium text-black mb-1">{t('repeatPassword')}</label>
               <div className="relative">
                 <input
                   id="confirmPassword"
@@ -393,7 +418,7 @@ const RegisterPage = () => {
             </div>
 
             <div>
-              <label htmlFor="otpCode" className="block text-[16px] font-medium text-black mb-1">{t('otpCode')}</label>
+              <label htmlFor="otpCode" className="block text-[18px] font-medium text-black mb-1">{t('otpCode')}</label>
               <input
                 id="otpCode"
                 name="otpCode"
@@ -415,7 +440,7 @@ const RegisterPage = () => {
           </div>
 
           <div>
-            <label className="flex items-start gap-3 text-[14px] text-black">
+            <label className="flex items-start gap-3 text-[15px] text-black">
               <input
                 id="termsAccepted"
                 name="termsAccepted"

@@ -14,6 +14,7 @@ type AdminMeResponse = {
     city: string | null;
     address: string | null;
     personalIdNumber: string;
+    postalIndex: string | null;
   };
 };
 
@@ -25,6 +26,7 @@ type FieldErrors = Partial<
     | 'city'
     | 'address'
     | 'personalIdNumber'
+    | 'postalIndex'
     | 'currentPassword'
     | 'newPassword'
     | 'confirmNewPassword',
@@ -41,6 +43,7 @@ function isFieldKey(x: unknown): x is FieldKey {
     x === 'city' ||
     x === 'address' ||
     x === 'personalIdNumber' ||
+    x === 'postalIndex' ||
     x === 'currentPassword' ||
     x === 'newPassword' ||
     x === 'confirmNewPassword'
@@ -62,6 +65,7 @@ export default function AdminSettingsForm() {
   const [city, setCity] = useState('');
   const [address, setAddress] = useState('');
   const [personalIdNumber, setPersonalIdNumber] = useState('');
+  const [postalIndex, setPostalIndex] = useState('');
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
@@ -75,6 +79,7 @@ export default function AdminSettingsForm() {
   const [initialCity, setInitialCity] = useState('');
   const [initialAddress, setInitialAddress] = useState('');
   const [initialPersonalIdNumber, setInitialPersonalIdNumber] = useState('');
+  const [initialPostalIndex, setInitialPostalIndex] = useState('');
 
   const dirty = useMemo(() => {
     const profileChanged =
@@ -83,7 +88,8 @@ export default function AdminSettingsForm() {
       lastName.trim() !== initialLastName ||
       city.trim() !== initialCity ||
       address.trim() !== initialAddress ||
-      personalIdNumber.trim() !== initialPersonalIdNumber;
+      personalIdNumber.trim() !== initialPersonalIdNumber ||
+      postalIndex.trim() !== initialPostalIndex;
     const passwordFilled =
       currentPassword.length > 0 ||
       newPassword.length > 0 ||
@@ -96,12 +102,14 @@ export default function AdminSettingsForm() {
     city,
     address,
     personalIdNumber,
+    postalIndex,
     initialEmail,
     initialFirstName,
     initialLastName,
     initialCity,
     initialAddress,
     initialPersonalIdNumber,
+    initialPostalIndex,
     currentPassword,
     newPassword,
     confirmNewPassword,
@@ -122,18 +130,21 @@ export default function AdminSettingsForm() {
         const c = data.user.city ?? '';
         const a = data.user.address ?? '';
         const p = data.user.personalIdNumber ?? '';
+        const pi = data.user.postalIndex ?? '';
         setEmail(e);
         setFirstName(f);
         setLastName(l);
         setCity(c);
         setAddress(a);
         setPersonalIdNumber(p);
+        setPostalIndex(pi);
         setInitialEmail(e);
         setInitialFirstName(f);
         setInitialLastName(l);
         setInitialCity(c);
         setInitialAddress(a);
         setInitialPersonalIdNumber(p);
+        setInitialPostalIndex(pi);
       } catch {
         if (!mounted) return;
         setErrorMessage(t('loadError'));
@@ -175,6 +186,7 @@ export default function AdminSettingsForm() {
         city: city.trim() || null,
         address: address.trim() || null,
         personalIdNumber: personalIdNumber.trim() || undefined,
+        postalIndex: postalIndex.trim() || undefined,
         currentPassword: currentPassword || undefined,
         newPassword: newPassword || undefined,
         confirmNewPassword: confirmNewPassword || undefined,
@@ -223,6 +235,7 @@ export default function AdminSettingsForm() {
       setInitialCity(city.trim());
       setInitialAddress(address.trim());
       setInitialPersonalIdNumber(personalIdNumber.trim());
+      setInitialPostalIndex(postalIndex.trim());
 
       if (data?.requiresReauth) {
         setMessage(t('reauthMessage'));
@@ -330,6 +343,32 @@ export default function AdminSettingsForm() {
           />
           {fieldErrors.address ? <p className="mt-1 text-[16px] text-red-600">{fieldErrors.address}</p> : null}
         </div>
+      </div>
+
+      <div>
+        <label className="block text-[16px] font-medium text-black mb-1" htmlFor="postalIndex">
+          {t('postalIndex')}
+        </label>
+        <p className="mb-1 text-[14px] text-black">{t('postalIndexHint')}</p>
+        <input
+          id="postalIndex"
+          type="text"
+          inputMode="numeric"
+          maxLength={4}
+          value={postalIndex}
+          onChange={(e) => {
+            setPostalIndex(e.target.value.replace(/\D/g, '').slice(0, 4));
+            clearFieldError('postalIndex');
+            clearMessages();
+          }}
+          className={`w-full rounded-md border px-3 py-2 text-black tabular-nums focus:outline-none focus:ring-2 focus:ring-black ${
+            fieldErrors.postalIndex ? 'border-red-300' : 'border-gray-300'
+          }`}
+          placeholder="0108"
+        />
+        {fieldErrors.postalIndex ? (
+          <p className="mt-1 text-[16px] text-red-600">{fieldErrors.postalIndex}</p>
+        ) : null}
       </div>
 
       <div>

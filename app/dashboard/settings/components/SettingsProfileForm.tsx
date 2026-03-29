@@ -9,6 +9,7 @@ type Profile = {
   phone: string;
   phoneVerified: boolean;
   personalIdNumber: string;
+  postalIndex: string;
 };
 
 type Props = {
@@ -19,6 +20,7 @@ export default function SettingsProfileForm({ initialProfile }: Props) {
   const [firstName, setFirstName] = useState(initialProfile.firstName);
   const [lastName, setLastName] = useState(initialProfile.lastName);
   const [phone, setPhone] = useState(initialProfile.phone);
+  const [postalIndex, setPostalIndex] = useState(initialProfile.postalIndex);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -34,6 +36,7 @@ export default function SettingsProfileForm({ initialProfile }: Props) {
           firstName: firstName.trim() || undefined,
           lastName: lastName.trim() || undefined,
           phone: phone.trim() || null,
+          postalIndex: postalIndex.replace(/\D/g, '').slice(0, 4),
         }),
       });
       const data = await res.json();
@@ -123,14 +126,28 @@ export default function SettingsProfileForm({ initialProfile }: Props) {
           )}
         </div>
         <div>
-          <label className="mb-1 block text-[14px] font-medium text-black">
-            პირადი ნომერი
-          </label>
+          <label className="mb-1 block text-[14px] font-medium text-black">პირადი ნომერი</label>
           <input
             type="text"
             value={initialProfile.personalIdNumber}
             readOnly
             className="w-full rounded-lg border border-gray-300 bg-gray-100 px-3 py-2.5 text-[15px] cursor-not-allowed"
+          />
+        </div>
+        <div>
+          <label htmlFor="settings-postalIndex" className="mb-1 block text-[14px] font-medium text-black">
+            ინდექსის ნომერი
+          </label>
+          <p className="mb-1 text-[13px] text-gray-600">4 ციფრი (საქართველოს საფოსტო ინდექსი)</p>
+          <input
+            id="settings-postalIndex"
+            type="text"
+            inputMode="numeric"
+            maxLength={4}
+            value={postalIndex}
+            onChange={(e) => setPostalIndex(e.target.value.replace(/\D/g, '').slice(0, 4))}
+            className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400 tabular-nums"
+            placeholder="0108"
           />
         </div>
         <button

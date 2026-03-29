@@ -116,6 +116,7 @@ export async function POST(request: NextRequest) {
           personalIdNumber: validatedData.personalIdNumber,
           city: validatedData.city?.trim() || null,
           address: validatedData.address?.trim() || null,
+          postalIndex: validatedData.postalIndex?.trim() || null,
           role: validatedData.role ?? 'USER',
           roomNumber,
         },
@@ -134,6 +135,7 @@ export async function POST(request: NextRequest) {
     const city = validatedData.city?.trim();
     const address = validatedData.address?.trim();
     if (user.id && city && address) {
+      const postal = validatedData.postalIndex?.trim() || null;
       await prisma.address.create({
         data: {
           userId: user.id,
@@ -141,6 +143,7 @@ export async function POST(request: NextRequest) {
           country: 'GE',
           city,
           street: address,
+          postalCode: postal,
           isDefault: true,
         },
       });

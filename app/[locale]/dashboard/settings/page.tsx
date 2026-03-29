@@ -29,6 +29,7 @@ export default async function DashboardSettingsPage({ params }: Props) {
       phone: true,
       phoneVerified: true,
       personalIdNumber: true,
+      postalIndex: true,
     },
   });
 
@@ -41,6 +42,7 @@ export default async function DashboardSettingsPage({ params }: Props) {
     phone: user.phone ?? '',
     phoneVerified: user.phoneVerified ?? false,
     personalIdNumber: user.personalIdNumber,
+    postalIndex: user.postalIndex ?? '',
   };
 
   return (

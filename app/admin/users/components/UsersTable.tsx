@@ -28,6 +28,7 @@ type UserDetails = {
     personalIdNumber: string;
     city: string | null;
     address: string | null;
+    postalIndex: string | null;
     balance: number;
     roomNumber: string;
     role: string;
@@ -113,6 +114,7 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
     yes: isRu ? 'Да' : isEn ? 'Yes' : 'კი',
     no: isRu ? 'Нет' : isEn ? 'No' : 'არა',
     personalId: isRu ? 'Личный номер' : isEn ? 'Personal ID' : 'პირადი ნომერი',
+    postalIndex: isRu ? 'Почтовый индекс' : isEn ? 'Postal index' : 'ინდექსის ნომერი',
     city: isRu ? 'Город' : isEn ? 'City' : 'ქალაქი',
     address: isRu ? 'Адрес' : isEn ? 'Address' : 'მისამართი',
     addresses: isRu ? 'Адреса' : isEn ? 'Addresses' : 'მისამართები',
@@ -622,6 +624,8 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
                                     <span>{d.user.phoneVerified ? text.yes : text.no}</span>
                                     <span className="text-gray-600">{text.personalId}</span>
                                     <span>{d.user.personalIdNumber || '—'}</span>
+                                    <span className="text-gray-600">{text.postalIndex}</span>
+                                    <span>{d.user.postalIndex || '—'}</span>
                                     <span className="text-gray-600">{text.city}</span>
                                     <span>{d.user.city || '—'}</span>
                                     <span className="text-gray-600">{text.address}</span>

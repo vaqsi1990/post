@@ -88,6 +88,7 @@ export async function POST(request: NextRequest) {
           personalIdNumber: validatedData.personalIdNumber,
           city: validatedData.city,
           address: validatedData.address,
+          postalIndex: validatedData.postalIndex,
           termsAcceptedAt: new Date(),
           role: 'USER',
           roomNumber,
@@ -111,6 +112,7 @@ export async function POST(request: NextRequest) {
         country: 'GE',
         city: validatedData.city,
         street: validatedData.address,
+        postalCode: validatedData.postalIndex,
         isDefault: true,
       },
     });
@@ -144,6 +146,7 @@ export async function POST(request: NextRequest) {
                          err.field === 'otpCode' ? 'სმს კოდი' :
                          err.field === 'city' ? 'ქალაქი' :
                          err.field === 'address' ? 'მისამართი' :
+                         err.field === 'postalIndex' ? 'ინდექსის ნომერი' :
                          err.field === 'termsAccepted' ? 'წესები და პირობები' :
                          err.field;
         return `${fieldName}: ${err.message}`;
