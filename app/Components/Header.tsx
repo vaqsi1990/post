@@ -97,14 +97,11 @@ const Header = () => {
   const panelLabel = role === 'ADMIN' ? t('common.adminPanel') : t('common.myCabinet');
 
   const rawName = session?.user?.name?.trim();
-  const accountTriggerLabel = rawName
-    ? rawName
-        .split(/\s+/)
-        .filter(Boolean)
-        .slice(0, 2)
-        .map((part) => part[0]?.toUpperCase() ?? '')
-        .join('')
-    : t('common.account');
+  const firstNameOnly = rawName
+    ? rawName.split(/\s+/).filter(Boolean)[0] ?? ''
+    : '';
+  const roomNumber = session?.user?.roomNumber?.trim();
+  const hasAccountLabel = Boolean(firstNameOnly || roomNumber);
 
   useEffect(() => {
     if (!isAccountMenuOpen) return;
@@ -262,7 +259,26 @@ const Header = () => {
                 onClick={() => setIsAccountMenuOpen((v) => !v)}
               >
                 <UserOutlineIcon className="header-auth-icon shrink-0" />
-                <span className="header-account-label">{accountTriggerLabel}</span>
+                <span className="header-account-label">
+                  {hasAccountLabel ? (
+                    <>
+                      {firstNameOnly ? (
+                        <span className="header-account-name">{firstNameOnly}</span>
+                      ) : null}
+                      {roomNumber ? (
+                        <span
+                          className={
+                            firstNameOnly ? 'header-account-room' : 'header-account-name'
+                          }
+                        >
+                          {roomNumber}
+                        </span>
+                      ) : null}
+                    </>
+                  ) : (
+                    t('common.account')
+                  )}
+                </span>
                 <span className="header-dropdown-caret" aria-hidden="true">▾</span>
               </button>
               <div

@@ -485,10 +485,28 @@ button:not(.mobile-menu-button),
 }
 
 .header-account-label {
-  max-width: 140px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.15rem;
+  line-height: 1.15;
+  max-width: min(280px, 38vw);
+  min-height: 0;
+}
+
+.header-account-name,
+.header-account-room {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  max-width: 100%;
+}
+
+.header-account-room {
+  font-size: 0.88em;
+  font-weight: 500;
+  opacity: 0.92;
 }
 
 .header-dropdown-item-logout {
