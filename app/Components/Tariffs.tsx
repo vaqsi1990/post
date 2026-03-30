@@ -42,7 +42,7 @@ const TARIFF_ROWS: TariffRow[] = [
   {
     countryKey: 'unitedkingdom' as const,
     countryCode: 'GB',
-    pricePerKg: 7,
+    pricePerKg: 8,
     deliveryDaysPrefix: '3-7',
     currencySymbol: '£',
     deliveryNoteKey: 'tariffAirShipping',
@@ -50,7 +50,7 @@ const TARIFF_ROWS: TariffRow[] = [
   {
     countryKey: 'usa' as const,
     countryCode: 'US',
-    pricePerKg: 8,
+    pricePerKg: 9,
     deliveryDaysPrefix: '3-7',
     currencySymbol: '$',
     deliveryNoteKey: 'tariffAirShipping',
@@ -82,7 +82,7 @@ const TARIFF_ROWS: TariffRow[] = [
   {
     countryKey: 'spain' as const,
     countryCode: 'ES',
-    pricePerKg: 7,
+    pricePerKg: 8,
     deliveryDaysPrefix: '1-3',
     currencySymbol: '€',
     deliveryNoteKey: 'tariffAirShipping',
@@ -98,7 +98,7 @@ const TARIFF_ROWS: TariffRow[] = [
   {
     countryKey: 'germany' as const,
     countryCode: 'DE',
-    pricePerKg: 7,
+    pricePerKg: 8,
     deliveryDaysPrefix: '1-3',
     currencySymbol: '€',
     deliveryNoteKey: 'tariffAirShipping',

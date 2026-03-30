@@ -1,180 +1,20 @@
-'use client';
-
-import { useEffect, useRef, useState, useMemo } from 'react';
 import Image from 'next/image';
-import { gsap } from 'gsap';
-import { useTranslations } from 'next-intl';
-import {
-  GB,
-  US,
-  CN,
-  IT,
-  GR,
-  ES,
-  FR,
-  DE,
-  TR,
-} from 'country-flag-icons/react/3x2';
-const FLAGS: Record<string, React.ComponentType<{ title?: string; className?: string }>> = {
-  GB,
-  US,
-  CN,
-  IT,
-  GR,
-  ES,
-  FR,
-  DE,
-  TR,
-};
+
 const Hero = () => {
-  const t = useTranslations('home');
-  const HERO_TEXTS = useMemo(
-    () => [
-      {
-        line1: t('hero1Line1'),
-        line2: t('hero1Line2'),
-        line3: t('hero1Line3'),
-        line4: t('hero1Line4'),
-      },
-      {
-        line1: t('hero2Line1'),
-        line2: t('hero2Line2'),
-        line3: null as string | null,
-        line4: null as string | null,
-      },
-    ],
-    [t]
-  );
-  const [textIndex, setTextIndex] = useState(0);
-  const layer1Ref = useRef<HTMLDivElement>(null);
-  const layer2Ref = useRef<HTMLDivElement>(null);
-  const xAxisRef = useRef<HTMLDivElement>(null);
-  const yAxisRef = useRef<HTMLDivElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    const handleMouseMove = (event: MouseEvent) => {
-      if (!containerRef.current) return;
-
-      const container = containerRef.current;
-      const container_w = container.offsetWidth;
-      const container_h = container.offsetHeight;
-      const pos_x = event.pageX;
-      const pos_y = event.pageY;
-
-      const left = container_w / 2 - pos_x;
-      const top = container_h / 2 - pos_y;
-
-      if (xAxisRef.current) {
-        gsap.to(xAxisRef.current, {
-          duration: 1,
-          x: left * -1,
-          ease: 'expo.out',
-          overwrite: true,
-        });
-      }
-
-      if (yAxisRef.current) {
-        gsap.to(yAxisRef.current, {
-          duration: 1,
-          y: top * -1,
-          ease: 'expo.out',
-          overwrite: true,
-        });
-      }
-
-      if (layer2Ref.current) {
-        gsap.to(layer2Ref.current, {
-          duration: 1,
-          x: left / 24,
-          y: top / 12,
-          ease: 'expo.out',
-          overwrite: true,
-        });
-      }
-
-      if (layer1Ref.current) {
-        gsap.to(layer1Ref.current, {
-          duration: 1,
-          x: left / 8,
-          y: top / 4,
-          ease: 'expo.out',
-          overwrite: true,
-        });
-      }
-
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-    };
-  }, []);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTextIndex((i) => (i + 1) % HERO_TEXTS.length);
-    }, 10000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const handleScrollClick = () => {
-    window.scrollTo({
-      top: window.innerHeight,
-      behavior: 'smooth',
-    });
-  };
-
   return (
-    <div ref={containerRef} className=" hero-parallax-container">
-      {/* Dark Overlay */}
-  
-      
-    
-      <div className="absolute inset-0 z-20 flex items-center justify-start -translate-y-32 md:-translate-y-20">
-        <div className="relative pl-6 md:pl-10 pr-4 max-w-4xl">
-          <div className="mb-4 md:mb-6 flex flex-col items-center gap-3 md:flex-row md:items-center md:gap-4">
-            
-            <div className="min-w-0 w-full md:w-auto">
-              <h1 className="mt-3 mb-3 md:mt-2 text-white text-[18px] md:text-[25px] font-semibold leading-snug text-center md:text-left">
-                {t('guideLine1')}
-              </h1>
-              <h1 className="mt-3 mb-3 md:mt-2 text-white text-[18px] md:text-[25px] font-semibold leading-snug text-center md:text-left">
-                {t('guideLine2')}
-              </h1>
-              <div className="mt-1 md:mt-3 flex flex-wrap justify-center gap-2 md:grid md:grid-cols-5 md:justify-items-start md:gap-2">
-                {Object.entries(FLAGS).map(([code, Flag]) => (
-                  
-                  <span
-                    key={code}
-                    className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 ring-1 ring-white/15"
-                  >
-                    <Flag title={code} className="h-4 w-6 md:h-5 md:w-7 rounded-sm" />
-                    <span className="text-white/80 text-[11px] md:text-[12px] font-medium">
-                      {code}
-                    </span>
-                  </span>
-                ))}
-              </div>
-             
-            </div>
-            
-          </div>
-         
-        </div>
+    <section className="hero-parallax-container">
+      {/* Static hero background */}
+      <div className="hero-image-layer" aria-hidden="true">
+        <Image
+          src="/hero/hero1.png"
+          alt="Hero background"
+          fill
+          priority
+          sizes="100vw"
+          style={{ objectFit: 'cover' }}
+        />
       </div>
-     
-
-   
-      <div id="background" className="layer-0"></div>
-      <div id="x-axis" ref={xAxisRef} className="axis"></div>
-      <div id="y-axis" ref={yAxisRef} className="axis"></div>
-      <div id="planet-1" ref={layer1Ref} className="planet layer-1"></div>
-      <div id="planet-2" ref={layer2Ref} className="planet layer-2"></div>
-    </div>
+    </section>
   );
 };
 
