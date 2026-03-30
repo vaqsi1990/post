@@ -18,6 +18,10 @@ const updateParcelStatusSchema = z.object({
   status: z.enum(allowedStatuses),
 });
 
+function isAllowedStatus(status: string): status is (typeof allowedStatuses)[number] {
+  return (allowedStatuses as readonly string[]).includes(status);
+}
+
 const ORIGIN_COUNTRY_CODES = ['uk', 'us', 'cn', 'it', 'gr', 'es', 'fr', 'de', 'tr'] as const;
 
 const FORM_TO_TARIFF_COUNTRY: Record<string, string> = {
@@ -61,12 +65,12 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const status = searchParams.get('status') || 'pending';
 
-  if (!allowedStatuses.includes(status as any)) {
+  if (!isAllowedStatus(status)) {
     return NextResponse.json({ error: 'Invalid status' }, { status: 400 });
   }
 
   const parcels = await prisma.parcel.findMany({
-    where: { status: status as string },
+    where: { status },
     orderBy: { createdAt: 'desc' },
     include: {
       user: {

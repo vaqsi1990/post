@@ -3,6 +3,11 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '../../../../../lib/auth';
 import prisma from '../../../../../lib/prisma';
 import { UserRole } from '../../../../../app/generated/prisma/enums';
+import { ZodError } from 'zod';
+import bcrypt from 'bcryptjs';
+import { adminUpdateUserSchema } from '../../../../../lib/validations';
+import { normalizePhone } from '../../../../../lib/sms';
+import { Prisma } from '../../../../../app/generated/prisma/client';
 
 const EMPLOYEE_COUNTRIES = ['GB', 'US', 'CN', 'IT', 'GR', 'ES', 'FR', 'DE', 'TR'] as const;
 type EmployeeCountry = (typeof EMPLOYEE_COUNTRIES)[number];
@@ -172,16 +177,33 @@ export async function PATCH(
   try {
     const { id } = await params;
     const body = await request.json();
-    const role = typeof body?.role === 'string' ? body.role : '';
-    const employeeCountryRaw = typeof body?.employeeCountry === 'string' ? body.employeeCountry : null;
-    const allowedRoles = [UserRole.USER, UserRole.ADMIN, UserRole.EMPLOYEE] as const;
+    const data = adminUpdateUserSchema.parse(body);
 
-    if (!allowedRoles.includes(role as (typeof allowedRoles)[number])) {
-      return NextResponse.json({ error: 'არასწორი როლი' }, { status: 400 });
+    const existingUser = await prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        email: true,
+        phone: true,
+        personalIdNumber: true,
+        roomNumber: true,
+        role: true,
+        employeeCountry: true,
+      },
+    });
+
+    if (!existingUser) {
+      return NextResponse.json({ error: 'მომხმარებელი ვერ მოიძებნა' }, { status: 404 });
     }
 
+    const nextRole = data.role ? (data.role as UserRole) : existingUser.role;
+    const employeeCountryRaw =
+      data.employeeCountry === undefined
+        ? existingUser.employeeCountry
+        : (data.employeeCountry as EmployeeCountry | null);
+
     if (
-      role === UserRole.EMPLOYEE &&
+      nextRole === UserRole.EMPLOYEE &&
       (!employeeCountryRaw || !EMPLOYEE_COUNTRIES.includes(employeeCountryRaw as EmployeeCountry))
     ) {
       return NextResponse.json(
@@ -190,43 +212,154 @@ export async function PATCH(
       );
     }
 
-    if (id === session.user.id) {
+    // prevent admin from changing own role (but allow updating other fields)
+    if (data.role && id === session.user.id && nextRole !== existingUser.role) {
       return NextResponse.json(
         { error: 'საკუთარი როლის შეცვლა ვერ მოხერხდება' },
         { status: 400 }
       );
     }
 
-    const existingUser = await prisma.user.findUnique({
-      where: { id },
-      select: { id: true },
-    });
+    const updateData: Prisma.UserUpdateInput = {};
 
-    if (!existingUser) {
-      return NextResponse.json({ error: 'მომხმარებელი ვერ მოიძებნა' }, { status: 404 });
+    if (data.email !== undefined) {
+      const email = data.email.trim().toLowerCase();
+      if (email !== existingUser.email) {
+        const clash = await prisma.user.findUnique({ where: { email } });
+        if (clash) {
+          return NextResponse.json({ error: 'ეს ელ-ფოსტა უკვე გამოყენებულია' }, { status: 400 });
+        }
+      }
+      updateData.email = email;
+    }
+
+    if (data.personalIdNumber !== undefined) {
+      const pid = data.personalIdNumber.trim();
+      if (pid !== existingUser.personalIdNumber) {
+        const clash = await prisma.user.findFirst({ where: { personalIdNumber: pid } });
+        if (clash) {
+          return NextResponse.json({ error: 'ეს პირადი ნომერი უკვე გამოყენებულია' }, { status: 400 });
+        }
+      }
+      updateData.personalIdNumber = pid;
+    }
+
+    if (data.phone !== undefined) {
+      const phoneRaw = (data.phone ?? '').trim();
+      let phone: string | null = null;
+      if (phoneRaw.length >= 9) {
+        const normalized = normalizePhone(phoneRaw);
+        if (normalized !== existingUser.phone) {
+          const clash = await prisma.user.findUnique({ where: { phone: normalized } });
+          if (clash) {
+            return NextResponse.json({ error: 'ეს ტელეფონის ნომერი უკვე გამოყენებულია' }, { status: 400 });
+          }
+        }
+        phone = normalized;
+      }
+      updateData.phone = phone;
+    }
+
+    if (data.password !== undefined) {
+      const pass = typeof data.password === 'string' ? data.password.trim() : '';
+      if (pass) {
+        updateData.password = await bcrypt.hash(pass, 10);
+      }
+    }
+
+    if (data.firstName !== undefined) {
+      const v = (data.firstName ?? '').trim();
+      updateData.firstName = v ? v : null;
+    }
+    if (data.lastName !== undefined) {
+      const v = (data.lastName ?? '').trim();
+      updateData.lastName = v ? v : null;
+    }
+    if (data.city !== undefined) {
+      const v = (data.city ?? '').trim();
+      updateData.city = v ? v : null;
+    }
+    if (data.address !== undefined) {
+      const v = (data.address ?? '').trim();
+      updateData.address = v ? v : null;
+    }
+    if (data.postalIndex !== undefined) {
+      const v = (data.postalIndex ?? '').trim();
+      updateData.postalIndex = v ? v : null;
+    }
+
+    if (data.balance !== undefined) {
+      updateData.balance = data.balance;
+    }
+
+    if (data.roomNumber !== undefined) {
+      const v = (data.roomNumber ?? '').trim();
+      const room = v ? v : null;
+      if (room && room !== existingUser.roomNumber) {
+        const clash = await prisma.user.findFirst({
+          where: {
+            roomNumber: room,
+            NOT: { id },
+          },
+          select: { id: true },
+        });
+        if (clash) {
+          return NextResponse.json({ error: 'ეს PO უკვე გამოყენებულია' }, { status: 400 });
+        }
+      }
+      updateData.roomNumber = room;
+    }
+
+    if (data.phoneVerified !== undefined) {
+      updateData.phoneVerified = data.phoneVerified;
+    }
+
+    if (data.role !== undefined || data.employeeCountry !== undefined) {
+      updateData.role = nextRole;
+      updateData.employeeCountry =
+        nextRole === UserRole.EMPLOYEE ? (employeeCountryRaw as EmployeeCountry) : null;
+    }
+
+    if (Object.keys(updateData).length === 0) {
+      return NextResponse.json({ error: 'ცვლილება არ არის' }, { status: 400 });
     }
 
     const updatedUser = await prisma.user.update({
       where: { id },
-      data: {
-        role: role as UserRole,
-        employeeCountry: role === UserRole.EMPLOYEE ? (employeeCountryRaw as EmployeeCountry) : null,
-      },
+      data: updateData,
       select: {
         id: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        phone: true,
+        phoneVerified: true,
+        personalIdNumber: true,
+        city: true,
+        address: true,
+        postalIndex: true,
+        balance: true,
+        roomNumber: true,
         role: true,
         employeeCountry: true,
       },
     });
 
     return NextResponse.json(
-      { message: 'როლი წარმატებით განახლდა', user: updatedUser },
+      { message: 'მომხმარებელი წარმატებით განახლდა', user: updatedUser },
       { status: 200 }
     );
   } catch (error) {
-    console.error('Update user role error:', error);
+    if (error instanceof ZodError) {
+      const message = error.issues.map((e) => e.message).join('; ');
+      return NextResponse.json(
+        { error: `ვალიდაცია: ${message}`, details: error.issues },
+        { status: 400 }
+      );
+    }
+    console.error('Update user error:', error);
     return NextResponse.json(
-      { error: 'როლის განახლებისას მოხდა შეცდომა' },
+      { error: 'მომხმარებლის განახლებისას მოხდა შეცდომა' },
       { status: 500 }
     );
   }

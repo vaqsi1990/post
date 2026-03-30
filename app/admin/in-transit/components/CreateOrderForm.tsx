@@ -13,7 +13,7 @@ type User = {
 type CreateOrderFormProps = {
   isOpen: boolean;
   onClose: () => void;
-  onOrderCreated?: (order: any) => void;
+  onOrderCreated?: (order: unknown) => void;
 };
 
 export default function CreateOrderForm({ isOpen, onClose, onOrderCreated }: CreateOrderFormProps) {

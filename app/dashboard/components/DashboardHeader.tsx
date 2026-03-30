@@ -16,7 +16,10 @@ export default function DashboardHeader() {
   const navRef = useRef<HTMLDivElement>(null);
   const roomNumber = session?.user?.roomNumber as string | undefined;
 
-  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => setMounted(true));
+    return () => cancelAnimationFrame(raf);
+  }, []);
 
   useEffect(() => {
     if (!navOpen) return;

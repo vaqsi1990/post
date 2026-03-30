@@ -4,7 +4,7 @@ import { useState } from 'react';
 import CreateOrderForm from './CreateOrderForm';
 
 type CreateOrderModalProps = {
-  onOrderCreated?: (order: any) => void;
+  onOrderCreated?: (order: unknown) => void;
 };
 
 export default function CreateOrderModal({ onOrderCreated }: CreateOrderModalProps) {

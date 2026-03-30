@@ -66,10 +66,16 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
+        const u = user as unknown as {
+          id?: string;
+          role?: string;
+          phoneVerified?: boolean;
+          roomNumber?: string | null;
+        };
         token.id = user.id;
-        token.role = (user as any).role;
-        token.phoneVerified = (user as any).phoneVerified ?? false;
-        token.roomNumber = (user as any).roomNumber;
+        token.role = u.role ?? 'USER';
+        token.phoneVerified = u.phoneVerified ?? false;
+        token.roomNumber = u.roomNumber ?? undefined;
       }
       return token;
     },

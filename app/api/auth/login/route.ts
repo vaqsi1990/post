@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { signIn } from 'next-auth/react';
 import { loginSchema } from '../../../../lib/validations';
+import { ZodError } from 'zod';
 
 export async function POST(request: NextRequest) {
   try {
@@ -18,13 +18,12 @@ export async function POST(request: NextRequest) {
       },
       { status: 200 }
     );
-  } catch (error: any) {
-    // Zod validation errors
-    if (error.name === 'ZodError') {
+  } catch (error: unknown) {
+    if (error instanceof ZodError) {
       return NextResponse.json(
         {
           error: 'ვალიდაციის შეცდომა',
-          details: error.errors,
+          details: error.issues,
         },
         { status: 400 }
       );

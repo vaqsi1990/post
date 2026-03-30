@@ -119,6 +119,38 @@ export const adminCreateUserSchema = z.object({
   role: z.enum(['USER', 'ADMIN']).default('USER'),
 });
 
+// Admin: update user (optional fields)
+export const adminUpdateUserSchema = z
+  .object({
+    email: z.string().email('არასწორი ელ-ფოსტა').optional(),
+    password: z.string().min(6, 'პაროლი უნდა იყოს მინიმუმ 6 სიმბოლო').optional().or(z.literal('')),
+    firstName: z.string().optional().or(z.literal('')),
+    lastName: z.string().optional().or(z.literal('')),
+    phone: z.string().min(9, 'მინიმუმ 9 ციფრი').optional().or(z.literal('')),
+    phoneVerified: z.boolean().optional(),
+    personalIdNumber: z
+      .string()
+      .min(11, 'პირადი ნომერი უნდა იყოს 11 ციფრი')
+      .max(11, 'პირადი ნომერი უნდა იყოს 11 ციფრი')
+      .regex(/^\d+$/, 'პირადი ნომერი უნდა შეიცავდეს მხოლოდ ციფრებს')
+      .optional(),
+    city: z.string().optional().or(z.literal('')),
+    address: z.string().optional().or(z.literal('')),
+    postalIndex: z
+      .string()
+      .trim()
+      .optional()
+      .refine((v) => v === undefined || v === '' || /^\d{4}$/.test(v), {
+        message: 'ინდექსის ნომერი უნდა იყოს 4 ციფრი',
+      }),
+    balance: z.number().finite('ბალანსი არასწორია').optional(),
+    roomNumber: z.string().optional().or(z.literal('')),
+    role: z.enum(['USER', 'ADMIN', 'EMPLOYEE']).optional(),
+    employeeCountry: z.enum(['GB', 'US', 'CN', 'IT', 'GR', 'ES', 'FR', 'DE', 'TR']).optional().nullable(),
+  })
+  .strict();
+
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
 export type AdminCreateUserInput = z.infer<typeof adminCreateUserSchema>;
+export type AdminUpdateUserInput = z.infer<typeof adminUpdateUserSchema>;
