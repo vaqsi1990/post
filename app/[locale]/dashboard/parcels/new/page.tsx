@@ -103,7 +103,7 @@ export default function NewParcelPage() {
   const trackingLabel = useMemo(() => `${t('trackingCode').replace(/\s*\*$/, '')} *`, [t]);
   const onlineShopLabel = useMemo(() => `${t('onlineShop').replace(/\s*\*$/, '')} *`, [t]);
   const quantityLabel = useMemo(() => t('quantity').replace(/\s*\*$/, ''), [t]);
-  const weightLabel = useMemo(() => `${t('weight').replace(/\s*\*$/, '')}  *`, [t]);
+  const weightLabel = useMemo(() => t('weight').replace(/\s*\*$/, ''), [t]);
 
   const parcelFormSchema = useMemo(() => {
     const numFromString = (v: unknown) => {
@@ -370,9 +370,7 @@ export default function NewParcelPage() {
               )}
             </div>
             <div ref={countryRef} className="relative">
-              <label htmlFor="originCountry" className="mb-1 block text-[15px] md:text-[18px] font-bold text-black">
-                {t('country')} *
-              </label>
+             
               <input
                 id="originCountry"
                 type="text"
@@ -574,7 +572,7 @@ export default function NewParcelPage() {
                 <p className="mt-1 text-[13px] text-red-600">{fieldErrors.file}</p>
               )}
              
-              <p className="mt-1 text-[16px]  text-black font-medium">{tDeclaration('maxFileSize')}</p>
+              <p className="mt-1 text-[14px]  text-black font-medium">{tDeclaration('maxFileSize')}</p>
             </div>
             <div className="flex gap-3 pt-2">
               <button

@@ -424,7 +424,7 @@
     "weightPlaceholder": "0",
     "description": "Description ",
     "submit": "Add",
-    "weightError": "Weight is required and must be a positive number",
+    "weightError": "If provided, weight must be a positive number",
     "calculatedPrice": "Amount to pay (weight × country tariff)",
     "priceError": "Price is required and must be positive",
     "quantityError": "Quantity must be at least 1",
