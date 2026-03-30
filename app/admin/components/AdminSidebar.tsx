@@ -54,6 +54,7 @@ export default function AdminSidebar() {
     { label: t('inTransit'), href: '/admin/in-transit' },
     { label: t('warehouse'), href: '/admin/warehouse' },
     { label: t('regions'), href: '/admin/regions' },
+    { label: t('reises'), href: '/admin/reises' },
     { label: t('stopped'), href: '/admin/stopped' },
     { label: t('delivered'), href: '/admin/delivered' },
     { label: t('payments'), href: '/admin/payments' },
