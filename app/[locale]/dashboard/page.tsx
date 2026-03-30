@@ -71,6 +71,7 @@ export default async function DashboardPage({ params }: Props) {
     const priceFormatted = new Intl.NumberFormat(intlLocale, {
       style: 'currency',
       currency: row.currency,
+      currencyDisplay: 'narrowSymbol',
       minimumFractionDigits: 0,
       maximumFractionDigits: 2,
     }).format(row.pricePerKg);
