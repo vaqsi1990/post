@@ -59,7 +59,7 @@ const ADDRESS_ROWS: AddressRow[] = [
     postalCode: 'RM10 7SA ',
     phone: '+44 7386 585212',
   },
-  { countryKey: 'us', countryCode: 'US', adress: '', stateKey: 'newYork', postalCode: '' },
+  { countryKey: 'us', countryCode: 'US', adress: '22 Parkway Circle, unit5 ', stateKey: 'DELAWARE (DE)', cityKey: 'New Castle', postalCode: '19720' },
   { countryKey: 'cn', countryCode: 'CN', adress: '', postalCode: '' },
 
   {
@@ -124,32 +124,15 @@ export default async function DashboardAddressesSection() {
   const userRoomNumber = user?.roomNumber ?? '';
 
   const addressList = ADDRESS_ROWS.map((row) => {
-    // next-intl throws when a message key is missing; we fall back to raw values
-    // so dashboard rendering never crashes on unexpected city names.
-    let country = row.countryKey;
-    try {
-      country = tAddr(row.countryKey);
-    } catch {
-      // ignore missing translation
-    }
+    const country = tAddr.has(row.countryKey)
+      ? tAddr(row.countryKey)
+      : row.countryKey;
 
-    let city = '';
-    if (row.cityKey) {
-      try {
-        city = tAddr(row.cityKey);
-      } catch {
-        city = row.cityKey;
-      }
-    }
+    const city =
+      row.cityKey && tAddr.has(row.cityKey) ? tAddr(row.cityKey) : (row.cityKey ?? '');
 
-    let state = '';
-    if (row.stateKey) {
-      try {
-        state = tAddr(row.stateKey);
-      } catch {
-        state = row.stateKey;
-      }
-    }
+    const state =
+      row.stateKey && tAddr.has(row.stateKey) ? tAddr(row.stateKey) : (row.stateKey ?? '');
 
     return {
       countryCode: row.countryCode,

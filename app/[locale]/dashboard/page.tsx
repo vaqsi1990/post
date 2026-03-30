@@ -48,12 +48,17 @@ export default async function DashboardPage({ params }: Props) {
     }),
     prisma.user.findUnique({
       where: { id: userId },
-      select: { balance: true },
+      select: { balance: true, firstName: true, lastName: true, roomNumber: true },
     }),
   ]);
 
   const intlLocale =
     locale === 'ka' ? 'ka-GE' : locale === 'ru' ? 'ru-RU' : 'en-US';
+
+  const userDisplayName =
+    [user?.firstName, user?.lastName].filter(Boolean).join(' ').trim() ||
+    session.user.email ||
+    '';
 
   const balanceGel = user?.balance ?? 0;
   const balanceFormatted = new Intl.NumberFormat(intlLocale, {
@@ -114,7 +119,21 @@ export default async function DashboardPage({ params }: Props) {
       <div className="mx-auto mt-24 w-full max-w-7xl px-4">
         <main className="w-full min-w-0 rounded-2xl bg-white p-6">
           <div className="mb-6 flex w-full min-w-0 flex-col gap-4 lg:flex-row lg:items-stretch lg:gap-6">
-            <aside className="flex md:w-[300px] md:h-[200px] w-full shrink-0 flex-col justify-between gap-4 rounded-xl border border-slate-200 bg-slate-50 p-5 lg:max-w-[16rem]">
+            <aside className="flex w-full shrink-0 flex-col justify-between gap-4 rounded-xl border border-slate-200 bg-slate-50 p-5 md:w-[300px] lg:max-w-[16rem]">
+              <div className="space-y-3 border-b border-slate-200/80 pb-4">
+               
+                <div className="min-w-0">
+                  <p className="text-[15px] md:text-[16px] font-semibold leading-snug text-slate-900 break-words">
+                    {userDisplayName}
+                  </p>
+                  <p className="mt-2 text-[14px] md:text-[15px] text-slate-600">
+                    <span className="text-slate-500">{tDashboard('roomNumber')}</span>{' '}
+                    <span className="font-medium tabular-nums text-slate-900">
+                      {user?.roomNumber?.trim() ? user.roomNumber : '—'}
+                    </span>
+                  </p>
+                </div>
+              </div>
               <div>
                 <p className="text-[16px] font-semibold uppercase tracking-wide text-slate-500">
                   {tBalance('currentBalance')}
