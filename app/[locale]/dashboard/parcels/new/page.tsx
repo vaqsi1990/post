@@ -57,40 +57,14 @@ const ORIGIN_COUNTRIES: { code: string }[] = [
   { code: 'tr' },
 ];
 
-const DESCRIPTION_OPTIONS = [
-  'ავტო ნაწილები',
-  'ავტომანქანის ფარი',
-  'ავტომანქანის საბურავი',
-  'ელექტრო ხელს ინსტრუმენტები',
-  'კომპიუტერი / ლეპტოპი და მათი ნაწილები',
-  'ლეპტოპი და ფოტო აპარატურა, დრონი',
-  'ტელეფონი და პატარა მოწყობილობები',
-  'სხვადასხვა ელექტრონული მოწყობილობები',
-  'მუსიკალური ინსტრუმენტები და მათი ნაწილები',
-  'მინის სარკე',
-  'მინის ჭურჭელი',
-  'მინის ნაწარმი',
-  'წიგნები',
-  'ტექსტილი',
-  'ტყავი',
-  'სათამაშო კონსოლი',
-  'სპორტული ინვენტარი',
-  'პარფიუმერია და კოსმეტიკა',
-  'სუნამო',
-  'თმის მოვლის საშუალებები',
-  'ჩანთები, აქსესუარები, სამკაული',
-  'ჩანთები და აქსესუარები',
-  'ფეხსაცმელი',
-  'საკვები დანამატები',
-  'ვაპის დანამატები',
-  'მცენარეები',
-  'ნაბადი პროდუქცია',
-] as const;
-
 export default function NewParcelPage() {
   const t = useTranslations('parcels');
   const tCommon = useTranslations('common');
   const tDeclaration = useTranslations('declaration');
+  const descriptionOptions = useMemo(() => {
+    const raw = t.raw('descriptionOptions');
+    return Array.isArray(raw) ? (raw as string[]) : [];
+  }, [t]);
   const router = useRouter();
   const { data: session } = useSession();
   const [trackingNumber, setTrackingNumber] = useState('');
@@ -160,7 +134,7 @@ export default function NewParcelPage() {
         weight: z
           .preprocess(numFromString, z.number({ message: t('weightError') }).min(0.001, t('weightError')))
           .optional(),
-        description: z.string().trim().min(1, 'აღწერა აუცილებელია'),
+        description: z.string().trim().min(1, t('descriptionRequired')),
         comment: z.string().trim().optional(),
         file: z.any().optional(),
       })
@@ -229,9 +203,9 @@ export default function NewParcelPage() {
 
   const filteredDescriptions = useMemo(() => {
     const q = description.trim().toLowerCase();
-    if (!q) return DESCRIPTION_OPTIONS;
-    return DESCRIPTION_OPTIONS.filter((opt) => opt.toLowerCase().includes(q));
-  }, [description]);
+    if (!q) return descriptionOptions;
+    return descriptionOptions.filter((opt) => opt.toLowerCase().includes(q));
+  }, [description, descriptionOptions]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -531,7 +505,7 @@ export default function NewParcelPage() {
                     role="listbox"
                   >
                     {filteredDescriptions.length === 0 ? (
-                      <li className="px-3 py-2.5 text-[15px] text-gray-500">ვერ მოიძებნა</li>
+                      <li className="px-3 py-2.5 text-[15px] text-gray-500">{t('descriptionNoResults')}</li>
                     ) : (
                       filteredDescriptions.map((opt) => (
                         <li
@@ -600,7 +574,7 @@ export default function NewParcelPage() {
                 <p className="mt-1 text-[13px] text-red-600">{fieldErrors.file}</p>
               )}
              
-              <p className="mt-1 text-[16px] md:text-[20px] text-black font-medium">{tDeclaration('maxFileSize')}</p>
+              <p className="mt-1 text-[16px]  text-black font-medium">{tDeclaration('maxFileSize')}</p>
             </div>
             <div className="flex gap-3 pt-2">
               <button
