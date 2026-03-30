@@ -43,9 +43,6 @@ export default function Hero() {
     return () => window.clearInterval(interval);
   }, []);
 
-  const goPrev = () => setIndex((i) => i - 1);
-  const goNext = () => setIndex((i) => i + 1);
-
   return (
     <section className="relative w-full overflow-hidden mt-14 bg-white">
       <div
@@ -68,48 +65,6 @@ export default function Hero() {
         </div>
         <div className="relative z-10 flex justify-center md:justify-end">
           <div className="w-[350px] max-w-full">
-            <div className="mb-3 flex items-center justify-between px-3">
-              <button
-                type="button"
-                onClick={goPrev}
-                aria-label="Previous image"
-                className="grid h-12 w-14 place-items-center rounded-md   text-[#3a5bff] transition  active:translate-y-[1px]"
-              >
-                <svg
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                  className="h-6 w-6"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M19 12H7" />
-                  <path d="M11 6l-6 6 6 6" />
-                </svg>
-              </button>
-              <button
-                type="button"
-                onClick={goNext}
-                aria-label="Next image"
-                className="grid h-12 w-14 place-items-center rounded-md   text-[#3a5bff] transition  active:translate-y-[1px]"
-              >
-                <svg
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                  className="h-6 w-6"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M5 12h12" />
-                  <path d="M13 6l6 6-6 6" />
-                </svg>
-              </button>
-            </div>
             <div className="relative h-[500px] w-[350px] max-w-full overflow-hidden rounded-[2rem] bg-black/5 shadow-[0_5px_10px_0_rgba(0,0,0,0.25),0_15px_20px_0_rgba(0,0,0,0.125)]">
             
             {HERO_IMAGES.map((src, i) => (
@@ -135,18 +90,28 @@ export default function Hero() {
 
           
 
-            <div className="absolute bottom-3 left-0 right-0 z-20 flex items-center justify-center gap-2">
+            <div className="absolute bottom-3 left-0 right-0 z-20 flex items-center justify-center">
+              <div className="flex items-center justify-center gap-1.5 rounded-full  px-2 py-1.5 backdrop-blur">
               {HERO_IMAGES.map((_, i) => (
                 <button
                   key={i}
                   type="button"
                   onClick={() => setIndex(i)}
                   aria-label={`Go to image ${i + 1}`}
-                  className={`h-2.5 w-2.5 rounded-full transition ${
-                    i === active ? "bg-white" : "bg-white/45 hover:bg-white/70"
+                  className={`grid h-7 w-7 place-items-center rounded-full transition focus:outline-none focus-visible:ring-2 focus-visible:ring-white/80 ${
+                    i === active ? "bg-white/25" : "hover:bg-white/15"
                   }`}
-                />
+                >
+                  <span
+                    className={`block h-2.5 w-2.5 rounded-full transition ${
+                      i === active
+                        ? "bg-[#3a5bff]"
+                        : "bg-[#3a5bff]/50 hover:bg-[#3a5bff]/85"
+                    }`}
+                  />
+                </button>
               ))}
+              </div>
             </div>
             </div>
           </div>
