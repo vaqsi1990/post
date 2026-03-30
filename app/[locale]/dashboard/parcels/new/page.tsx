@@ -57,6 +57,36 @@ const ORIGIN_COUNTRIES: { code: string }[] = [
   { code: 'tr' },
 ];
 
+const DESCRIPTION_OPTIONS = [
+  'ავტო ნაწილები',
+  'ავტომანქანის ფარი',
+  'ავტომანქანის საბურავი',
+  'ელექტრო ხელს ინსტრუმენტები',
+  'კომპიუტერი / ლეპტოპი და მათი ნაწილები',
+  'ლეპტოპი და ფოტო აპარატურა, დრონი',
+  'ტელეფონი და პატარა მოწყობილობები',
+  'სხვადასხვა ელექტრონული მოწყობილობები',
+  'მუსიკალური ინსტრუმენტები და მათი ნაწილები',
+  'მინის სარკე',
+  'მინის ჭურჭელი',
+  'მინის ნაწარმი',
+  'წიგნები',
+  'ტექსტილი',
+  'ტყავი',
+  'სათამაშო კონსოლი',
+  'სპორტული ინვენტარი',
+  'პარფიუმერია და კოსმეტიკა',
+  'სუნამო',
+  'თმის მოვლის საშუალებები',
+  'ჩანთები, აქსესუარები, სამკაული',
+  'ჩანთები და აქსესუარები',
+  'ფეხსაცმელი',
+  'საკვები დანამატები',
+  'ვაპის დანამატები',
+  'მცენარეები',
+  'ნაბადი პროდუქცია',
+] as const;
+
 export default function NewParcelPage() {
   const t = useTranslations('parcels');
   const tCommon = useTranslations('common');
@@ -71,6 +101,7 @@ export default function NewParcelPage() {
   const [comment, setComment] = useState('');
   const [weight, setWeight] = useState('');
   const [description, setDescription] = useState('');
+  const [descriptionOpen, setDescriptionOpen] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
@@ -78,6 +109,7 @@ export default function NewParcelPage() {
   const [countryOpen, setCountryOpen] = useState(false);
   const [tariffs, setTariffs] = useState<Record<string, number>>({});
   const countryRef = useRef<HTMLDivElement>(null);
+  const descriptionRef = useRef<HTMLDivElement>(null);
   const priceNumForUi = useMemo(() => parseFloat(price.replace(',', '.')), [price]);
   const requiresInvoicePdf = useMemo(
     () => !Number.isNaN(priceNumForUi) && priceNumForUi >= 296,
@@ -97,7 +129,7 @@ export default function NewParcelPage() {
   const trackingLabel = useMemo(() => `${t('trackingCode').replace(/\s*\*$/, '')} *`, [t]);
   const onlineShopLabel = useMemo(() => `${t('onlineShop').replace(/\s*\*$/, '')} *`, [t]);
   const quantityLabel = useMemo(() => t('quantity').replace(/\s*\*$/, ''), [t]);
-  const weightLabel = useMemo(() => `${t('weight').replace(/\s*\*$/, '')} (კგ) *`, [t]);
+  const weightLabel = useMemo(() => `${t('weight').replace(/\s*\*$/, '')}  *`, [t]);
 
   const parcelFormSchema = useMemo(() => {
     const numFromString = (v: unknown) => {
@@ -185,12 +217,21 @@ export default function NewParcelPage() {
       if (countryRef.current && !countryRef.current.contains(e.target as Node)) {
         setCountryOpen(false);
       }
+      if (descriptionRef.current && !descriptionRef.current.contains(e.target as Node)) {
+        setDescriptionOpen(false);
+      }
     }
-    if (countryOpen) {
+    if (countryOpen || descriptionOpen) {
       document.addEventListener('mousedown', handleClickOutside);
       return () => document.removeEventListener('mousedown', handleClickOutside);
     }
-  }, [countryOpen]);
+  }, [countryOpen, descriptionOpen]);
+
+  const filteredDescriptions = useMemo(() => {
+    const q = description.trim().toLowerCase();
+    if (!q) return DESCRIPTION_OPTIONS;
+    return DESCRIPTION_OPTIONS.filter((opt) => opt.toLowerCase().includes(q));
+  }, [description]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -455,16 +496,63 @@ export default function NewParcelPage() {
               >
                 {t('description')} *
               </label>
-              <textarea
-                id="description"
-                value={description}
-                onChange={(e) => {
-                  setDescription(e.target.value);
-                  clearFieldError('description');
-                }}
-                className="w-full rounded-lg placeholder:font-normal placeholder:text-black placeholder:text-[14px] border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400 min-h-[90px]"
-                suppressHydrationWarning
-              />
+              <div ref={descriptionRef} className="relative">
+                <input
+                  id="description"
+                  type="text"
+                  value={description}
+                  onFocus={() => setDescriptionOpen(true)}
+                  onClick={() => setDescriptionOpen(true)}
+                  onChange={(e) => {
+                    setDescription(e.target.value);
+                    clearFieldError('description');
+                    setDescriptionOpen(true);
+                  }}
+                  className="w-full rounded-lg placeholder:font-normal placeholder:text-black placeholder:text-[14px] border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                  suppressHydrationWarning
+                  role="combobox"
+                  aria-autocomplete="list"
+                  aria-expanded={descriptionOpen}
+                  aria-controls="parcel-description-list"
+                />
+                <button
+                  type="button"
+                  onClick={() => setDescriptionOpen((o) => !o)}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400"
+                  aria-label="Toggle description list"
+                  tabIndex={-1}
+                >
+                  {descriptionOpen ? '▲' : '▼'}
+                </button>
+                {descriptionOpen && (
+                  <ul
+                    id="parcel-description-list"
+                    className="absolute left-0 right-0 z-10 mt-1 max-h-60 overflow-auto rounded-lg border border-gray-200 bg-white py-1 shadow-lg"
+                    role="listbox"
+                  >
+                    {filteredDescriptions.length === 0 ? (
+                      <li className="px-3 py-2.5 text-[15px] text-gray-500">ვერ მოიძებნა</li>
+                    ) : (
+                      filteredDescriptions.map((opt) => (
+                        <li
+                          key={opt}
+                          role="option"
+                          aria-selected={description === opt}
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={() => {
+                            setDescription(opt);
+                            clearFieldError('description');
+                            setDescriptionOpen(false);
+                          }}
+                          className="cursor-pointer px-3 py-2.5 text-[15px] text-black hover:bg-gray-100"
+                        >
+                          {opt}
+                        </li>
+                      ))
+                    )}
+                  </ul>
+                )}
+              </div>
               {fieldErrors.description && (
                 <p className="mt-1 text-[13px] text-red-600">{fieldErrors.description}</p>
               )}
@@ -511,9 +599,7 @@ export default function NewParcelPage() {
               {fieldErrors.file && (
                 <p className="mt-1 text-[13px] text-red-600">{fieldErrors.file}</p>
               )}
-              <p className="mt-1 text-[16px] md:text-[18px] text-black font-medium">
-                {priceNumForUi >= 296 ? '296₾-დან ინვოისის PDF აუცილებელია.' : '296₾-მდე ინვოისის PDF სავალდებულო არაა.'}
-              </p>
+             
               <p className="mt-1 text-[16px] md:text-[20px] text-black font-medium">{tDeclaration('maxFileSize')}</p>
             </div>
             <div className="flex gap-3 pt-2">
