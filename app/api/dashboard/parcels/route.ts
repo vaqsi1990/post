@@ -106,6 +106,9 @@ export async function POST(request: NextRequest) {
     const shippingAmount = resolved.shippingTotal;
 
     const userId = session.user.id;
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
     const existing = await prisma.parcel.findUnique({
       where: { trackingNumber: parsed.trackingNumber.trim() },
@@ -135,7 +138,7 @@ export async function POST(request: NextRequest) {
 
     const parcel = await prisma.parcel.create({
       data: {
-        userId,
+        user: { connect: { id: userId } },
         customerName: parsed.customerName.trim(),
         trackingNumber: parsed.trackingNumber.trim(),
         price: parsed.price,
@@ -173,7 +176,28 @@ export async function POST(request: NextRequest) {
         { status: 400 },
       );
     }
-    console.error('Create parcel error:', err);
+    if (err && typeof err === 'object' && 'code' in err) {
+      // Prisma errors are opaque in Turbopack logs; print meta for debugging.
+      try {
+        console.error('Create parcel prisma error:', JSON.stringify(err, null, 2));
+      } catch {
+        console.error('Create parcel prisma error:', err);
+      }
+      const code = (err as any).code as string | undefined;
+      const target = (err as any)?.meta?.target as string[] | string | undefined;
+      if (code === 'P2011') {
+        return NextResponse.json(
+          {
+            error:
+              'ბაზის ველი სავალდებულოა (Null constraint violation). თუ ეს ეხება PDF-ს, გადაამოწმეთ რომ DB-ში `Parcel.filePath` nullable-ია.',
+            details: { code, target },
+          },
+          { status: 500 },
+        );
+      }
+    } else {
+      console.error('Create parcel error:', err);
+    }
     return NextResponse.json(
       { error: 'ამანათის დამატებისას მოხდა შეცდომა' },
       { status: 500 },

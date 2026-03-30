@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, useMemo } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link, useRouter } from '@/i18n/navigation';
 import { parcelOriginLabelKey } from '@/lib/parcelOriginLabels';
+import { useSession } from 'next-auth/react';
 import {
   GB,
   US,
@@ -60,7 +61,7 @@ export default function NewParcelPage() {
   const tCommon = useTranslations('common');
   const tDeclaration = useTranslations('declaration');
   const router = useRouter();
-  const [customerName, setCustomerName] = useState('');
+  const { data: session } = useSession();
   const [trackingNumber, setTrackingNumber] = useState('');
   const [price, setPrice] = useState('');
   const [onlineShop, setOnlineShop] = useState('');
@@ -80,6 +81,13 @@ export default function NewParcelPage() {
     () => !Number.isNaN(priceNumForUi) && priceNumForUi >= 300,
     [priceNumForUi],
   );
+  const resolvedCustomerName = useMemo(() => {
+    const firstName = (session?.user as any)?.firstName as string | undefined;
+    const lastName = (session?.user as any)?.lastName as string | undefined;
+    const email = (session?.user as any)?.email as string | undefined;
+    const full = `${firstName ?? ''} ${lastName ?? ''}`.trim();
+    return full || email || '';
+  }, [session]);
   const pdfLabel = useMemo(() => {
     const base = tDeclaration('pdfFile').replace(/\s*\*$/, '');
     return requiresInvoicePdf ? `${base} *` : base;
@@ -166,7 +174,7 @@ export default function NewParcelPage() {
     setLoading(true);
     try {
       const formData = new FormData();
-      formData.append('customerName', customerName.trim());
+      formData.append('customerName', resolvedCustomerName.trim());
       formData.append('trackingNumber', trackingNumber.trim());
       formData.append('price', String(priceNum));
       formData.append('onlineShop', onlineShop.trim());
@@ -215,21 +223,6 @@ export default function NewParcelPage() {
                 {error}
               </div>
             )}
-            <div>
-              <label htmlFor="customerName" className="mb-1 block text-[15px] md:text-[18px] font-bold text-black">
-                {t('customerName')}
-              </label>
-              <input
-                id="customerName"
-                type="text"
-                required
-                value={customerName}
-                onChange={(e) => setCustomerName(e.target.value)}
-                className="w-full placeholder:font-normal placeholder:text-black placeholder:text-[14px] rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400"
-                placeholder={t('customerNamePlaceholder')}
-                suppressHydrationWarning
-              />
-            </div>
             <div>
               <label htmlFor="trackingNumber" className="mb-1 block text-[15px] md:text-[18px] font-bold text-black">
                 {t('trackingCode')}
