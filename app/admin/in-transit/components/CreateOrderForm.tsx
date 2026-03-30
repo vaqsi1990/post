@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import type { Order } from './orderTypes';
 
 type User = {
   id: string;
@@ -13,7 +14,7 @@ type User = {
 type CreateOrderFormProps = {
   isOpen: boolean;
   onClose: () => void;
-  onOrderCreated?: (order: unknown) => void;
+  onOrderCreated?: (order: Order) => void;
 };
 
 export default function CreateOrderForm({ isOpen, onClose, onOrderCreated }: CreateOrderFormProps) {

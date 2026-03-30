@@ -4,24 +4,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import OrdersTable from '../../components/OrdersTable';
 import CreateOrderModal from './CreateOrderModal';
-
-type Order = {
-  id: string;
-  type: string;
-  status: string;
-  totalAmount: number;
-  currency: string;
-  weight: string;
-  smsSent: boolean;
-  notes: string | null;
-  createdAt: string;
-  user: {
-    id: string;
-    email: string;
-    firstName: string | null;
-    lastName: string | null;
-  };
-};
+import type { Order } from './orderTypes';
 
 type OrdersManagerProps = {
   initialOrders: Order[];
