@@ -135,12 +135,22 @@ const item = {
 export default function Tariffs() {
   const t = useTranslations('home');
   const tAddr = useTranslations('addresses');
+  const tCalc = useTranslations('calculator');
+  const [selectedCountryCode, setSelectedCountryCode] = React.useState<string>(TARIFF_ROWS[0].countryCode);
+  const [weightKg, setWeightKg] = React.useState<string>('1');
+
+  const selectedTariff = React.useMemo(
+    () => TARIFF_ROWS.find((row) => row.countryCode === selectedCountryCode) ?? TARIFF_ROWS[0],
+    [selectedCountryCode]
+  );
+  const parsedWeight = Number.parseFloat(weightKg);
+  const effectiveWeight = Number.isFinite(parsedWeight) && parsedWeight > 0 ? parsedWeight : 0;
+  const calculatedPrice = selectedTariff.pricePerKg * effectiveWeight;
+  const SelectedCountryFlag = FLAGS[selectedCountryCode];
 
   return (
-  <motion.section
+    <motion.section
       id="tariffs"
-    
-    
       className="relative w-full overflow-hidden bg-white mt-10 pb-10"
     >
       {/* Soft top glow — same family as bg, slightly lifted */}
@@ -153,7 +163,7 @@ export default function Tariffs() {
         aria-hidden
       />
 
-      <div className="relative z-10 mx-auto w-full max-w-3xl px-3 sm:px-4">
+      <div className="relative z-10 mx-auto w-full max-w-7xl px-3 sm:px-4">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
@@ -167,93 +177,144 @@ export default function Tariffs() {
           </h2>
         </motion.div>
 
-        {/* Table card */}
-        <motion.div
-          initial={{ opacity: 0, y: 56 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={viewport}
-          transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
-          className="overflow-hidden rounded-xl border border-pink-200/50 bg-gradient-to-br from-white via-indigo-50/40 to-pink-50/50 shadow-[0_20px_60px_-15px_rgba(58,91,255,0.18),0_8px_24px_-12px_rgba(255,79,216,0.12)] sm:rounded-2xl"
-        >
-          <div className="-mx-px overflow-x-auto">
-            <table className="w-full min-w-[280px]">
-              <thead>
-                <tr className="border-b border-indigo-100/80 bg-gradient-to-r from-indigo-100/90 via-white to-pink-100/80">
-                  <th className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[#3a5bff] sm:px-4 sm:py-4 md:px-8 md:py-5 md:text-sm md:normal-case md:tracking-normal md:text-[18px] md:font-semibold ">
-                    {t('tariffCountry')}
-                  </th>
-                  <th className="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wider text-[#3a5bff] sm:px-4 sm:py-4 md:px-8 md:py-5 md:text-sm md:normal-case md:tracking-normal md:text-[18px] md:font-semibold ">
-                    {t('tariffDelivery')}
-                  </th>
-                  <th className="px-3 py-3 text-right text-xs font-semibold uppercase tracking-wider text-[#3a5bff] sm:px-4 sm:py-4 md:px-8 md:py-5 md:text-sm md:normal-case md:tracking-normal md:text-[18px] md:font-semibold ">
-                    {t('tariffPrice')}
-                  </th>
-                </tr>
-              </thead>
+        <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-[minmax(0,1fr)_420px] lg:gap-6">
+          {/* Table card */}
+          <motion.div
+            initial={{ opacity: 0, y: 56 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={viewport}
+            transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
+            className="overflow-hidden rounded-xl border border-pink-200/50 bg-gradient-to-br from-white via-indigo-50/40 to-pink-50/50 shadow-[0_20px_60px_-15px_rgba(58,91,255,0.18),0_8px_24px_-12px_rgba(255,79,216,0.12)] sm:rounded-2xl"
+          >
+            <div className="-mx-px overflow-x-auto">
+              <table className="w-full min-w-[280px]">
+                <thead>
+                  <tr className="border-b border-indigo-100/80 bg-gradient-to-r from-indigo-100/90 via-white to-pink-100/80">
+                    <th className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[#3a5bff] sm:px-4 sm:py-4 md:px-8 md:py-5 md:text-sm md:normal-case md:tracking-normal md:text-[18px] md:font-semibold ">
+                      {t('tariffCountry')}
+                    </th>
+                    <th className="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wider text-[#3a5bff] sm:px-4 sm:py-4 md:px-8 md:py-5 md:text-sm md:normal-case md:tracking-normal md:text-[18px] md:font-semibold ">
+                      {t('tariffDelivery')}
+                    </th>
+                    <th className="px-3 py-3 text-right text-xs font-semibold uppercase tracking-wider text-[#3a5bff] sm:px-4 sm:py-4 md:px-8 md:py-5 md:text-sm md:normal-case md:tracking-normal md:text-[18px] md:font-semibold ">
+                      {t('tariffPrice')}
+                    </th>
+                  </tr>
+                </thead>
 
-              <motion.tbody
-                variants={container}
-                initial="hidden"
-                whileInView="visible"
-                viewport={viewport}
-              >
-                {TARIFF_ROWS.map((row, i) => {
-                  const countryName = tAddr(row.countryKey);
-                  const deliveryDaysLabel = t('tariffDeliveryDays').trim();
-                  const deliveryDays = `${row.deliveryDaysPrefix} ${deliveryDaysLabel}`;
-                  const deliveryNote = row.deliveryNoteKey ? t(row.deliveryNoteKey) : null;
-                  return (
-                    <motion.tr
-                      key={row.countryCode}
-                      variants={item}
-                      className={`border-b border-indigo-100/60 transition-colors duration-200 last:border-b-0 hover:bg-indigo-50/70 ${
-                        i % 2 === 0 ? 'bg-white/80' : 'bg-indigo-50/35'
-                      }`}
-                    >
-                      <td className="px-3 py-2.5 text-xs font-medium text-gray-800 sm:px-4 sm:py-3 md:px-8 md:py-4 md:text-sm md:text-[18px]">
-                        <span className="inline-flex items-center gap-2 sm:gap-3">
-                          {(() => {
-                            const Flag = FLAGS[row.countryCode];
-                            return Flag ? (
-                              <Flag
-                                title={countryName}
-                                className="h-4 w-6 shrink-0 rounded object-cover shadow-sm ring-1 ring-gray-200/80 sm:h-5 sm:w-7 md:h-6 md:w-8"
-                              />
-                            ) : null;
-                          })()}
-                          <span className="whitespace-nowrap">{countryName}</span>
-                        </span>
-                      </td>
-
-                      <td
-                        className={`px-3 py-2.5 text-center text-xs text-gray-700 sm:px-4 sm:py-3 md:px-8 md:py-4 ${
-                          row.deliveryNoteKey ? 'md:text-[16px]' : 'md:text-[18px]'
+                <motion.tbody
+                  variants={container}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={viewport}
+                >
+                  {TARIFF_ROWS.map((row, i) => {
+                    const countryName = tAddr(row.countryKey);
+                    const deliveryDaysLabel = t('tariffDeliveryDays').trim();
+                    const deliveryDays = `${row.deliveryDaysPrefix} ${deliveryDaysLabel}`;
+                    const deliveryNote = row.deliveryNoteKey ? t(row.deliveryNoteKey) : null;
+                    return (
+                      <motion.tr
+                        key={row.countryCode}
+                        variants={item}
+                        className={`border-b border-indigo-100/60 transition-colors duration-200 last:border-b-0 hover:bg-indigo-50/70 ${
+                          i % 2 === 0 ? 'bg-white/80' : 'bg-indigo-50/35'
                         }`}
                       >
-                        {row.deliveryNoteKey ? (
-                          <span className="flex flex-col items-center leading-tight">
-                            <span className="whitespace-nowrap text-[16px] md:text-[18px] text-gray-800">
-                              {deliveryDays}
-                            </span>
-                            <span className="whitespace-nowrap text-[16px] md:text-[18px] text-gray-500 mt-0.5">
-                              {deliveryNote?.replace(/[()]/g, '')}
-                            </span>
+                        <td className="px-3 py-2.5 text-xs font-medium text-gray-800 sm:px-4 sm:py-3 md:px-8 md:py-4 md:text-sm md:text-[18px]">
+                          <span className="inline-flex items-center gap-2 sm:gap-3">
+                            {(() => {
+                              const Flag = FLAGS[row.countryCode];
+                              return Flag ? (
+                                <Flag
+                                  title={countryName}
+                                  className="h-4 w-6 shrink-0 rounded object-cover shadow-sm ring-1 ring-gray-200/80 sm:h-5 sm:w-7 md:h-6 md:w-8"
+                                />
+                              ) : null;
+                            })()}
+                            <span className="whitespace-nowrap">{countryName}</span>
                           </span>
-                        ) : (
-                          <span className="whitespace-nowrap">{deliveryDays}</span>
-                        )}
-                      </td>
+                        </td>
 
-                      <td className="whitespace-nowrap px-3 py-2.5 text-right text-xs font-semibold tabular-nums text-black sm:px-4 sm:py-3 md:px-8 md:py-4 md:text-sm md:text-[18px]">
-                        {row.currencySymbol} {row.pricePerKg.toFixed(2)}
-                      </td>
-                    </motion.tr>
-                  );
-                })}
-              </motion.tbody>
-            </table>
-          </div>
-        </motion.div>
+                        <td
+                          className={`px-3 py-2.5 text-center text-xs text-gray-700 sm:px-4 sm:py-3 md:px-8 md:py-4 ${
+                            row.deliveryNoteKey ? 'md:text-[16px]' : 'md:text-[18px]'
+                          }`}
+                        >
+                          {row.deliveryNoteKey ? (
+                            <span className="flex flex-col items-center leading-tight">
+                              <span className="whitespace-nowrap text-[16px] md:text-[18px] text-gray-800">
+                                {deliveryDays}
+                              </span>
+                              <span className="whitespace-nowrap text-[16px] md:text-[18px] text-gray-500 mt-0.5">
+                                {deliveryNote?.replace(/[()]/g, '')}
+                              </span>
+                            </span>
+                          ) : (
+                            <span className="whitespace-nowrap">{deliveryDays}</span>
+                          )}
+                        </td>
+
+                        <td className="whitespace-nowrap px-3 py-2.5 text-right text-xs font-semibold tabular-nums text-black sm:px-4 sm:py-3 md:px-8 md:py-4 md:text-sm md:text-[18px]">
+                          {row.currencySymbol} {row.pricePerKg.toFixed(2)}
+                        </td>
+                      </motion.tr>
+                    );
+                  })}
+                </motion.tbody>
+              </table>
+            </div>
+          </motion.div>
+
+          {/* Side calculator card */}
+          <motion.aside
+            initial={{ opacity: 0, x: 24 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={viewport}
+            transition={{ duration: 0.45, delay: 0.25, ease: 'easeOut' }}
+            className="rounded-[20px] border border-violet-200/70 bg-gradient-to-b from-[#f7f1ff] via-[#f6f3ff] to-[#f1f5ff] p-4 shadow-[0_20px_40px_-24px_rgba(130,76,255,0.7)]"
+          >
+            <p className="mb-2 text-sm font-semibold text-violet-700">{t('tariffCountry')}</p>
+            <div className="relative">
+              {SelectedCountryFlag ? (
+                <SelectedCountryFlag
+                  title={tAddr(selectedTariff.countryKey)}
+                  className="pointer-events-none absolute left-3 top-1/2 h-4 w-6 -translate-y-1/2 rounded object-cover shadow-sm ring-1 ring-gray-200/80"
+                />
+              ) : null}
+              <select
+                value={selectedCountryCode}
+                onChange={(event) => setSelectedCountryCode(event.target.value)}
+                className="h-11 w-full rounded-xl border border-violet-100 bg-white pl-11 pr-3 text-[15px] font-medium text-gray-800 outline-none ring-0 focus:border-violet-300"
+              >
+                {TARIFF_ROWS.map((row) => (
+                  <option key={row.countryCode} value={row.countryCode}>
+                    {tAddr(row.countryKey)}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="mt-3 grid grid-cols-[2fr_auto] gap-2">
+              <input
+                type="number"
+                inputMode="decimal"
+                min="0.1"
+                step="0.1"
+                value={weightKg}
+                onChange={(event) => setWeightKg(event.target.value)}
+                className="h-11 w-full rounded-xl border border-violet-100 bg-white px-3 text-[20px] font-semibold text-violet-800 outline-none focus:border-violet-300 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                aria-label={tCalc('weight')}
+              />
+              <div className="h-11 rounded-xl bg-gradient-to-r from-[#8f48ff] to-[#b24dff] px-4 text-right text-[18px] font-extrabold leading-none text-white flex items-center justify-end">
+                {selectedTariff.currencySymbol} {selectedTariff.pricePerKg.toFixed(0)}
+              </div>
+            </div>
+              <div className="h-11 mt-5 rounded-xl w-full bg-gradient-to-r from-[#8f48ff] to-[#b24dff] px-4 text-right text-[18px] font-extrabold leading-none text-white flex items-center justify-end">
+               {selectedTariff.currencySymbol} {calculatedPrice.toFixed(0)}
+              </div>
+          </motion.aside>
+        </div>
       </div>
     </motion.section>
   );

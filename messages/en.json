@@ -215,7 +215,8 @@
     "tariffPrice": "Price",
     "tariffDeliveryDays": "days",
     "tariffAirShipping": "(air shipping)",
-    "tariffLandShipping": "(land shipping)"
+    "tariffLandShipping": "(land shipping)",
+    "tariffPerKgLabel": "1 kg"
   },
   "homeConsent": {
     "title": "Terms confirmation",

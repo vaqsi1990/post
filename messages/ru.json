@@ -215,7 +215,8 @@
     "tariffPrice": "Цена",
     "tariffDeliveryDays": "дней",
     "tariffAirShipping": "(авиа-доставка)",
-    "tariffLandShipping": "(наземная доставка)"
+    "tariffLandShipping": "(наземная доставка)",
+    "tariffPerKgLabel": "1 кг"
   },
   "homeConsent": {
     "title": "Подтверждение условий",

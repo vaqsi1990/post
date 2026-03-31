@@ -215,7 +215,8 @@
     "tariffPrice": "ფასი",
     "tariffDeliveryDays": " დღე",
     "tariffAirShipping": "(საჰაერო გადაზიდვა)",
-    "tariffLandShipping": "(სახმელეთო გადაზიდვა)"
+    "tariffLandShipping": "(სახმელეთო გადაზიდვა)",
+    "tariffPerKgLabel": "1 კგ"
   },
   "homeConsent": {
     "title": "პირობების დადასტურება",
