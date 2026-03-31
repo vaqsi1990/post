@@ -228,7 +228,7 @@ export default function Tariffs() {
           </h2>
         </motion.div>
 
-        <div className="grid grid-cols-3 items-start gap-5 lg:grid-cols-[minmax(0,2fr)_420px] lg:gap-6">
+        <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-[minmax(0,2fr)_420px] lg:gap-6">
           {/* Table card */}
           <motion.div
             initial={{ opacity: 0, y: 56 }}
