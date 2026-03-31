@@ -137,8 +137,9 @@ export default function Tariffs() {
   const tAddr = useTranslations('addresses');
 
   return (
-    <motion.section
-   
+  <motion.section
+      id="tariffs"
+    
     
       className="relative w-full overflow-hidden bg-white mt-10 pb-10"
     >
