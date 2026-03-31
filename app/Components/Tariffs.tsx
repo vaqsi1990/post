@@ -146,6 +146,16 @@ export default function Tariffs() {
   }, []);
   const activeTariffRows = tariffChunks[tariffPage] ?? tariffChunks[0];
 
+  React.useEffect(() => {
+    if (tariffChunks.length <= 1) return;
+
+    const intervalId = window.setInterval(() => {
+      setTariffPage((prev) => (prev + 1) % tariffChunks.length);
+    }, 3500);
+
+    return () => window.clearInterval(intervalId);
+  }, [tariffChunks.length]);
+
   const selectedTariff = React.useMemo(
     () => TARIFF_ROWS.find((row) => row.countryCode === selectedCountryCode) ?? TARIFF_ROWS[0],
     [selectedCountryCode]
