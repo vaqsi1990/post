@@ -14,9 +14,9 @@ type NavItem =
 
 const servicesLinks: NavLinkItem[] = [
   { href: '/services?service=service1', labelKey: 'header.onlineShopping' },
-  { href: '/services?service=service2', labelKey: 'header.commercialExport' },
-  { href: '/services?service=service3', labelKey: 'header.customsBroker' },
-  { href: '/services?service=service4', labelKey: 'header.courier' },
+  { href: '/services?service=service4', labelKey: 'header.commercialExport' },
+  { href: '/services?service=service2', labelKey: 'header.customsBroker' },
+  { href: '/services?service=service3', labelKey: 'header.courier' },
   { href: '/calculator', labelKey: 'header.calculator' },
 ];
 
