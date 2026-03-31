@@ -228,7 +228,7 @@ export default function Tariffs() {
           </h2>
         </motion.div>
 
-        <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-[minmax(0,1fr)_420px] lg:gap-6">
+        <div className="grid grid-cols-3 items-start gap-5 lg:grid-cols-[minmax(0,2fr)_420px] lg:gap-6">
           {/* Table card */}
           <motion.div
             initial={{ opacity: 0, y: 56 }}
@@ -333,14 +333,15 @@ export default function Tariffs() {
             </div>
           </motion.div>
 
-          {/* Side calculator card */}
-          <motion.aside
-            initial={{ opacity: 0, x: 24 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={viewport}
-            transition={{ duration: 0.45, delay: 0.25, ease: 'easeOut' }}
-            className="rounded-[20px] border border-violet-200/70 bg-gradient-to-b from-[#f7f1ff] via-[#f6f3ff] to-[#f1f5ff] p-4 shadow-[0_20px_40px_-24px_rgba(130,76,255,0.7)]"
-          >
+          <div className="flex flex-col gap-3 lg:gap-4">
+            {/* Side calculator card */}
+            <motion.aside
+              initial={{ opacity: 0, x: 24 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={viewport}
+              transition={{ duration: 0.45, delay: 0.25, ease: 'easeOut' }}
+              className="rounded-[20px] border border-violet-200/70 bg-gradient-to-b from-[#f7f1ff] via-[#f6f3ff] to-[#f1f5ff] p-4 shadow-[0_20px_40px_-24px_rgba(130,76,255,0.7)]"
+            >
             <p className="mb-2 text-sm font-semibold text-violet-700">{t('tariffCountry')}</p>
             <div className="relative">
               {SelectedCountryFlag ? (
@@ -380,36 +381,37 @@ export default function Tariffs() {
             <div className="h-11 mt-5 rounded-xl w-full bg-gradient-to-r from-[#8f48ff] to-[#b24dff] px-4 text-right text-[18px] font-extrabold leading-none text-white flex items-center justify-end">
               {selectedTariff.currencySymbol} {calculatedPrice.toFixed(0)}
             </div>
+            </motion.aside>
+            <section className="w-full">
+            <h2 className="mb-3 text-center text-2xl font-extrabold text-gray-900 md:text-3xl">
+              მიმოხილვები
+            </h2>
 
-        <section className="mx-auto w-full max-w-7xl px-3 py-3 sm:px-4">
-          <h2 className="mb-3 text-center text-2xl font-extrabold text-gray-900  md:text-3xl">
-            მიმოხილვები
-          </h2>
+            <div className="relative mx-auto w-full max-w-3xl overflow-hidden rounded-[24px] p-2">
+              <article className="min-h-[170px] rounded-2xl border border-violet-100/80 bg-white/95 p-5 shadow-[0_12px_30px_-20px_rgba(94,37,208,0.65)] sm:p-6">
+                <div className="mb-3 text-xl tracking-[2px] text-amber-500">
+                  {'★'.repeat(REVIEWS[activeIndex].rating)}
+                </div>
+                <p className="text-base leading-7 text-gray-700">"{REVIEWS[activeIndex].text}"</p>
+                <p className="mt-4 text-sm font-bold text-violet-700">{REVIEWS[activeIndex].name}</p>
+              </article>
 
-          <div className="relative mx-auto w-full max-w-3xl overflow-hidden rounded-[24px] p-2">
-            <article className="min-h-[170px] rounded-2xl border border-violet-100/80 bg-white/95 p-5 shadow-[0_12px_30px_-20px_rgba(94,37,208,0.65)] sm:p-6">
-              <div className="mb-3 text-xl tracking-[2px] text-amber-500">
-                {'★'.repeat(REVIEWS[activeIndex].rating)}
+              <div className="mt-5 flex items-center justify-center gap-2">
+                {REVIEWS.map((review, index) => (
+                  <button
+                    key={review.name}
+                    type="button"
+                    onClick={() => setActiveIndex(index)}
+                    className={`h-2.5 w-2.5 rounded-full transition ${activeIndex === index ? 'bg-indigo-500' : 'bg-indigo-100 hover:bg-indigo-300'
+                      }`}
+                    aria-label={`Go to review ${index + 1}`}
+                  />
+                ))}
               </div>
-              <p className="text-base leading-7 text-gray-700">"{REVIEWS[activeIndex].text}"</p>
-              <p className="mt-4 text-sm font-bold text-violet-700">{REVIEWS[activeIndex].name}</p>
-            </article>
-
-            <div className="mt-5 flex items-center justify-center gap-2">
-              {REVIEWS.map((review, index) => (
-                <button
-                  key={review.name}
-                  type="button"
-                  onClick={() => setActiveIndex(index)}
-                  className={`h-2.5 w-2.5 rounded-full transition ${activeIndex === index ? 'bg-indigo-500' : 'bg-indigo-100 hover:bg-indigo-300'
-                    }`}
-                  aria-label={`Go to review ${index + 1}`}
-                />
-              ))}
             </div>
+            </section>
           </div>
-        </section>
-          </motion.aside>
+
         </div>
 
       </div>
