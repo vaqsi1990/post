@@ -25,6 +25,19 @@
   }
 }
 
+.image{
+
+  width: 100% !important;
+}
+
+@media (max-width: 768px) { 
+.image{
+  height: 70vh !important;
+  width: 100% !important;
+}
+
+}
+
 * {
   font-family: "Poppins", sans-serif !important;
 }

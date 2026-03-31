@@ -12,16 +12,16 @@ export default function Hero() {
   const line3 = t("heroSpeedLine3");
 
   return (
-    <section className=" w-full overflow-hidden mt-14">
+    <section className="relative w-full overflow-hidden mt-14">
       <Image
-        src="/hero/heroimage.png"
+        src="/hero/heroimage2.png"
         alt="pricing background"
-        fill
-        priority
-        className="object-cover object-center opacity-90"
-        sizes="100vw"
+        width={1700}
+        height={500}
+     
+        className="object-contain image object-center opacity-90"
       />
-      <div className="relative mx-auto grid min-h-[520px] max-w-screen-1xl grid-cols-1 items-start px-4 py-6 sm:px-6 md:min-h-[560px] md:py-8 lg:px-5">
+      <div className="absolute inset-0 mx-auto grid h-full max-w-screen-1xl grid-cols-1 content-start px-4 py-6 sm:px-6 md:py-8 lg:px-5">
         <div className="relative z-10 flex justify-center  flex-col max-w-2xl rounded-2xl p-6 sm:p-8 ">
           <p className="text-balance text-[25px] md:text-[30px] font-semibold leading-tight text-white ">
             Postifly
