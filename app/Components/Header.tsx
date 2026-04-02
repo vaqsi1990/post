@@ -97,8 +97,14 @@ const Header = () => {
 
   const isAuthed = status === 'authenticated';
   const role = session?.user?.role;
-  const panelHref = role === 'ADMIN' ? '/admin' : '/dashboard';
-  const panelLabel = role === 'ADMIN' ? t('common.adminPanel') : t('common.myCabinet');
+  const panelHref =
+    role === 'ADMIN' ? '/admin' : role === 'EMPLOYEE' ? '/employee' : '/dashboard';
+  const panelLabel =
+    role === 'ADMIN'
+      ? t('common.adminPanel')
+      : role === 'EMPLOYEE'
+        ? t('common.employeePanel')
+        : t('common.myCabinet');
 
   const rawName = session?.user?.name?.trim();
   const firstNameOnly = rawName

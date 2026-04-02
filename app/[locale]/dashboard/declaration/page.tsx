@@ -16,6 +16,7 @@ export default async function DeclarationPage({ params }: Props) {
 
   if (!session?.user) redirect(`/${locale}/login`);
   if (session.user.role === 'ADMIN') redirect(`/${locale}/admin`);
+  if (session.user.role === 'EMPLOYEE') redirect(`/${locale}/employee`);
 
   return (
     <div className=" bg-gray-100 py-8">

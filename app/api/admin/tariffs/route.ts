@@ -29,8 +29,17 @@ async function requireAdmin() {
   return { ok: true as const };
 }
 
+async function requireAdminOrEmployeeRead() {
+  const session = await getServerSession(authOptions);
+  if (!session?.user) return { ok: false as const, res: NextResponse.json({ error: 'Unauthorized' }, { status: 401 }) };
+  if (session.user.role !== 'ADMIN' && session.user.role !== 'EMPLOYEE') {
+    return { ok: false as const, res: NextResponse.json({ error: 'Forbidden' }, { status: 403 }) };
+  }
+  return { ok: true as const };
+}
+
 export async function GET() {
-  const auth = await requireAdmin();
+  const auth = await requireAdminOrEmployeeRead();
   if (!auth.ok) return auth.res;
 
   try {

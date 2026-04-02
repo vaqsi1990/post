@@ -88,6 +88,10 @@ const createParcelSchema = z.object({
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_TYPE = 'application/pdf';
 
+function isParcelStaff(role: string | undefined): role is 'ADMIN' | 'EMPLOYEE' {
+  return role === 'ADMIN' || role === 'EMPLOYEE';
+}
+
 export async function GET(request: NextRequest) {
   const session = await getServerSession(authOptions);
 
@@ -140,7 +144,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   const session = await getServerSession(authOptions);
 
-  if (!session || session.user.role !== 'ADMIN') {
+  if (!session || !isParcelStaff(session.user.role)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
@@ -207,6 +211,26 @@ export async function POST(request: NextRequest) {
       weight: Number.isNaN(weight) ? undefined : weight,
       description,
     });
+
+    if (session.user.role === 'EMPLOYEE') {
+      const employee = await prisma.user.findUnique({
+        where: { id: session.user.id },
+        select: { employeeCountry: true },
+      });
+      const expectedTariffCountry = FORM_TO_TARIFF_COUNTRY[parsed.originCountry];
+      if (
+        !employee?.employeeCountry ||
+        employee.employeeCountry !== expectedTariffCountry
+      ) {
+        return NextResponse.json(
+          {
+            error:
+              'თქვენ მხოლოდ თქვენს ქვეყანაზე მიბმული ამანათის დამატება შეგიძლიათ. შეამოწმეთ პროფილი ან დაუკავშირდით ადმინს.',
+          },
+          { status: 403 }
+        );
+      }
+    }
 
     let shippingAmount: number | null = null;
     if (parsed.weight != null) {

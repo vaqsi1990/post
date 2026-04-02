@@ -40,7 +40,8 @@
     "cancel": "Отмена",
     "account": "Аккаунт",
     "myCabinet": "Мой кабинет",
-    "adminPanel": "Панель администратора"
+    "adminPanel": "Панель администратора",
+    "employeePanel": "Панель сотрудника"
   },
   "adminsidebar": {
     "users": "Пользователи",
@@ -55,6 +56,16 @@
     "editTariffs": "Изменить тарифы",
     "chat": "Чат",
     "settings": "Настройки"
+  },
+  "employeeSidebar": {
+    "home": "Главная",
+    "addParcel": "Добавить посылку"
+  },
+  "employeeDashboard": {
+    "homeDescription": "Рабочая область для оформления посылок для клиентов.",
+    "homeHint": "Перейдите к форме новой посылки через кнопку ниже или меню (трекинг, стоимость, PDF и т.д.).",
+    "addParcelCta": "Добавить посылку",
+    "missingEmployeeCountry": "К вашему аккаунту не привязана страна. Обратитесь к администратору."
   },
   "adminReises": {
     "newReis": "Новый рейс",

@@ -26,6 +26,7 @@ export default async function DashboardPage({ params }: Props) {
 
   if (!session?.user) redirect(`/${locale}/login`);
   if (session.user.role === 'ADMIN') redirect(`/${locale}/admin`);
+  if (session.user.role === 'EMPLOYEE') redirect(`/${locale}/employee`);
 
   const userId = session.user.id;
 

@@ -13,6 +13,7 @@ export default async function DashboardPage() {
 
   if (!session?.user) redirect('/login');
   if (session.user.role === 'ADMIN') redirect('/admin');
+  if (session.user.role === 'EMPLOYEE') redirect('/employee');
 
   const userId = session.user.id;
   const [parcels, tariffs] = await Promise.all([

@@ -39,6 +39,16 @@
     "chat": "ჩათი",
     "settings": "პარამეტრები"
   },
+  "employeeSidebar": {
+    "home": "მთავარი",
+    "addParcel": "ამანათის დამატება"
+  },
+  "employeeDashboard": {
+    "homeDescription": "თქვენი სამუშაო სივრცე — ამანათების დამატება მომხმარებლებისთვის.",
+    "homeHint": "ქვემოთ ღილაკით ან მენიდან გადადით ახალი ამანათის ფორმაზე (ტრეკინგი, ღირებულება, PDF და სხვა).",
+    "addParcelCta": "ამანათის დამატება",
+    "missingEmployeeCountry": "თქვენს ანგარიშზე ქვეყანა არ არის მიბმული. დაუკავშირდით ადმინსტრატორს."
+  },
   "adminReises": {
     "newReis": "ახალი რეისი",
     "name": "დასახელება",
@@ -115,7 +125,8 @@
     "cancel": "გაუქმება",
     "account": "ანგარიში",
     "myCabinet": "ჩემი კაბინეტი",
-    "adminPanel": "Admin Panel"
+    "adminPanel": "Admin Panel",
+    "employeePanel": "თანამშრომლის პანელი"
   },
   "header": {
     "services": "სერვისები",

@@ -56,7 +56,9 @@ const LoginPage = () => {
         setSubmitError(t('invalidCredentials'));
       } else if (result?.ok) {
         const session = await getSession();
-        const dest = session?.user?.role === 'ADMIN' ? '/admin' : '/dashboard';
+        const role = session?.user?.role;
+        const dest =
+          role === 'ADMIN' ? '/admin' : role === 'EMPLOYEE' ? '/employee' : '/dashboard';
         router.push(dest);
         router.refresh();
       }

@@ -70,7 +70,20 @@ type TariffRow = {
   isActive: boolean;
 };
 
-export default function AdminCreateParcelForm() {
+type AdminCreateParcelFormProps = {
+  postUrl?: string;
+  tariffsUrl?: string;
+  successRedirect?: string;
+  /** Form origin codes (uk, us, …); if set, only these appear in the selector */
+  allowedOriginCountryCodes?: string[];
+};
+
+export default function AdminCreateParcelForm({
+  postUrl = '/api/admin/parcels',
+  tariffsUrl = '/api/admin/tariffs',
+  successRedirect = '/admin/incoming',
+  allowedOriginCountryCodes,
+}: AdminCreateParcelFormProps = {}) {
   const router = useRouter();
   const t = useTranslations('adminParcels');
   const tCommon = useTranslations('common');
@@ -99,11 +112,27 @@ export default function AdminCreateParcelForm() {
   const countryRef = useRef<HTMLDivElement | null>(null);
   const [tariffs, setTariffs] = useState<TariffRow[]>([]);
 
+  const originCountriesList = useMemo(() => {
+    if (!allowedOriginCountryCodes?.length) return ORIGIN_COUNTRIES;
+    const allowed = new Set(allowedOriginCountryCodes);
+    return ORIGIN_COUNTRIES.filter((c) => allowed.has(c.code));
+  }, [allowedOriginCountryCodes]);
+
+  useEffect(() => {
+    if (
+      allowedOriginCountryCodes?.length === 1 &&
+      !originCountry &&
+      originCountriesList.some((c) => c.code === allowedOriginCountryCodes[0])
+    ) {
+      setOriginCountry(allowedOriginCountryCodes[0]);
+    }
+  }, [allowedOriginCountryCodes, originCountry, originCountriesList]);
+
   useEffect(() => {
     let cancelled = false;
     (async () => {
       try {
-        const res = await fetch('/api/admin/tariffs', {
+        const res = await fetch(tariffsUrl, {
           method: 'GET',
           cache: 'no-store',
           credentials: 'include',
@@ -120,7 +149,7 @@ export default function AdminCreateParcelForm() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [tariffsUrl]);
 
   const calculated = useMemo(() => {
     if (!originCountry.trim() || !weight.trim()) return null;
@@ -230,7 +259,7 @@ export default function AdminCreateParcelForm() {
       formData.append('description', description.trim());
       formData.append('file', file);
 
-      const res = await fetch('/api/admin/parcels', {
+      const res = await fetch(postUrl, {
         method: 'POST',
         body: formData,
       });
@@ -244,7 +273,7 @@ export default function AdminCreateParcelForm() {
       }
 
       setSuccess(t('createSuccess'));
-      router.push('/admin/incoming');
+      router.push(successRedirect);
       router.refresh();
     } catch {
       setError(tCommon('networkError'));
@@ -441,7 +470,7 @@ export default function AdminCreateParcelForm() {
                 className="absolute left-0 right-0 z-10 mt-1 max-h-60 overflow-auto rounded-lg border border-gray-200 bg-white py-1 shadow-lg"
                 role="listbox"
               >
-                {ORIGIN_COUNTRIES.map(({ code }) => {
+                {originCountriesList.map(({ code }) => {
                   const FlagComp = FLAGS[CODE_TO_FLAG[code]];
                   return (
                     <li

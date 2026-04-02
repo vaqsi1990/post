@@ -40,7 +40,8 @@
     "cancel": "Cancel",
     "account": "Account",
     "myCabinet": "My Cabinet",
-    "adminPanel": "Admin Panel"
+    "adminPanel": "Admin Panel",
+    "employeePanel": "Employee panel"
   },
   "adminsidebar": {
     "users": "Users",
@@ -55,6 +56,16 @@
     "editTariffs": "Edit tariffs",
     "chat": "Chat",
     "settings": "Settings"
+  },
+  "employeeSidebar": {
+    "home": "Home",
+    "addParcel": "Add parcel"
+  },
+  "employeeDashboard": {
+    "homeDescription": "Your workspace for registering parcels for customers.",
+    "homeHint": "Use the button below or the menu to open the new parcel form (tracking, value, PDF, etc.).",
+    "addParcelCta": "Add parcel",
+    "missingEmployeeCountry": "No country is assigned to your account. Please contact an administrator."
   },
   "adminReises": {
     "newReis": "New flight",
