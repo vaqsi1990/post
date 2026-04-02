@@ -17,6 +17,15 @@ const userSelect = {
   address: true,
 } as const;
 
+const createdBySelect = {
+  id: true,
+  email: true,
+  firstName: true,
+  lastName: true,
+  role: true,
+  employeeCountry: true,
+} as const;
+
 const patchParcelSchema = z
   .object({
     status: z.enum(allowedStatuses).optional(),
@@ -72,6 +81,9 @@ export async function PATCH(
         include: {
           user: {
             select: userSelect,
+          },
+          createdBy: {
+            select: createdBySelect,
           },
         },
       });

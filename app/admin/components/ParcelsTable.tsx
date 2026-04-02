@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { formatOriginCountryLabel } from '@/lib/formatOriginCountry';
+import { employeeCountryLabel } from '@/lib/employeeCountryLabel';
 import { useLocale } from 'next-intl';
 
 type Parcel = {
@@ -29,6 +30,14 @@ type Parcel = {
     city?: string | null;
     address?: string | null;
   };
+  createdBy: {
+    id: string;
+    email: string;
+    firstName: string | null;
+    lastName: string | null;
+    role: string;
+    employeeCountry: string | null;
+  } | null;
 };
 
 type ParcelsTableProps = {
@@ -97,6 +106,9 @@ export default function ParcelsTable({ parcels: initialParcels, currentStatus, o
     date: isRu ? 'Дата' : isEn ? 'Date' : 'თარიღი',
     userRequest: isRu ? 'Запрос пользователя' : isEn ? 'User request' : 'მომხმარებლის მოთხოვნა',
     saving: isRu ? 'Сохранение...' : isEn ? 'Saving...' : 'ინახება...',
+    uploadedBy: isRu ? 'Кто загрузил' : isEn ? 'Uploaded by' : 'ატვირთა',
+    uploadedByCountry: isRu ? 'Страна сотрудника' : isEn ? 'Staff country' : 'თანამშრომლის ქვეყანა',
+    uploaderAdmin: isRu ? 'Администратор' : isEn ? 'Administrator' : 'ადმინისტრატორი',
   } as const;
   const statusOptions = [
     { value: 'pending', label: t.pending },
@@ -106,6 +118,32 @@ export default function ParcelsTable({ parcels: initialParcels, currentStatus, o
     { value: 'delivered', label: t.delivered },
     { value: 'cancelled', label: t.cancelled },
   ];
+
+  function renderUploaderBlock(parcel: Parcel) {
+    if (!parcel.createdBy) {
+      return (
+        <div className="mt-2 border-t border-gray-100 pt-2 text-[12px] text-gray-600">
+          <p className="font-semibold text-gray-900">{t.uploadedBy}</p>
+          <p>—</p>
+        </div>
+      );
+    }
+    const u = parcel.createdBy;
+    const name = [u.firstName, u.lastName].filter(Boolean).join(' ').trim() || u.email;
+    return (
+      <div className="mt-2 border-t border-gray-100 pt-2 text-[12px] text-gray-700">
+        <p className="font-semibold text-gray-900">{t.uploadedBy}</p>
+        <p className="text-black">{name}</p>
+        {u.role === 'EMPLOYEE' ? (
+          <p className="text-gray-700">
+            {t.uploadedByCountry}: {employeeCountryLabel(u.employeeCountry, locale)}
+          </p>
+        ) : (
+          <p className="text-gray-600">{t.uploaderAdmin}</p>
+        )}
+      </div>
+    );
+  }
 
   const [parcels, setParcels] = useState(initialParcels);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
@@ -340,6 +378,8 @@ export default function ParcelsTable({ parcels: initialParcels, currentStatus, o
                   {parcel.user.address || '—'}
                 </span>
 
+                <div className="col-span-2">{renderUploaderBlock(parcel)}</div>
+
                 {currentStatus === 'arrived' ? (
                   <>
                     <span className="col-span-2 mt-1 border-t border-gray-100 pt-2 text-[12px] font-semibold text-black">
@@ -510,6 +550,7 @@ export default function ParcelsTable({ parcels: initialParcels, currentStatus, o
                           {parcel.user.firstName} {parcel.user.lastName}
                         </span>
                       )}
+                      {renderUploaderBlock(parcel)}
                     </td>
                     <td className="px-4 py-2 text-right text-[14px] text-blue-600">
                       <button
@@ -536,6 +577,8 @@ export default function ParcelsTable({ parcels: initialParcels, currentStatus, o
                         <div className="grid grid-cols-2 gap-2 pt-2">
                             <span className="text-black">{t.user}</span>
                           <span>{parcel.customerName}</span>
+
+                          <div className="col-span-2">{renderUploaderBlock(parcel)}</div>
 
                           <span className="text-black">{t.tracking}</span>
                           <span>{parcel.trackingNumber}</span>

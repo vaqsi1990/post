@@ -3,6 +3,7 @@ import prisma from '../../../lib/prisma';
 import ParcelsManager from '../components/ParcelsManager';
 import Link from 'next/link';
 import { getLocale } from 'next-intl/server';
+import { adminParcelInclude } from '@/lib/adminParcelInclude';
 
 export const dynamic = 'force-dynamic';
 
@@ -18,19 +19,7 @@ export default async function AdminIncomingPage() {
       status: 'pending',
     },
     orderBy: { createdAt: 'desc' },
-    include: {
-      user: {
-        select: {
-          id: true,
-          email: true,
-          firstName: true,
-          lastName: true,
-          phone: true,
-          city: true,
-          address: true,
-        },
-      },
-    },
+    include: adminParcelInclude,
   });
 
   const formattedParcels = parcels.map((parcel) => ({

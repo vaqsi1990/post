@@ -2,6 +2,7 @@ import AdminShell from '../components/AdminShell';
 import prisma from '../../../lib/prisma';
 import ParcelsManager from '../components/ParcelsManager';
 import { getLocale } from 'next-intl/server';
+import { adminParcelInclude } from '@/lib/adminParcelInclude';
 
 export default async function AdminRegionsPage() {
   const locale = await getLocale();
@@ -15,19 +16,7 @@ export default async function AdminRegionsPage() {
       status: 'region',
     },
     orderBy: { createdAt: 'desc' },
-    include: {
-      user: {
-        select: {
-          id: true,
-          email: true,
-          firstName: true,
-          lastName: true,
-          phone: true,
-          city: true,
-          address: true,
-        },
-      },
-    },
+    include: adminParcelInclude,
   });
 
   const formattedParcels = parcels.map((parcel) => ({

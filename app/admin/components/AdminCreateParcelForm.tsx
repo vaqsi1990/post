@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { GB, US, CN, IT, GR, ES, FR, DE, TR } from 'country-flag-icons/react/3x2';
 import { useTranslations } from 'next-intl';
 import { parcelOriginLabelKey } from '@/lib/parcelOriginLabels';
+import { REGISTRATION_CITIES } from '@/lib/georgianCities';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
@@ -88,6 +89,9 @@ export default function AdminCreateParcelForm({
   const t = useTranslations('adminParcels');
   const tCommon = useTranslations('common');
   const tParcels = useTranslations('parcels');
+  const tDeclaration = useTranslations('declaration');
+  const tCities = useTranslations('cities');
+  const tRegister = useTranslations('register');
 
   const [userEmail, setUserEmail] = useState('');
   const [customerName, setCustomerName] = useState('');
@@ -124,6 +128,17 @@ export default function AdminCreateParcelForm({
     if (!q) return descriptionOptions;
     return descriptionOptions.filter((opt) => opt.toLowerCase().includes(q));
   }, [description, descriptionOptions]);
+
+  const priceNumForUi = useMemo(() => parseFloat(price.replace(',', '.')), [price]);
+  const requiresInvoicePdf = useMemo(
+    () => !Number.isNaN(priceNumForUi) && priceNumForUi >= 296,
+    [priceNumForUi],
+  );
+
+  const pdfLabel = useMemo(() => {
+    const base = tDeclaration('pdfFile').replace(/\s*\*$/, '');
+    return requiresInvoicePdf ? `${base} *` : base;
+  }, [tDeclaration, requiresInvoicePdf]);
 
   const originCountriesList = useMemo(() => {
     if (!allowedOriginCountryCodes?.length) return ORIGIN_COUNTRIES;
@@ -224,19 +239,6 @@ export default function AdminCreateParcelForm({
       return;
     }
 
-    if (!file) {
-      setError(t('pdfRequired'));
-      return;
-    }
-    if (file.type !== 'application/pdf') {
-      setError(t('onlyPdf'));
-      return;
-    }
-    if (file.size > MAX_FILE_SIZE) {
-      setError(t('maxSize'));
-      return;
-    }
-
     const priceNum = parseFloat(price.replace(',', '.'));
     const quantityNum = parseInt(quantity, 10);
     const w = weight ? parseFloat(weight.replace(',', '.')) : NaN;
@@ -256,6 +258,22 @@ export default function AdminCreateParcelForm({
       return;
     }
 
+    const needsPdf = priceNum >= 296;
+    if (needsPdf && !file) {
+      setError(tDeclaration('fileRequired'));
+      return;
+    }
+    if (file) {
+      if (file.type !== 'application/pdf') {
+        setError(tDeclaration('onlyPdf'));
+        return;
+      }
+      if (file.size > MAX_FILE_SIZE) {
+        setError(tDeclaration('maxSize'));
+        return;
+      }
+    }
+
     setLoading(true);
 
     try {
@@ -273,7 +291,7 @@ export default function AdminCreateParcelForm({
       if (comment.trim()) formData.append('comment', comment.trim());
       formData.append('weight', String(w));
       formData.append('description', description.trim());
-      formData.append('file', file);
+      if (file) formData.append('file', file);
 
       const res = await fetch(postUrl, {
         method: 'POST',
@@ -403,16 +421,23 @@ export default function AdminCreateParcelForm({
           </div>
 
           <div>
-            <label className="mb-1 block text-[15px] font-semibold text-black">
+            <label htmlFor="admin-parcel-city" className="mb-1 block text-[15px] font-semibold text-black">
               {t('city')}
             </label>
-            <input
-              type="text"
+            <p className="mb-1 text-[14px] text-gray-600">{tRegister('cityDropdownHint')}</p>
+            <select
+              id="admin-parcel-city"
               value={city}
               onChange={(e) => setCity(e.target.value)}
-              className="w-full placeholder:font-normal placeholder:text-black placeholder:text-[14px] rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
-              placeholder={t('cityPlaceholder')}
-            />
+              className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
+            >
+              <option value="">{tRegister('citySelectPlaceholder')}</option>
+              {REGISTRATION_CITIES.map(({ id, nameKa }) => (
+                <option key={id} value={nameKa}>
+                  {tCities(id)}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div>
@@ -613,17 +638,18 @@ export default function AdminCreateParcelForm({
         </div>
 
         <div>
-          <label className="mb-1 block text-[15px] font-semibold text-black">
-            {t('pdfLabel')}
+          <label htmlFor="admin-declaration-file" className="mb-1 block text-[15px] font-semibold text-black">
+            {pdfLabel}
           </label>
           <input
+            id="admin-declaration-file"
             type="file"
             accept="application/pdf"
-            required
+            required={requiresInvoicePdf}
             onChange={(e) => {
               const f = e.target.files?.[0] ?? null;
               if (f && f.type !== 'application/pdf') {
-                setError(t('onlyPdf'));
+                setError(tDeclaration('onlyPdf'));
                 setFile(null);
                 e.target.value = '';
                 return;
@@ -633,9 +659,7 @@ export default function AdminCreateParcelForm({
             }}
             className="block w-full text-[15px] text-black file:mr-3 file:rounded-md file:border file:border-gray-300 file:bg-white file:px-3 file:py-1.5 file:text-[15px] file:font-medium file:text-black hover:file:bg-gray-50"
           />
-          <p className="mt-1 text-[14px] text-black">
-            {t('pdfHelp')}
-          </p>
+          <p className="mt-1 text-[14px] font-medium text-black">{tDeclaration('maxFileSize')}</p>
         </div>
 
         <div className="pt-2">

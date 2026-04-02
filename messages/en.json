@@ -65,7 +65,21 @@
     "homeDescription": "Your workspace for registering parcels for customers.",
     "homeHint": "Use the button below or the menu to open the new parcel form (tracking, value, PDF, etc.).",
     "addParcelCta": "Add parcel",
-    "missingEmployeeCountry": "No country is assigned to your account. Please contact an administrator."
+    "missingEmployeeCountry": "No country is assigned to your account. Please contact an administrator.",
+    "myParcelsTitle": "Parcels you added",
+    "myParcelsEmpty": "You have not added any parcels yet.",
+    "colTracking": "Tracking",
+    "colCustomerEmail": "Customer email",
+    "colCustomerName": "Recipient name",
+    "colStatus": "Status",
+    "colDate": "Added",
+    "statusPending": "Pending",
+    "statusInTransit": "In transit",
+    "statusArrived": "Arrived",
+    "statusRegion": "Region",
+    "statusDelivered": "Delivered",
+    "statusCancelled": "Cancelled",
+    "statusReadyForPickup": "Ready for pickup"
   },
   "adminReises": {
     "newReis": "New flight",

@@ -10,6 +10,7 @@ import {
   withRetryOnDuplicateRoomNumber,
 } from '@/lib/roomNumber';
 import { utapi } from '@/lib/uploadthing';
+import { adminParcelInclude } from '@/lib/adminParcelInclude';
 
 export const dynamic = 'force-dynamic';
 
@@ -109,19 +110,7 @@ export async function GET(request: NextRequest) {
   const parcels = await prisma.parcel.findMany({
     where: { status },
     orderBy: { createdAt: 'desc' },
-    include: {
-      user: {
-        select: {
-          id: true,
-          email: true,
-          firstName: true,
-          lastName: true,
-          phone: true,
-          city: true,
-          address: true,
-        },
-      },
-    },
+    include: adminParcelInclude,
   });
 
   return NextResponse.json(
@@ -177,19 +166,20 @@ export async function POST(request: NextRequest) {
     const quantity = quantityStr ? parseInt(quantityStr, 10) : NaN;
     const weight = weightStr ? parseFloat(weightStr.replace(',', '.')) : NaN;
 
-    if (!file || file.size === 0) {
+    const hasFile = !!file && file.size > 0;
+    if (!Number.isNaN(price) && price >= 296 && !hasFile) {
       return NextResponse.json(
-        { error: 'PDF file is required' },
+        { error: '296 ლარიდან ინვოისის PDF ფაილი აუცილებელია' },
         { status: 400 }
       );
     }
-    if (file.type !== ALLOWED_TYPE) {
+    if (hasFile && file.type !== ALLOWED_TYPE) {
       return NextResponse.json(
         { error: 'Only PDF files are allowed' },
         { status: 400 }
       );
     }
-    if (file.size > MAX_FILE_SIZE) {
+    if (hasFile && file.size > MAX_FILE_SIZE) {
       return NextResponse.json(
         { error: 'File size must not exceed 10 MB' },
         { status: 400 }
@@ -298,21 +288,25 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const uploadResult = await utapi.uploadFiles(file);
+    let fileUrl: string | null = null;
+    if (hasFile) {
+      const uploadResult = await utapi.uploadFiles(file);
 
-    if (uploadResult.error || !uploadResult.data?.url) {
-      console.error('UploadThing error (admin parcel PDF):', uploadResult.error);
-      return NextResponse.json(
-        { error: 'Error while uploading file' },
-        { status: 500 }
-      );
+      if (uploadResult.error || !uploadResult.data?.url) {
+        console.error('UploadThing error (admin parcel PDF):', uploadResult.error);
+        return NextResponse.json(
+          { error: 'Error while uploading file' },
+          { status: 500 }
+        );
+      }
+
+      fileUrl = uploadResult.data.url;
     }
-
-    const fileUrl = uploadResult.data.url;
 
     const parcel = await prisma.parcel.create({
       data: {
         userId: user.id,
+        createdById: session.user.id,
         customerName: parsed.customerName.trim(),
         trackingNumber: parsed.trackingNumber.trim(),
         price: parsed.price,

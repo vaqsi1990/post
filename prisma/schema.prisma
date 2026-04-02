@@ -57,6 +57,8 @@ model User {
 
   addresses    Address[]
   parcels      Parcel[]
+  /// ამანათები, რომლებიც ამ მომხმარებელმა (ადმინი/თანამშრომელი) შექმნა სისტემაში
+  parcelsCreated Parcel[] @relation("ParcelCreatedBy")
   payments     Payment[]
   orders       Order[]
   chats        ChatThread[]
@@ -150,16 +152,20 @@ model Parcel {
   readyAt         DateTime?
   deliveredAt     DateTime?
   reisId          String?
+  /// ვინ დაამატა ამანათი (ადმინი/თანამშრომელი); მომხმარებლის თვითდამატებისას null
+  createdById     String?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
   user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdBy       User?    @relation("ParcelCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
   address         Address? @relation(fields: [destinationAddressId], references: [id])
   reis            Reis?    @relation(fields: [reisId], references: [id], onDelete: SetNull)
   tracking        Tracking[]
   payments        Payment[]
   order           Order?
 
+  @@index([createdById])
   @@map("parcels")
 }
 

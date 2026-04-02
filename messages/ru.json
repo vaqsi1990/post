@@ -65,7 +65,21 @@
     "homeDescription": "Рабочая область для оформления посылок для клиентов.",
     "homeHint": "Перейдите к форме новой посылки через кнопку ниже или меню (трекинг, стоимость, PDF и т.д.).",
     "addParcelCta": "Добавить посылку",
-    "missingEmployeeCountry": "К вашему аккаунту не привязана страна. Обратитесь к администратору."
+    "missingEmployeeCountry": "К вашему аккаунту не привязана страна. Обратитесь к администратору.",
+    "myParcelsTitle": "Посылки, которые вы добавили",
+    "myParcelsEmpty": "Вы ещё не добавили ни одной посылки.",
+    "colTracking": "Трекинг",
+    "colCustomerEmail": "Email клиента",
+    "colCustomerName": "Имя получателя",
+    "colStatus": "Статус",
+    "colDate": "Добавлено",
+    "statusPending": "В ожидании",
+    "statusInTransit": "В пути",
+    "statusArrived": "Прибыли",
+    "statusRegion": "В регионе",
+    "statusDelivered": "Выданы",
+    "statusCancelled": "Отменены",
+    "statusReadyForPickup": "Готово к выдаче"
   },
   "adminReises": {
     "newReis": "Новый рейс",

@@ -47,7 +47,21 @@
     "homeDescription": "თქვენი სამუშაო სივრცე — ამანათების დამატება მომხმარებლებისთვის.",
     "homeHint": "ქვემოთ ღილაკით ან მენიდან გადადით ახალი ამანათის ფორმაზე (ტრეკინგი, ღირებულება, PDF და სხვა).",
     "addParcelCta": "ამანათის დამატება",
-    "missingEmployeeCountry": "თქვენს ანგარიშზე ქვეყანა არ არის მიბმული. დაუკავშირდით ადმინსტრატორს."
+    "missingEmployeeCountry": "თქვენს ანგარიშზე ქვეყანა არ არის მიბმული. დაუკავშირდით ადმინსტრატორს.",
+    "myParcelsTitle": "თქვენ მიერ დამატებული ამანათები",
+    "myParcelsEmpty": "ჯერ არ გაქვთ დამატებული ამანათი.",
+    "colTracking": "თრექინგი",
+    "colCustomerEmail": "მომხმარებლის ელ-ფოსტა",
+    "colCustomerName": "მიმღების სახელი",
+    "colStatus": "სტატუსი",
+    "colDate": "დამატება",
+    "statusPending": "მოლოდინში",
+    "statusInTransit": "გზაში",
+    "statusArrived": "ჩამოსული",
+    "statusRegion": "რეგიონში",
+    "statusDelivered": "გაცემული",
+    "statusCancelled": "გაუქმებული",
+    "statusReadyForPickup": "მისაღებად მზად"
   },
   "adminReises": {
     "newReis": "ახალი რეისი",

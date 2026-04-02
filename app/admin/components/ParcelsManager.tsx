@@ -28,6 +28,14 @@ type Parcel = {
     city?: string | null;
     address?: string | null;
   };
+  createdBy: {
+    id: string;
+    email: string;
+    firstName: string | null;
+    lastName: string | null;
+    role: string;
+    employeeCountry: string | null;
+  } | null;
 };
 
 type ParcelsManagerProps = {
