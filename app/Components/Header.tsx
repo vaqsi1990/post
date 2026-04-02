@@ -62,7 +62,8 @@ function UserOutlineIcon({ className }: { className?: string }) {
 }
 
 const navStructure: NavItem[] = [
-  {type: 'link',  href: '/about',  labelKey: 'header.about' },
+  { type: 'link', href: '/about', labelKey: 'header.about' },
+  { type: 'link', href: '/tracking', labelKey: 'header.tracking' },
   {
     type: 'dropdown',
     labelKey: 'header.services',

@@ -152,7 +152,45 @@
     "whyPostify": "Why Postifly?",
     "howWeightCalculated": "How is parcel weight calculated?",
     "whenSubjectToCustoms": "When is a shipment subject to customs?",
-    "whyDeclarationImportant": "Why is parcel declaration important?"
+    "whyDeclarationImportant": "Why is parcel declaration important?",
+    "tracking": "Tracking"
+  },
+  "trackingPage": {
+    "metaTitle": "Parcel tracking — Postifly",
+    "metaDescription": "Enter your tracking number to see shipment status and history.",
+    "title": "Track your parcel",
+    "subtitle": "Enter your tracking number to see the current status and full journey history.",
+    "placeholder": "Tracking number",
+    "search": "Track",
+    "searching": "Searching…",
+    "emptyHint": "Use the number from your email or personal cabinet.",
+    "currentStatus": "Current status",
+    "progressTitle": "Progress",
+    "timelineTitle": "Detailed history",
+    "noEvents": "No scan events yet — the step above shows the latest status.",
+    "weight": "Weight",
+    "origin": "Origin",
+    "shop": "Store",
+    "registeredAt": "Registered",
+    "copy": "Copy",
+    "copied": "Copied",
+    "copyShareLink": "Copy link",
+    "shareHint": "Anyone with this link can view this shipment status.",
+    "errors": {
+      "code_required": "Enter a tracking number",
+      "code_invalid": "Tracking number is too long or invalid",
+      "not_found": "No parcel found for this number",
+      "network": "Network error — please try again"
+    },
+    "status": {
+      "pending": "Pending",
+      "in_transit": "In transit",
+      "arrived": "Arrived",
+      "region": "In your region",
+      "ready_for_pickup": "Ready for pickup",
+      "delivered": "Delivered",
+      "cancelled": "Cancelled"
+    }
   },
   "footer": {
     "rights": "All rights reserved",

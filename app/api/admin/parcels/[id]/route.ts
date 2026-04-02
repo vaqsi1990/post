@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { z } from 'zod';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { recordParcelTrackingEvent } from '@/lib/parcelTrackingLog';
 
 const allowedStatuses = ['pending', 'in_transit', 'arrived', 'region', 'delivered', 'cancelled'] as const;
 
@@ -57,18 +58,29 @@ export async function PATCH(
       return NextResponse.json({ error: 'ამანათი ვერ მოიძებნა' }, { status: 404 });
     }
 
-    const updatedParcel = await prisma.parcel.update({
-      where: { id },
-      data: {
-        ...(data.status !== undefined ? { status: data.status } : {}),
-        ...(data.courierFeeAmount !== undefined ? { courierFeeAmount: data.courierFeeAmount } : {}),
-        ...(data.payableAmount !== undefined ? { payableAmount: data.payableAmount } : {}),
-      },
-      include: {
-        user: {
-          select: userSelect,
+    const statusChanged =
+      data.status !== undefined && data.status !== parcel.status;
+
+    const updatedParcel = await prisma.$transaction(async (tx) => {
+      const next = await tx.parcel.update({
+        where: { id },
+        data: {
+          ...(data.status !== undefined ? { status: data.status } : {}),
+          ...(data.courierFeeAmount !== undefined ? { courierFeeAmount: data.courierFeeAmount } : {}),
+          ...(data.payableAmount !== undefined ? { payableAmount: data.payableAmount } : {}),
         },
-      },
+        include: {
+          user: {
+            select: userSelect,
+          },
+        },
+      });
+
+      if (statusChanged && data.status !== undefined) {
+        await recordParcelTrackingEvent(tx, id, data.status);
+      }
+
+      return next;
     });
 
     return NextResponse.json(

@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { z } from 'zod';
 import { authOptions } from '../../../../lib/auth';
 import prisma from '../../../../lib/prisma';
+import { recordParcelTrackingEvent } from '../../../../lib/parcelTrackingLog';
 import { resolveTariffForParcel } from '../../../../lib/tariffLookup';
 import { utapi } from '../../../../lib/uploadthing';
 
@@ -195,6 +196,8 @@ export async function POST(request: NextRequest) {
         filePath: fileUrl,
       },
     });
+
+    await recordParcelTrackingEvent(prisma, parcel.id, parcel.status);
 
     return NextResponse.json(
       {

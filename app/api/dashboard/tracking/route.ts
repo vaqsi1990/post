@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
       trackingNumber: { equals: code, mode: 'insensitive' },
     },
     include: {
-      tracking: { orderBy: { createdAt: 'desc' }, take: 20 },
+      tracking: { orderBy: { createdAt: 'desc' }, take: 80 },
     },
   });
 

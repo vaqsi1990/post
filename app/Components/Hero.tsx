@@ -7,6 +7,7 @@ import { Link } from "@/i18n/navigation";
 
 export default function Hero() {
   const t = useTranslations("home");
+  const tHeader = useTranslations("header");
   const line1 = t("heroSpeedLine1");
   const line2 = t("heroSpeedLine2");
   const line3 = t("heroSpeedLine3");
@@ -22,7 +23,7 @@ export default function Hero() {
 
   return (
     <section className="relative w-full overflow-hidden mt-14">
-      <div className="relative h-[560px] md:h-[550px]">
+      <div className="relative h-[560px] md:h-[600px]">
         <Image
           src="/hero/hero1.jpg"
           alt="pricing background"
@@ -79,7 +80,7 @@ export default function Hero() {
               href="/tracking"
               className="w-[150px] rounded-xl inline-flex items-center justify-center text-center bg-[#ff4fd8] px-6 py-3 text-base font-semibold text-white transition hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-[#3a5bff]"
             >
-             თრექინგი
+              {tHeader("tracking")}
             </Link>
           </div>
         </div>
