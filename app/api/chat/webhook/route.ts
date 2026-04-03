@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { z } from 'zod';
 import prisma from '@/lib/prisma';
 import { authOptions } from '@/lib/auth';
+import { notifySupportUsersNewChat } from '@/lib/notifySupportChatSms';
 
 const baseSchema = z.object({
   threadId: z.string().optional(),
@@ -33,6 +34,8 @@ export async function POST(request: NextRequest) {
     const session = await getServerSession(authOptions);
 
     let threadId = data.threadId;
+    let createdNewThread = false;
+    let smsFromLabel: string | null = null;
 
     if (threadId) {
       // Ensure thread exists
@@ -79,6 +82,8 @@ export async function POST(request: NextRequest) {
           },
         });
         threadId = thread.id;
+        createdNewThread = true;
+        smsFromLabel = `${firstName} ${lastName} (${user.email})`.trim();
       } else {
         const guestFirst = data.firstName?.trim();
         const guestLast = data.lastName?.trim();
@@ -110,6 +115,8 @@ export async function POST(request: NextRequest) {
           },
         });
         threadId = thread.id;
+        createdNewThread = true;
+        smsFromLabel = `${guestFirst} ${guestLast} (${guestEmail})`.trim();
       }
     }
 
@@ -121,6 +128,10 @@ export async function POST(request: NextRequest) {
         text: data.message,
       },
     });
+
+    if (createdNewThread && smsFromLabel) {
+      void notifySupportUsersNewChat({ fromLabel: smsFromLabel });
+    }
 
     return NextResponse.json(
       {
