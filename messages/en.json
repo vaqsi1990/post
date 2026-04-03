@@ -60,6 +60,7 @@
   },
   "employeeSidebar": {
     "home": "Home",
+    "users": "Users",
     "addParcel": "Add parcel"
   },
   "employeeDashboard": {

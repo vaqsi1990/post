@@ -19,7 +19,13 @@ const initialForm: AdminCreateUserInput & { confirmPassword: string } = {
   role: 'USER',
 };
 
-export default function AdminCreateUserForm() {
+export default function AdminCreateUserForm({
+  postUrl = '/api/admin/users',
+  successRedirect = '/admin/users',
+}: {
+  postUrl?: string;
+  successRedirect?: string;
+}) {
   const locale = useLocale();
   const isEn = locale === 'en';
   const isRu = locale === 'ru';
@@ -70,7 +76,7 @@ export default function AdminCreateUserForm() {
     }
     setSubmitting(true);
     try {
-      const res = await fetch('/api/admin/users', {
+      const res = await fetch(postUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -99,7 +105,7 @@ export default function AdminCreateUserForm() {
         setSubmitError(data.error || t.createUserError);
         return;
       }
-      router.push('/admin/users');
+      router.push(successRedirect);
       return;
     } catch {
       setSubmitError(t.genericError);

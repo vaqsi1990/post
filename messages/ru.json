@@ -60,6 +60,7 @@
   },
   "employeeSidebar": {
     "home": "Главная",
+    "users": "Пользователи",
     "addParcel": "Добавить посылку"
   },
   "employeeDashboard": {

@@ -64,6 +64,8 @@ type UserDetails = {
 
 type UsersTableProps = {
   users: User[];
+  newUserHref?: string;
+  allowDelete?: boolean;
 };
 
 const ROLE_OPTIONS = ['USER', 'EMPLOYEE', 'SUPPORT', 'ADMIN'] as const;
@@ -89,7 +91,11 @@ type EditableUserFields = {
   employeeCountry: string;
 };
 
-export default function UsersTable({ users: initialUsers }: UsersTableProps) {
+export default function UsersTable({
+  users: initialUsers,
+  newUserHref = '/admin/users/new',
+  allowDelete = true,
+}: UsersTableProps) {
   const locale = useLocale();
   const isEn = locale === 'en';
   const isRu = locale === 'ru';
@@ -452,6 +458,7 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
   };
 
   const handleDelete = async (userId: string, userEmail: string) => {
+    if (!allowDelete) return;
     if (!confirm(`${text.deleteConfirm} ${userEmail}?`)) {
       return;
     }
@@ -591,7 +598,7 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
 
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <Link
-          href="/admin/users/new"
+          href={newUserHref}
           className="rounded-xl border border-gray-300 bg-white px-4 py-2 text-[16px] font-semibold text-black hover:bg-gray-50"
         >
           {text.newUser}
@@ -682,7 +689,7 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
                         <button
                           type="button"
                           onClick={() => void handleViewDetails(user.id)}
-                          disabled={detailsLoadingId === user.id || deletingId === user.id}
+                          disabled={detailsLoadingId === user.id || (allowDelete && deletingId === user.id)}
                           className="mr-2 rounded-md border border-gray-300 bg-white px-3 py-1 text-[16px] font-semibold text-black hover:bg-gray-50 disabled:opacity-50"
                         >
                           {detailsLoadingId === user.id
@@ -691,14 +698,16 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
                               ? text.close
                               : text.details}
                         </button>
-                        <button
-                          type="button"
-                          onClick={() => void handleDelete(user.id, user.email)}
-                          disabled={deletingId === user.id || updatingRoleId === user.id}
-                          className="rounded-md bg-red-600 px-3 py-1 text-[16px] font-semibold text-white hover:bg-red-700 disabled:opacity-50"
-                        >
-                          {deletingId === user.id ? text.deleting : text.delete}
-                        </button>
+                        {allowDelete ? (
+                          <button
+                            type="button"
+                            onClick={() => void handleDelete(user.id, user.email)}
+                            disabled={deletingId === user.id || updatingRoleId === user.id}
+                            className="rounded-md bg-red-600 px-3 py-1 text-[16px] font-semibold text-white hover:bg-red-700 disabled:opacity-50"
+                          >
+                            {deletingId === user.id ? text.deleting : text.delete}
+                          </button>
+                        ) : null}
                       </td>
                     </tr>
 
