@@ -26,10 +26,10 @@ export default function EmployeeSidebar() {
               </Link>
               <Link
                 href="/employee/parcels/new"
-                className={`block py-2.5 px-3 text-[15px] font-medium transition-colors rounded-lg border-l-2 ${
+                className={`block py-2.5 px-3 text-[15px] bg-[#3a5bff] font-medium transition-colors rounded-lg border-l-2 ${
                   pathname === '/employee/parcels/new'
-                    ? 'border-emerald-700 bg-emerald-200 text-emerald-950'
-                    : 'border-transparent text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                    ? 'border-emerald-700 bg-[#3a5bff] text-white'
+                    : 'border-transparent text-white hover:bg-[#3a5bff] hover:text-white'
                 }`}
               >
                 {t('addParcel')}
@@ -55,10 +55,10 @@ export default function EmployeeSidebar() {
               </Link>
               <Link
                 href="/employee/parcels/new"
-                className={`block py-2.5 px-3 text-[15px] font-medium transition-colors rounded-lg border-l-2 ${
+                className={`block py-2.5 px-3 text-[15px] bg-[#3a5bff] font-medium transition-colors rounded-lg border-l-2 ${
                   pathname === '/employee/parcels/new'
-                    ? 'border-emerald-700 bg-emerald-200 text-emerald-950'
-                    : 'border-transparent text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                    ? 'border-emerald-700 bg-[#3a5bff] text-white'
+                    : 'border-transparent text-white hover:bg-[#3a5bff] hover:text-white'
                 }`}
               >
                 {t('addParcel')}
