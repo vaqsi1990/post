@@ -1,9 +1,8 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import { useCallback, useEffect, useMemo, useState, Suspense } from 'react';
+import { useCallback, useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
-import { useTranslations } from 'next-intl';
 import { formatOriginCountryLabel } from '@/lib/formatOriginCountry';
 
 type ParcelResult = {
@@ -18,21 +17,18 @@ type ParcelResult = {
   tracking: { status: string; location: string | null; description: string | null; createdAt: string }[];
 };
 
+/** ამ გვერდს არ აქვს NextIntlClientProvider (არა [locale] მარშრუტი) — ტექსტები ka.json trackingPage.status-თან ერთნაირი */
+const STATUS_LABELS: Record<string, string> = {
+  pending: 'საწყობი',
+  in_transit: 'გზაში',
+  arrived: 'ჩამოსული',
+  region: 'რეგიონში',
+  ready_for_pickup: 'მისაღებად მზად',
+  delivered: 'გატანილი',
+  cancelled: 'გაუქმებული',
+};
+
 function TrackingContent() {
-  const tStatus = useTranslations('trackingPage.status');
-  const statusLabels = useMemo(
-    () =>
-      ({
-        pending: tStatus('pending'),
-        in_transit: tStatus('in_transit'),
-        arrived: tStatus('arrived'),
-        region: tStatus('region'),
-        ready_for_pickup: tStatus('ready_for_pickup'),
-        delivered: tStatus('delivered'),
-        cancelled: tStatus('cancelled'),
-      }) as Record<string, string>,
-    [tStatus],
-  );
   const searchParams = useSearchParams();
   const code = searchParams.get('code') ?? '';
   const [result, setResult] = useState<ParcelResult | null>(null);
@@ -104,7 +100,7 @@ function TrackingContent() {
                   <span className="font-medium text-black">{result.trackingNumber}</span>
                   <span className="text-black">სტატუსი</span>
                   <span className="font-medium text-black">
-                    {statusLabels[result.status] || result.status}
+                    {STATUS_LABELS[result.status] || result.status}
                   </span>
                   <span className="text-black">წონა</span>
                   <span className="text-black">{result.weight} kg</span>
@@ -124,7 +120,7 @@ function TrackingContent() {
                         className="flex gap-2 rounded border border-gray-100 bg-white px-3 py-2 text-[14px]"
                       >
                         <span className="font-medium text-black">
-                          {statusLabels[t.status] || t.status}
+                          {STATUS_LABELS[t.status] || t.status}
                         </span>
                         {t.location && <span className="text-gray-600">{t.location}</span>}
                         {t.description && <span className="text-black">{t.description}</span>}
