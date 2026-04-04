@@ -6,8 +6,11 @@ import { GB, US, CN, IT, GR, ES, FR, DE, TR } from 'country-flag-icons/react/3x2
 import { useTranslations } from 'next-intl';
 import { parcelOriginLabelKey } from '@/lib/parcelOriginLabels';
 import { REGISTRATION_CITIES } from '@/lib/georgianCities';
-
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+import {
+  ADMIN_CREATE_PARCEL_MAX_FILE_BYTES,
+  buildAdminCreateParcelFormSchema,
+  issuesToFieldErrors,
+} from '@/lib/adminCreateParcelFormSchema';
 
 type FlagComponent = (props: { title?: string; className?: string }) => React.ReactNode;
 
@@ -110,6 +113,7 @@ export default function AdminCreateParcelForm({
   const [file, setFile] = useState<File | null>(null);
 
   const [error, setError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -203,6 +207,41 @@ export default function AdminCreateParcelForm({
     return { shippingAmount, pricePerKg: match.pricePerKg };
   }, [originCountry, weight, tariffs]);
 
+  const parcelFormSchema = useMemo(
+    () =>
+      buildAdminCreateParcelFormSchema(
+        {
+          userEmailRequired: t('userEmailRequired'),
+          userEmailInvalid: t('userEmailInvalid'),
+          customerNameRequired: t('customerNameRequired'),
+          trackingNumberRequired: t('trackingNumberRequired'),
+          priceInvalid: t('priceInvalid'),
+          onlineShopRequired: t('onlineShopRequired'),
+          quantityInvalid: t('quantityInvalid'),
+          originCountryRequired: t('originCountryRequired'),
+          weightInvalid: t('weightInvalid'),
+          descriptionRequired: t('descriptionRequired'),
+          fileRequired: tDeclaration('fileRequired'),
+          onlyPdf: tDeclaration('onlyPdf'),
+          maxFileSize: tDeclaration('maxSize'),
+        },
+        {
+          allowedOriginCodes: allowedOriginCountryCodes,
+          getFile: () => file,
+        },
+      ),
+    [t, tDeclaration, allowedOriginCountryCodes, file],
+  );
+
+  const clearField = (key: string) => {
+    setFieldErrors((prev) => {
+      if (prev[key] === undefined) return prev;
+      const next = { ...prev };
+      delete next[key];
+      return next;
+    });
+  };
+
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (countryRef.current && !countryRef.current.contains(e.target as Node)) {
@@ -223,74 +262,48 @@ export default function AdminCreateParcelForm({
     e.preventDefault();
     setError(null);
     setSuccess(null);
+    setFieldErrors({});
 
-    if (!userEmail.trim()) {
-      setError(t('userEmailRequired'));
+    const parsed = parcelFormSchema.safeParse({
+      userEmail,
+      customerName,
+      trackingNumber,
+      price,
+      onlineShop,
+      quantity,
+      originCountry,
+      city,
+      address,
+      phone,
+      comment,
+      weight,
+      description,
+    });
+
+    if (!parsed.success) {
+      setFieldErrors(issuesToFieldErrors(parsed.error.issues));
       return;
     }
 
-    if (!originCountry.trim()) {
-      setError(t('originCountryRequired'));
-      return;
-    }
-
-    if (!description.trim()) {
-      setError(t('descriptionRequired'));
-      return;
-    }
-
-    const priceNum = parseFloat(price.replace(',', '.'));
-    const quantityNum = parseInt(quantity, 10);
-    const w = weight ? parseFloat(weight.replace(',', '.')) : NaN;
-
-    if (Number.isNaN(priceNum) || priceNum < 0) {
-      setError(t('priceInvalid'));
-      return;
-    }
-
-    if (!Number.isInteger(quantityNum) || quantityNum < 1) {
-      setError(t('quantityInvalid'));
-      return;
-    }
-
-    if (Number.isNaN(w) || w <= 0) {
-      setError(t('weightInvalid'));
-      return;
-    }
-
-    const needsPdf = priceNum >= 296;
-    if (needsPdf && !file) {
-      setError(tDeclaration('fileRequired'));
-      return;
-    }
-    if (file) {
-      if (file.type !== 'application/pdf') {
-        setError(tDeclaration('onlyPdf'));
-        return;
-      }
-      if (file.size > MAX_FILE_SIZE) {
-        setError(tDeclaration('maxSize'));
-        return;
-      }
-    }
+    const d = parsed.data;
 
     setLoading(true);
 
     try {
       const formData = new FormData();
-      formData.append('userEmail', userEmail.trim());
-      formData.append('customerName', customerName.trim());
-      formData.append('trackingNumber', trackingNumber.trim());
-      formData.append('price', String(priceNum));
-      formData.append('onlineShop', onlineShop.trim());
-      formData.append('quantity', String(quantityNum));
-      formData.append('originCountry', originCountry.trim());
-      if (city.trim()) formData.append('city', city.trim());
-      if (address.trim()) formData.append('address', address.trim());
-      if (phone.trim()) formData.append('phone', phone.trim());
-      if (comment.trim()) formData.append('comment', comment.trim());
-      formData.append('weight', String(w));
-      formData.append('description', description.trim());
+      formData.append('userEmail', d.userEmail);
+      formData.append('customerName', d.customerName);
+      formData.append('trackingNumber', d.trackingNumber);
+      formData.append('price', String(d.price));
+      formData.append('onlineShop', d.onlineShop);
+      formData.append('quantity', String(d.quantity));
+      formData.append('originCountry', d.originCountry);
+      if (d.city) formData.append('city', d.city);
+      if (d.address) formData.append('address', d.address);
+      if (d.phone) formData.append('phone', d.phone);
+      if (d.comment) formData.append('comment', d.comment);
+      formData.append('weight', String(d.weight));
+      formData.append('description', d.description);
       if (file) formData.append('file', file);
 
       const res = await fetch(postUrl, {
@@ -320,13 +333,22 @@ export default function AdminCreateParcelForm({
     }
   }
 
+  const fieldRing = (name: string) =>
+    fieldErrors[name] ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-gray-400';
+
+  function FieldError({ name }: { name: string }) {
+    const msg = fieldErrors[name];
+    if (!msg) return null;
+    return <p className="mt-1 text-[13px] text-red-600">{msg}</p>;
+  }
+
   return (
     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
       <h2 className="mb-4 text-[18px] md:text-[20px] font-semibold text-black">
         {t('title')}
       </h2>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4" noValidate>
         {error && (
           <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-[15px] text-red-800">
             {error}
@@ -345,12 +367,17 @@ export default function AdminCreateParcelForm({
             </label>
             <input
               type="email"
-              required
+              autoComplete="email"
               value={userEmail}
-              onChange={(e) => setUserEmail(e.target.value)}
-              className="w-full placeholder:font-normal placeholder:text-black placeholder:text-[14px] rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
+              onChange={(e) => {
+                clearField('userEmail');
+                setUserEmail(e.target.value);
+              }}
+              aria-invalid={Boolean(fieldErrors.userEmail)}
+              className={`w-full placeholder:font-normal placeholder:text-black placeholder:text-[14px] rounded-lg border bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 ${fieldRing('userEmail')}`}
               placeholder={t('userEmailPlaceholder')}
             />
+            <FieldError name="userEmail" />
             <p className="mt-1 text-[13px] text-gray-600">{t('userEmailRegisteredOnlyHint')}</p>
           </div>
 
@@ -361,8 +388,11 @@ export default function AdminCreateParcelForm({
             <input
               type="text"
               value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              className="w-full placeholder:font-normal placeholder:text-black placeholder:text-[14px] rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
+              onChange={(e) => {
+                clearField('phone');
+                setPhone(e.target.value);
+              }}
+              className={`w-full placeholder:font-normal placeholder:text-black placeholder:text-[14px] rounded-lg border bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 ${fieldRing('phone')}`}
               placeholder={t('phonePlaceholder')}
             />
           </div>
@@ -373,12 +403,16 @@ export default function AdminCreateParcelForm({
             </label>
             <input
               type="text"
-              required
               value={customerName}
-              onChange={(e) => setCustomerName(e.target.value)}
-              className="w-full placeholder:font-normal placeholder:text-black placeholder:text-[14px] rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
+              onChange={(e) => {
+                clearField('customerName');
+                setCustomerName(e.target.value);
+              }}
+              aria-invalid={Boolean(fieldErrors.customerName)}
+              className={`w-full placeholder:font-normal placeholder:text-black placeholder:text-[14px] rounded-lg border bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 ${fieldRing('customerName')}`}
               placeholder={t('customerNamePlaceholder')}
             />
+            <FieldError name="customerName" />
           </div>
 
           <div>
@@ -387,12 +421,16 @@ export default function AdminCreateParcelForm({
             </label>
             <input
               type="text"
-              required
               value={trackingNumber}
-              onChange={(e) => setTrackingNumber(e.target.value)}
-              className="w-full placeholder:font-normal placeholder:text-black placeholder:text-[14px] rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
+              onChange={(e) => {
+                clearField('trackingNumber');
+                setTrackingNumber(e.target.value);
+              }}
+              aria-invalid={Boolean(fieldErrors.trackingNumber)}
+              className={`w-full placeholder:font-normal placeholder:text-black placeholder:text-[14px] rounded-lg border bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 ${fieldRing('trackingNumber')}`}
               placeholder={t('trackingPlaceholder')}
             />
+            <FieldError name="trackingNumber" />
           </div>
 
           <div>
@@ -402,12 +440,16 @@ export default function AdminCreateParcelForm({
             <input
               type="text"
               inputMode="decimal"
-              required
               value={price}
-              onChange={(e) => setPrice(e.target.value)}
-              className="w-full placeholder:font-normal placeholder:text-black placeholder:text-[14px] rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
+              onChange={(e) => {
+                clearField('price');
+                setPrice(e.target.value);
+              }}
+              aria-invalid={Boolean(fieldErrors.price)}
+              className={`w-full placeholder:font-normal placeholder:text-black placeholder:text-[14px] rounded-lg border bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 ${fieldRing('price')}`}
               placeholder={t('pricePlaceholder')}
             />
+            <FieldError name="price" />
           
           </div>
 
@@ -417,12 +459,16 @@ export default function AdminCreateParcelForm({
             </label>
             <input
               type="text"
-              required
               value={onlineShop}
-              onChange={(e) => setOnlineShop(e.target.value)}
-              className="w-full placeholder:font-normal placeholder:text-black placeholder:text-[14px] rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
+              onChange={(e) => {
+                clearField('onlineShop');
+                setOnlineShop(e.target.value);
+              }}
+              aria-invalid={Boolean(fieldErrors.onlineShop)}
+              className={`w-full placeholder:font-normal placeholder:text-black placeholder:text-[14px] rounded-lg border bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 ${fieldRing('onlineShop')}`}
               placeholder={t('onlineShopPlaceholder')}
             />
+            <FieldError name="onlineShop" />
           </div>
 
           <div>
@@ -433,8 +479,11 @@ export default function AdminCreateParcelForm({
             <select
               id="admin-parcel-city"
               value={city}
-              onChange={(e) => setCity(e.target.value)}
-              className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
+              onChange={(e) => {
+                clearField('city');
+                setCity(e.target.value);
+              }}
+              className={`w-full rounded-lg border bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 ${fieldRing('city')}`}
             >
               <option value="">{tRegister('citySelectPlaceholder')}</option>
               {REGISTRATION_CITIES.map(({ id, nameKa }) => (
@@ -452,8 +501,11 @@ export default function AdminCreateParcelForm({
             <input
               type="text"
               value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              className="w-full placeholder:font-normal placeholder:text-black placeholder:text-[14px] rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
+              onChange={(e) => {
+                clearField('address');
+                setAddress(e.target.value);
+              }}
+              className={`w-full placeholder:font-normal placeholder:text-black placeholder:text-[14px] rounded-lg border bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 ${fieldRing('address')}`}
               placeholder={t('addressPlaceholder')}
             />
           </div>
@@ -464,32 +516,25 @@ export default function AdminCreateParcelForm({
             </label>
             <input
               type="number"
-              min={1}
-              required
               value={quantity}
-              onChange={(e) => setQuantity(e.target.value)}
-              className="w-full placeholder:font-normal placeholder:text-black placeholder:text-[14px] rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
+              onChange={(e) => {
+                clearField('quantity');
+                setQuantity(e.target.value);
+              }}
+              aria-invalid={Boolean(fieldErrors.quantity)}
+              className={`w-full placeholder:font-normal placeholder:text-black placeholder:text-[14px] rounded-lg border bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 ${fieldRing('quantity')}`}
             />
+            <FieldError name="quantity" />
           </div>
 
           <div ref={countryRef} className="relative">
             <label className="mb-1 block text-[15px] font-semibold text-black">
               {t('originCountry')}
             </label>
-            {/* hidden real input for required validation */}
-            <input
-              type="text"
-              readOnly
-              required
-              value={originCountry}
-              className="hidden"
-              tabIndex={-1}
-              aria-hidden
-            />
             <button
               type="button"
               onClick={() => setCountryOpen((o) => !o)}
-              className="flex w-full items-center gap-3 rounded-lg placeholder:font-normal placeholder:text-black placeholder:text-[14px] border border-gray-300 bg-white px-3 py-2.5 text-left text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
+              className={`flex w-full items-center gap-3 rounded-lg placeholder:font-normal placeholder:text-black placeholder:text-[14px] border bg-white px-3 py-2.5 text-left text-[15px] text-black focus:outline-none focus:ring-2 ${fieldRing('originCountry')}`}
               aria-expanded={countryOpen}
               aria-haspopup="listbox"
             >
@@ -524,6 +569,7 @@ export default function AdminCreateParcelForm({
                       role="option"
                       aria-selected={originCountry === code}
                       onClick={() => {
+                        clearField('originCountry');
                         setOriginCountry(code);
                         setCountryOpen(false);
                       }}
@@ -541,6 +587,7 @@ export default function AdminCreateParcelForm({
                 })}
               </ul>
             )}
+            <FieldError name="originCountry" />
           </div>
 
           <div>
@@ -550,12 +597,16 @@ export default function AdminCreateParcelForm({
             <input
               type="text"
               inputMode="decimal"
-              required
               value={weight}
-              onChange={(e) => setWeight(e.target.value)}
-              className="w-full placeholder:font-normal placeholder:text-black placeholder:text-[14px] rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
+              onChange={(e) => {
+                clearField('weight');
+                setWeight(e.target.value);
+              }}
+              aria-invalid={Boolean(fieldErrors.weight)}
+              className={`w-full placeholder:font-normal placeholder:text-black placeholder:text-[14px] rounded-lg border bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 ${fieldRing('weight')}`}
               placeholder={t('weightPlaceholder')}
             />
+            <FieldError name="weight" />
             {calculated != null && (
               <p className="mt-1 text-[14px] text-black">
                 {t('shippingAmountLabel')}: {calculated.shippingAmount.toFixed(2)} GEL{' '}
@@ -576,15 +627,16 @@ export default function AdminCreateParcelForm({
             <input
               id="admin-parcel-description"
               type="text"
-              required
               value={description}
               onFocus={() => setDescriptionOpen(true)}
               onClick={() => setDescriptionOpen(true)}
               onChange={(e) => {
+                clearField('description');
                 setDescription(e.target.value);
                 setDescriptionOpen(true);
               }}
-              className="w-full rounded-lg placeholder:font-normal placeholder:text-black placeholder:text-[14px] border border-gray-300 bg-white px-3 py-2.5 pr-10 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
+              aria-invalid={Boolean(fieldErrors.description)}
+              className={`w-full rounded-lg placeholder:font-normal placeholder:text-black placeholder:text-[14px] border bg-white px-3 py-2.5 pr-10 text-[15px] text-black focus:outline-none focus:ring-2 ${fieldRing('description')}`}
               role="combobox"
               aria-autocomplete="list"
               aria-expanded={descriptionOpen}
@@ -617,6 +669,7 @@ export default function AdminCreateParcelForm({
                       aria-selected={description === opt}
                       onMouseDown={(e) => e.preventDefault()}
                       onClick={() => {
+                        clearField('description');
                         setDescription(opt);
                         setDescriptionOpen(false);
                       }}
@@ -629,6 +682,7 @@ export default function AdminCreateParcelForm({
               </ul>
             )}
           </div>
+          <FieldError name="description" />
         </div>
 
         <div>
@@ -650,20 +704,27 @@ export default function AdminCreateParcelForm({
             id="admin-declaration-file"
             type="file"
             accept="application/pdf"
-            required={requiresInvoicePdf}
             onChange={(e) => {
+              clearField('file');
               const f = e.target.files?.[0] ?? null;
               if (f && f.type !== 'application/pdf') {
-                setError(tDeclaration('onlyPdf'));
+                setFieldErrors((prev) => ({ ...prev, file: tDeclaration('onlyPdf') }));
                 setFile(null);
                 e.target.value = '';
                 return;
               }
-              setError(null);
+              if (f && f.size > ADMIN_CREATE_PARCEL_MAX_FILE_BYTES) {
+                setFieldErrors((prev) => ({ ...prev, file: tDeclaration('maxSize') }));
+                setFile(null);
+                e.target.value = '';
+                return;
+              }
               setFile(f);
             }}
-            className="block w-full text-[15px] text-black file:mr-3 file:rounded-md file:border file:border-gray-300 file:bg-white file:px-3 file:py-1.5 file:text-[15px] file:font-medium file:text-black hover:file:bg-gray-50"
+            aria-invalid={Boolean(fieldErrors.file)}
+            className={`block w-full rounded-lg border px-3 py-2 text-[15px] text-black file:mr-3 file:rounded-md file:border file:border-gray-300 file:bg-white file:px-3 file:py-1.5 file:text-[15px] file:font-medium file:text-black hover:file:bg-gray-50 ${fieldRing('file')}`}
           />
+          <FieldError name="file" />
           <p className="mt-1 text-[14px] font-medium text-black">{tDeclaration('maxFileSize')}</p>
         </div>
 

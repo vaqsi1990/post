@@ -6,18 +6,9 @@ import { getTranslations } from 'next-intl/server';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import EmployeeShell from './components/EmployeeShell';
+import EmployeeMyParcelsTable from './components/EmployeeMyParcelsTable';
 
 export const dynamic = 'force-dynamic';
-
-const STATUS_KEYS: Record<string, string> = {
-  pending: 'statusPending',
-  in_transit: 'statusInTransit',
-  arrived: 'statusArrived',
-  region: 'statusRegion',
-  delivered: 'statusDelivered',
-  cancelled: 'statusCancelled',
-  ready_for_pickup: 'statusReadyForPickup',
-};
 
 export default async function EmployeeHomePage() {
   const session = await getServerSession(authOptions);
@@ -62,43 +53,19 @@ export default async function EmployeeHomePage() {
 
         <section className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
           <h2 className="text-[17px] font-semibold text-black">{t('myParcelsTitle')}</h2>
-          {parcels.length === 0 ? (
-            <p className="mt-4 text-[15px] text-gray-600">{t('myParcelsEmpty')}</p>
-          ) : (
-            <div className="mt-4 overflow-x-auto">
-              <table className="w-full min-w-[640px] border-collapse text-left text-[14px] text-black">
-                <thead>
-                  <tr className="border-b border-gray-200 text-[13px] font-semibold text-gray-700">
-                    <th className="py-2 pr-3">{t('colTracking')}</th>
-                    <th className="py-2 pr-3">{t('colCustomerEmail')}</th>
-                    <th className="py-2 pr-3">{t('colCustomerName')}</th>
-                    <th className="py-2 pr-3">{t('colStatus')}</th>
-                    <th className="py-2">{t('colDate')}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {parcels.map((p) => {
-                    const sk = STATUS_KEYS[p.status];
-                    const statusLabel = sk ? t(sk as 'statusPending') : p.status;
-                    return (
-                      <tr key={p.id} className="border-b border-gray-100">
-                        <td className="py-2.5 pr-3 font-medium">{p.trackingNumber}</td>
-                        <td className="py-2.5 pr-3 break-all">{p.user.email}</td>
-                        <td className="py-2.5 pr-3">{p.customerName}</td>
-                        <td className="py-2.5 pr-3">{statusLabel}</td>
-                        <td className="py-2.5 whitespace-nowrap text-gray-700">
-                          {new Date(p.createdAt).toLocaleString(dateLocale, {
-                            dateStyle: 'short',
-                            timeStyle: 'short',
-                          })}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          )}
+          <EmployeeMyParcelsTable
+            rows={parcels.map((p) => ({
+              id: p.id,
+              status: p.status,
+              trackingNumber: p.trackingNumber,
+              customerEmail: p.user.email,
+              customerName: p.customerName,
+              dateFormatted: new Date(p.createdAt).toLocaleString(dateLocale, {
+                dateStyle: 'short',
+                timeStyle: 'short',
+              }),
+            }))}
+          />
         </section>
       </div>
     </EmployeeShell>
