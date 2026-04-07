@@ -6,6 +6,7 @@ import prisma from '@/lib/prisma';
 import { recordParcelTrackingEvent } from '@/lib/parcelTrackingLog';
 import { utapi } from '@/lib/uploadthing';
 import { adminParcelInclude } from '@/lib/adminParcelInclude';
+import { convertToGel, fetchNbgRates } from '@/lib/nbgRates';
 
 export const dynamic = 'force-dynamic';
 
@@ -31,6 +32,18 @@ const FORM_TO_TARIFF_COUNTRY: Record<string, string> = {
   fr: 'FR',
   de: 'DE',
   tr: 'TR',
+};
+
+const CURRENCY_BY_ORIGIN_ISO: Record<string, string> = {
+  GB: 'GBP',
+  US: 'USD',
+  CN: 'CNY',
+  IT: 'EUR',
+  GR: 'EUR',
+  ES: 'EUR',
+  FR: 'EUR',
+  DE: 'EUR',
+  TR: 'TRY',
 };
 
 const optionalNumberFromString = (emptyMessage: string) =>
@@ -240,7 +253,18 @@ export async function POST(request: NextRequest) {
           { status: 400 }
         );
       }
-      shippingAmount = Math.round(parsed.weight * tariff.pricePerKg * 100) / 100;
+      const amount = Math.round(parsed.weight * tariff.pricePerKg * 100) / 100;
+      const currency =
+        (tariff.currency || CURRENCY_BY_ORIGIN_ISO[tariffCountry] || 'GEL').toUpperCase();
+      const nbgRates = await fetchNbgRates().catch(() => null);
+      const converted =
+        nbgRates && currency
+          ? convertToGel(nbgRates, amount, currency)
+          : null;
+      shippingAmount =
+        converted != null
+          ? Math.round(converted * 100) / 100
+          : amount;
     }
 
     const user = await prisma.user.findUnique({

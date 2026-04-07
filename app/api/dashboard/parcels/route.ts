@@ -6,6 +6,7 @@ import prisma from '../../../../lib/prisma';
 import { recordParcelTrackingEvent } from '../../../../lib/parcelTrackingLog';
 import { resolveTariffForParcel } from '../../../../lib/tariffLookup';
 import { utapi } from '../../../../lib/uploadthing';
+import { convertToGel, fetchNbgRates } from '../../../../lib/nbgRates';
 
 export const dynamic = 'force-dynamic';
 
@@ -145,7 +146,15 @@ export async function POST(request: NextRequest) {
           { status: 400 },
         );
       }
-      shippingAmount = resolved.shippingTotal;
+      const nbgRates = await fetchNbgRates().catch(() => null);
+      const converted =
+        nbgRates && resolved.currency
+          ? convertToGel(nbgRates, resolved.shippingTotal, resolved.currency)
+          : null;
+      shippingAmount =
+        converted != null
+          ? Math.round(converted * 100) / 100
+          : resolved.shippingTotal;
     }
 
     const userId = session.user.id;

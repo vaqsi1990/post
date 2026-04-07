@@ -63,6 +63,18 @@ const FORM_TO_TARIFF_COUNTRY: Record<string, string> = {
   tr: 'TR',
 };
 
+const CURRENCY_BY_ORIGIN_ISO: Record<string, string> = {
+  GB: 'GBP',
+  US: 'USD',
+  CN: 'CNY',
+  IT: 'EUR',
+  GR: 'EUR',
+  ES: 'EUR',
+  FR: 'EUR',
+  DE: 'EUR',
+  TR: 'TRY',
+};
+
 type TariffRow = {
   id: string;
   originCountry: string;
@@ -72,6 +84,11 @@ type TariffRow = {
   pricePerKg: number;
   currency: string;
   isActive: boolean;
+};
+
+type NbgRatesResponse = {
+  rates: Record<string, number | null>;
+  fetchedAt: string;
 };
 
 type AdminCreateParcelFormProps = {
@@ -121,6 +138,7 @@ export default function AdminCreateParcelForm({
   const countryRef = useRef<HTMLDivElement | null>(null);
   const descriptionRef = useRef<HTMLDivElement | null>(null);
   const [tariffs, setTariffs] = useState<TariffRow[]>([]);
+  const [nbgRates, setNbgRates] = useState<NbgRatesResponse | null>(null);
 
   const descriptionOptions = useMemo(() => {
     const raw = tParcels.raw('descriptionOptions');
@@ -183,6 +201,26 @@ export default function AdminCreateParcelForm({
     };
   }, [tariffsUrl]);
 
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch('/api/nbg/rates?codes=GBP,USD,CNY,EUR,TRY', {
+          cache: 'no-store',
+          headers: { 'Cache-Control': 'no-cache' },
+        });
+        if (!res.ok || cancelled) return;
+        const data = (await res.json()) as NbgRatesResponse;
+        if (!cancelled && data?.rates) setNbgRates(data);
+      } catch {
+        if (!cancelled) setNbgRates(null);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const calculated = useMemo(() => {
     if (!originCountry.trim() || !weight.trim()) return null;
     const w = parseFloat(weight.replace(',', '.'));
@@ -203,9 +241,16 @@ export default function AdminCreateParcelForm({
       .sort((a, b) => b.minWeight - a.minWeight)[0];
 
     if (!match) return null;
-    const shippingAmount = Math.round(w * match.pricePerKg * 100) / 100;
-    return { shippingAmount, pricePerKg: match.pricePerKg };
-  }, [originCountry, weight, tariffs]);
+    const currency =
+      (CURRENCY_BY_ORIGIN_ISO[dbCountry] ?? match.currency ?? 'GEL').toUpperCase();
+    const gelPer1Unit = nbgRates?.rates?.[currency] ?? null;
+    const pricePerKgGel =
+      gelPer1Unit != null
+        ? Math.round(match.pricePerKg * gelPer1Unit * 100) / 100
+        : match.pricePerKg;
+    const shippingAmount = Math.round(w * pricePerKgGel * 100) / 100;
+    return { shippingAmount, pricePerKgGel };
+  }, [originCountry, weight, tariffs, nbgRates]);
 
   const parcelFormSchema = useMemo(
     () =>
@@ -610,7 +655,7 @@ export default function AdminCreateParcelForm({
             {calculated != null && (
               <p className="mt-1 text-[14px] text-black">
                 {t('shippingAmountLabel')}: {calculated.shippingAmount.toFixed(2)} GEL{' '}
-                <span className="text-black">({calculated.pricePerKg.toFixed(2)} GEL/kg)</span>
+                <span className="text-black">({calculated.pricePerKgGel.toFixed(2)} GEL/kg)</span>
               </p>
             )}
           </div>
