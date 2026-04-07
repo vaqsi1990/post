@@ -11,6 +11,7 @@ type Parcel = {
   status: string;
   price: number;
   shippingAmount?: number | null;
+  shippingFormula?: string | null;
   currency: string;
   weight: number | null;
   originCountry: string | null;
@@ -374,8 +375,11 @@ export default function ParcelsTable({
                   <>
                     <span className="text-black">{t.amount}</span>
                     <span className="text-black">
-                      {(parcel.shippingAmount ?? parcel.price).toFixed(2)}{' '}
-                      {parcel.currency || 'GEL'}
+                      {parcel.shippingAmount != null
+                        ? `${parcel.shippingAmount.toFixed(2)} GEL${
+                            parcel.shippingFormula ? ` (${parcel.shippingFormula})` : ''
+                          }`
+                        : '—'}
                     </span>
                   </>
                 ) : null}
@@ -620,8 +624,11 @@ export default function ParcelsTable({
                             <>
                               <span className="text-black">{t.amount}</span>
                               <span>
-                                {(parcel.shippingAmount ?? parcel.price).toFixed(2)}{' '}
-                                {parcel.currency || 'GEL'}
+                                {parcel.shippingAmount != null
+                                  ? `${parcel.shippingAmount.toFixed(2)} GEL${
+                                      parcel.shippingFormula ? ` (${parcel.shippingFormula})` : ''
+                                    }`
+                                  : '—'}
                               </span>
                             </>
                           ) : null}

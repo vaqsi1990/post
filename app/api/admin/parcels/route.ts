@@ -7,6 +7,8 @@ import { recordParcelTrackingEvent } from '@/lib/parcelTrackingLog';
 import { utapi } from '@/lib/uploadthing';
 import { adminParcelInclude } from '@/lib/adminParcelInclude';
 import { convertToGel, fetchNbgRates } from '@/lib/nbgRates';
+import { computeShippingGelBreakdown } from '@/lib/parcelShippingGel';
+import type { TariffPick } from '@/lib/tariffLookup';
 
 export const dynamic = 'force-dynamic';
 
@@ -119,18 +121,44 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid status' }, { status: 400 });
   }
 
-  const parcels = await prisma.parcel.findMany({
-    where: { status },
-    orderBy: { createdAt: 'desc' },
-    include: adminParcelInclude,
-  });
+  const [parcels, tariffs, nbgRates] = await Promise.all([
+    prisma.parcel.findMany({
+      where: { status },
+      orderBy: { createdAt: 'desc' },
+      include: adminParcelInclude,
+    }),
+    prisma.tariff.findMany({
+      where: { isActive: true, destinationCountry: 'GE' },
+      select: {
+        originCountry: true,
+        destinationCountry: true,
+        minWeight: true,
+        maxWeight: true,
+        pricePerKg: true,
+        currency: true,
+        isActive: true,
+      },
+    }) as Promise<TariffPick[]>,
+    fetchNbgRates().catch(() => null),
+  ]);
 
   return NextResponse.json(
     {
-      parcels: parcels.map((p) => ({
-        ...p,
-        createdAt: new Date(p.createdAt).toLocaleDateString('ka-GE'),
-      })),
+      parcels: parcels.map((p) => {
+        const breakdown = computeShippingGelBreakdown(
+          { originCountry: p.originCountry, weight: p.weight },
+          tariffs,
+          nbgRates,
+        );
+        return {
+          ...p,
+          createdAt: new Date(p.createdAt).toLocaleDateString('ka-GE'),
+          shippingAmount:
+            breakdown != null ? breakdown.amountGel : p.shippingAmount,
+          shippingFormula:
+            breakdown != null ? breakdown.formula : null,
+        };
+      }),
     },
     {
       headers: {
