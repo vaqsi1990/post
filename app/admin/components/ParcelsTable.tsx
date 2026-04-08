@@ -73,7 +73,8 @@ export default function ParcelsTable({
   const isEn = locale === 'en';
   const isRu = locale === 'ru';
   const t = {
-    pending: isRu ? 'Склад' : isEn ? 'Warehouse' : 'საწყობი',
+    pending: isRu ? 'Склад' : isEn ? 'Warehouse' : 'შემოსული',
+    inWarehouse: isRu ? 'На складе' : isEn ? 'In warehouse' : 'საწყობში',
     inTransit: isRu ? 'В пути' : isEn ? 'In transit' : 'გზაში',
     arrived: isRu ? 'Прибывшие' : isEn ? 'Arrived' : 'ჩამოსული',
     region: isRu ? 'Регион' : isEn ? 'Region' : 'რეგიონი',
@@ -120,6 +121,7 @@ export default function ParcelsTable({
   } as const;
   const statusOptions = [
     { value: 'pending', label: t.pending },
+    { value: 'in_warehouse', label: t.inWarehouse },
     { value: 'in_transit', label: t.inTransit },
     { value: 'arrived', label: t.arrived },
     { value: 'region', label: t.region },

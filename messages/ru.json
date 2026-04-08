@@ -46,7 +46,8 @@
   },
   "adminsidebar": {
     "users": "Пользователи",
-    "incoming": "На складе",
+    "incoming": "Поступившие",
+    "inWarehouse": "На складе",
     "inTransit": "В пути",
     "warehouse": "Прибывшие",
     "regions": "Регионы",
@@ -213,7 +214,8 @@
       "network": "Ошибка сети — попробуйте снова"
     },
     "status": {
-      "pending": "Склад",
+      "pending": "Поступившие",
+      "in_warehouse": "На складе",
       "in_transit": "В пути",
       "arrived": "Прибыла",
       "region": "В регионе",

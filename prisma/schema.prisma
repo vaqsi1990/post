@@ -102,11 +102,22 @@ model Address {
 }
 
 // Parcel model for packages/shipments
+enum ParcelStatus {
+  pending
+  in_warehouse
+  in_transit
+  arrived
+  region
+  ready_for_pickup
+  delivered
+  cancelled
+}
+
 model Parcel {
   id              String   @id @default(cuid())
   userId          String
   trackingNumber  String   @unique
-  status          String   @default("pending") // "pending" | "in_transit" | "arrived" | "ready_for_pickup" | "delivered" | "cancelled"
+  status          ParcelStatus   @default(pending)
 
   // Required for creation
   customerName    String   // მომხმარებლის სახელი

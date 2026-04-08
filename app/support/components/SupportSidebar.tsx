@@ -18,6 +18,7 @@ export default function SupportSidebar() {
 
       // Parcels status lists (support should match admin UX)
       { label: tAdmin('incoming'), href: '/support/incoming' },
+      { label: tAdmin('inWarehouse'), href: '/support/in-warehouse' },
       { label: tAdmin('inTransit'), href: '/support/in-transit' },
       { label: tAdmin('warehouse'), href: '/support/warehouse' },
       { label: tAdmin('regions'), href: '/support/regions' },
@@ -32,10 +33,7 @@ export default function SupportSidebar() {
   );
 
   const isActiveHref = (href: string) => pathname === href || pathname.endsWith(href);
-  const currentItem = useMemo(
-    () => items.find((i) => isActiveHref(i.href)) ?? items[0],
-    [items, pathname],
-  );
+  const currentItem = items.find((i) => isActiveHref(i.href)) ?? items[0];
 
   return (
     <div className="w-full lg:w-52 shrink-0 min-w-0">

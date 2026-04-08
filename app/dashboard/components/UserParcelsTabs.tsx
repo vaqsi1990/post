@@ -61,6 +61,7 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
     () =>
       [
         { value: 'pending', label: tStatus('pending') },
+        { value: 'in_warehouse', label: tStatus('in_warehouse') },
         { value: 'in_transit', label: tStatus('in_transit') },
         { value: 'arrived', label: tStatus('arrived') },
         { value: 'delivered', label: tStatus('delivered') },

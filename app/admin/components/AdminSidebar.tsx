@@ -29,6 +29,7 @@ type ChatMessage = {
 type SectionCounts = {
   users: number;
   incoming: number;
+  inWarehouse: number;
   inTransit: number;
   warehouse: number;
   regions: number;
@@ -40,6 +41,7 @@ type SectionCounts = {
 const COUNT_KEY_BY_HREF: Record<string, keyof SectionCounts> = {
   '/admin/users': 'users',
   '/admin/incoming': 'incoming',
+  '/admin/in-warehouse': 'inWarehouse',
   '/admin/in-transit': 'inTransit',
   '/admin/warehouse': 'warehouse',
   '/admin/regions': 'regions',
@@ -56,6 +58,7 @@ export default function AdminSidebar() {
   const items: AdminNavItem[] = [
     { label: t('users'), href: '/admin/users' },
     { label: t('incoming'), href: '/admin/incoming' },
+    { label: t('inWarehouse'), href: '/admin/in-warehouse' },
     { label: t('inTransit'), href: '/admin/in-transit' },
     { label: t('warehouse'), href: '/admin/warehouse' },
     { label: t('regions'), href: '/admin/regions' },

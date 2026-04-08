@@ -19,6 +19,7 @@ export async function GET() {
     const [
       users,
       incoming,
+      inWarehouse,
       inTransit,
       warehouse,
       regions,
@@ -28,6 +29,7 @@ export async function GET() {
     ] = await Promise.all([
       prisma.user.count(),
       prisma.parcel.count({ where: { status: 'pending' } }),
+      prisma.parcel.count({ where: { status: 'in_warehouse' } }),
       prisma.parcel.count({ where: { status: 'in_transit' } }),
       prisma.parcel.count({ where: { status: 'arrived' } }),
       prisma.parcel.count({ where: { status: 'region' } }),
@@ -40,6 +42,7 @@ export async function GET() {
       {
         users,
         incoming,
+        inWarehouse,
         inTransit,
         warehouse,
         regions,

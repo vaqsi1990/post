@@ -20,6 +20,22 @@ const FORM_TO_TARIFF_COUNTRY: Record<string, string> = {
 };
 
 /**
+ * ვალუტა `originCountry`-ზე განისაზღვრება, რათა DB-ში არათანმიმდევრული `currency` არ გვატკინოს.
+ * ეს უნდა ემთხვეოდეს `lib/tariffLookup.ts` ლოგიკას.
+ */
+const CURRENCY_BY_ORIGIN_ISO: Record<string, string> = {
+  GB: 'GBP',
+  US: 'USD',
+  CN: 'CNY',
+  IT: 'EUR',
+  GR: 'EUR',
+  ES: 'EUR',
+  FR: 'EUR',
+  DE: 'EUR',
+  TR: 'TRY',
+};
+
+/**
  * GET - Returns pricePerKg per (form) country for logged-in dashboard user.
  * Used to show "ფასი = წონა × ტარიფი" when creating a parcel.
  */
@@ -49,9 +65,13 @@ export async function GET() {
         ([_, db]) => db === t.originCountry
       )?.[0];
       if (formCode == null) continue;
+      const derivedCurrency =
+        CURRENCY_BY_ORIGIN_ISO[t.originCountry.toUpperCase()] ??
+        t.currency ??
+        'GEL';
       const amountGel =
-        nbgRates && t.currency
-          ? convertToGel(nbgRates, t.pricePerKg, t.currency)
+        nbgRates
+          ? convertToGel(nbgRates, t.pricePerKg, derivedCurrency)
           : null;
       byFormCountry[formCode] =
         amountGel != null

@@ -46,7 +46,8 @@
   },
   "adminsidebar": {
     "users": "Users",
-    "incoming": "In warehouse",
+    "incoming": "Incoming",
+    "inWarehouse": "In warehouse",
     "inTransit": "In transit",
     "warehouse": "Arrived",
     "regions": "Regions",
@@ -213,7 +214,8 @@
       "network": "Network error — please try again"
     },
     "status": {
-      "pending": "Warehouse",
+      "pending": "Incoming",
+      "in_warehouse": "In warehouse",
       "in_transit": "In transit",
       "arrived": "Arrived",
       "region": "In your region",
