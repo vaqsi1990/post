@@ -5,7 +5,15 @@ import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { recordParcelTrackingEvent } from '@/lib/parcelTrackingLog';
 
-const allowedStatuses = ['pending', 'in_warehouse', 'in_transit', 'arrived', 'region', 'delivered'] as const;
+const allowedStatuses = [
+  'pending',
+  'in_warehouse',
+  'in_transit',
+  'arrived',
+  'region',
+  'delivered',
+  'stopped',
+] as const;
 
 const userSelect = {
   id: true,

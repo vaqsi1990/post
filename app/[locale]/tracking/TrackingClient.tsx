@@ -17,6 +17,8 @@ const PIPELINE = [
 const KNOWN_STATUS = new Set<string>([
   ...PIPELINE,
   'ready_for_pickup',
+  'in_warehouse',
+  'stopped',
 ]);
 
 type PipelineStatus = (typeof PIPELINE)[number];
@@ -46,6 +48,9 @@ function isPipelineStatus(s: string): s is PipelineStatus {
 }
 
 function pipelineIndex(status: string): number {
+  if (status === 'stopped') {
+    return -1;
+  }
   if (status === 'ready_for_pickup') {
     return PIPELINE.indexOf('region');
   }
@@ -292,6 +297,14 @@ function TrackingSearch() {
             <h2 className="mb-5 text-[17px] font-semibold uppercase tracking-wider text-gray-500">
               {t('progressTitle')}
             </h2>
+            {result.status === 'stopped' && (
+              <p
+                className="mb-5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-[15px] leading-relaxed text-amber-950"
+                role="status"
+              >
+                {t('stoppedProgressHint')}
+              </p>
+            )}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
               {PIPELINE.map((step, i) => {
                 const done = progressIdx >= i;

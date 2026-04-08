@@ -14,6 +14,7 @@ const STATUS_KEYS: Record<string, string> = {
   in_transit: 'statusInTransit',
   arrived: 'statusArrived',
   region: 'statusRegion',
+  stopped: 'statusStopped',
   delivered: 'statusDelivered',
   ready_for_pickup: 'statusReadyForPickup',
 };

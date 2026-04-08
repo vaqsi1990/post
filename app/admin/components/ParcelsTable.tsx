@@ -78,6 +78,7 @@ export default function ParcelsTable({
     inTransit: isRu ? 'В пути' : isEn ? 'In transit' : 'გზაში',
     arrived: isRu ? 'Прибывшие' : isEn ? 'Arrived' : 'ჩამოსული',
     region: isRu ? 'Регион' : isEn ? 'Region' : 'რეგიონი',
+    stopped: isRu ? 'Остановлена' : isEn ? 'Stopped' : 'გაჩერებული',
     delivered: isRu ? 'Доставленные' : isEn ? 'Delivered' : 'გატანილი',
     statusUpdateError: isRu ? 'Ошибка при обновлении статуса' : isEn ? 'Failed to update status' : 'სტატუსის განახლებისას მოხდა შეცდომა',
     courierFeeInvalid: isRu ? 'Курьерская сумма должна быть положительным числом или пустой (очистка).' : isEn ? 'Courier fee must be a positive number or empty (clear).' : 'საკურიერო თანხა უნდა იყოს დადებითი რიცხვი ან ცარიელი (გასუფთავება).',
@@ -124,6 +125,7 @@ export default function ParcelsTable({
     { value: 'in_transit', label: t.inTransit },
     { value: 'arrived', label: t.arrived },
     { value: 'region', label: t.region },
+    { value: 'stopped', label: t.stopped },
     { value: 'delivered', label: t.delivered },
   ];
 

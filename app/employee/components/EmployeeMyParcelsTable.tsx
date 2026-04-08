@@ -23,6 +23,7 @@ const ALL_KNOWN_STATUSES = [
   'arrived',
   'region',
   'ready_for_pickup',
+  'stopped',
   'delivered',
 ] as const;
 
@@ -69,6 +70,7 @@ export default function EmployeeMyParcelsTable({ rows: initialRows }: { rows: Em
       | 'statusArrived'
       | 'statusRegion'
       | 'statusReadyForPickup'
+      | 'statusStopped'
       | 'statusDelivered'
     > = {
       pending: 'statusPending',
@@ -76,6 +78,7 @@ export default function EmployeeMyParcelsTable({ rows: initialRows }: { rows: Em
       arrived: 'statusArrived',
       region: 'statusRegion',
       ready_for_pickup: 'statusReadyForPickup',
+      stopped: 'statusStopped',
       delivered: 'statusDelivered',
     };
     return t(keyMap[value]);

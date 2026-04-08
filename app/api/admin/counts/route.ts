@@ -23,6 +23,7 @@ export async function GET() {
       inTransit,
       warehouse,
       regions,
+      stopped,
       delivered,
       payments,
     ] = await Promise.all([
@@ -32,6 +33,7 @@ export async function GET() {
       prisma.parcel.count({ where: { status: 'in_transit' } }),
       prisma.parcel.count({ where: { status: 'arrived' } }),
       prisma.parcel.count({ where: { status: 'region' } }),
+      prisma.parcel.count({ where: { status: 'stopped' } }),
       prisma.parcel.count({ where: { status: 'delivered' } }),
       prisma.payment.count(),
     ]);
@@ -44,6 +46,7 @@ export async function GET() {
         inTransit,
         warehouse,
         regions,
+        stopped,
         delivered,
         payments,
       },

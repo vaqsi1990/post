@@ -81,6 +81,7 @@
     "statusInTransit": "В пути",
     "statusArrived": "Прибыли",
     "statusRegion": "В регионе",
+    "statusStopped": "Остановлена",
     "statusDelivered": "Выданы",
     "statusCancelled": "Отменены",
     "statusReadyForPickup": "Готово к выдаче"
@@ -207,6 +208,7 @@
     "copied": "Скопировано",
     "copyShareLink": "Копировать ссылку",
     "shareHint": "По этой ссылке можно посмотреть статус отправления.",
+    "stoppedProgressHint": "Отправление временно приостановлено — индикатор этапов ниже в этом статусе не учитывается.",
     "errors": {
       "code_required": "Введите трек-номер",
       "code_invalid": "Трек-номер слишком длинный или неверный",
@@ -220,6 +222,7 @@
       "arrived": "Прибыла",
       "region": "В регионе",
       "ready_for_pickup": "Готова к выдаче",
+      "stopped": "Остановлена",
       "delivered": "Выдана",
       "cancelled": "Отменена"
     }

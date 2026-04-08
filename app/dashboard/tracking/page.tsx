@@ -24,6 +24,7 @@ const STATUS_LABELS: Record<string, string> = {
   arrived: 'ჩამოსული',
   region: 'რეგიონში',
   ready_for_pickup: 'მისაღებად მზად',
+  stopped: 'გაჩერებული',
   delivered: 'გატანილი',
   cancelled: 'გაუქმებული',
 };

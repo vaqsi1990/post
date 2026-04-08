@@ -110,6 +110,7 @@ enum ParcelStatus {
   region
   ready_for_pickup
   delivered
+  stopped
   cancelled
 }
 

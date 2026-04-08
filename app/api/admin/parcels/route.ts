@@ -12,7 +12,15 @@ import type { TariffPick } from '@/lib/tariffLookup';
 
 export const dynamic = 'force-dynamic';
 
-const allowedStatuses = ['pending', 'in_warehouse', 'in_transit', 'arrived', 'region', 'delivered'] as const;
+const allowedStatuses = [
+  'pending',
+  'in_warehouse',
+  'in_transit',
+  'arrived',
+  'region',
+  'delivered',
+  'stopped',
+] as const;
 
 const updateParcelStatusSchema = z.object({
   status: z.enum(allowedStatuses),

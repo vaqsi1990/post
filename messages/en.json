@@ -81,6 +81,7 @@
     "statusInTransit": "In transit",
     "statusArrived": "Arrived",
     "statusRegion": "Region",
+    "statusStopped": "Stopped",
     "statusDelivered": "Delivered",
     "statusCancelled": "Cancelled",
     "statusReadyForPickup": "Ready for pickup"
@@ -207,6 +208,7 @@
     "copied": "Copied",
     "copyShareLink": "Copy link",
     "shareHint": "Anyone with this link can view this shipment status.",
+    "stoppedProgressHint": "This shipment is temporarily on hold — the step progress below does not apply while it is stopped.",
     "errors": {
       "code_required": "Enter a tracking number",
       "code_invalid": "Tracking number is too long or invalid",
@@ -220,6 +222,7 @@
       "arrived": "Arrived",
       "region": "In your region",
       "ready_for_pickup": "Ready for pickup",
+      "stopped": "Stopped",
       "delivered": "Delivered",
       "cancelled": "Cancelled"
     }
