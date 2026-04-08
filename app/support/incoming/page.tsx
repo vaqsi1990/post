@@ -13,7 +13,7 @@ export default async function SupportIncomingPage() {
       ? { title: 'Поступившие', description: 'Управление поступившими посылками.' }
       : locale === 'en'
         ? { title: 'Incoming', description: 'Manage incoming parcels.' }
-        : { title: 'შემოსული', description: 'შემოსული  ამანათების მართვა.' };
+        : { title: 'მოლოდინში', description: 'მოლოდინში ამანათების მართვა.' };
 
   const parcels = await prisma.parcel.findMany({
     where: { status: 'pending' },
