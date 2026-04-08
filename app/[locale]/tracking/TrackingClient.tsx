@@ -17,7 +17,6 @@ const PIPELINE = [
 const KNOWN_STATUS = new Set<string>([
   ...PIPELINE,
   'ready_for_pickup',
-  'cancelled',
 ]);
 
 type PipelineStatus = (typeof PIPELINE)[number];
@@ -167,7 +166,6 @@ function TrackingSearch() {
   };
 
   const progressIdx = result ? pipelineIndex(result.status) : -1;
-  const isCancelled = result?.status === 'cancelled';
 
   const milestoneDates = useMemo(() => {
     if (!result) return null;
@@ -290,59 +288,53 @@ function TrackingSearch() {
             </dl>
           </div>
 
-          {isCancelled ? (
-            <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-[14px] text-amber-900">
-              {statusLabel('cancelled')}
-            </div>
-          ) : (
-            <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm md:p-6">
-              <h2 className="mb-5 text-[17px] font-semibold uppercase tracking-wider text-gray-500">
-                {t('progressTitle')}
-              </h2>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
-                {PIPELINE.map((step, i) => {
-                  const done = progressIdx >= i;
-                  const current = progressIdx === i;
-                  const dateExtra =
-                    step === 'in_transit'
-                      ? milestoneDates?.shipped
-                      : step === 'arrived'
-                        ? milestoneDates?.arrived
-                        : step === 'delivered'
-                          ? milestoneDates?.delivered
-                          : null;
-                  return (
-                    <div
-                      key={step}
-                      className="flex gap-3 rounded-xl border border-gray-100 bg-slate-50/80 p-3 lg:flex-col lg:items-center lg:text-center"
+          <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm md:p-6">
+            <h2 className="mb-5 text-[17px] font-semibold uppercase tracking-wider text-gray-500">
+              {t('progressTitle')}
+            </h2>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+              {PIPELINE.map((step, i) => {
+                const done = progressIdx >= i;
+                const current = progressIdx === i;
+                const dateExtra =
+                  step === 'in_transit'
+                    ? milestoneDates?.shipped
+                    : step === 'arrived'
+                      ? milestoneDates?.arrived
+                      : step === 'delivered'
+                        ? milestoneDates?.delivered
+                        : null;
+                return (
+                  <div
+                    key={step}
+                    className="flex gap-3 rounded-xl border border-gray-100 bg-slate-50/80 p-3 lg:flex-col lg:items-center lg:text-center"
+                  >
+                    <span
+                      className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-[12px] font-bold ${
+                        done
+                          ? 'bg-[#3a5bff] text-white'
+                          : 'border-2 border-gray-200 bg-white text-gray-400'
+                      } ${current ? 'ring-4 ring-[#3a5bff]/25' : ''}`}
                     >
-                      <span
-                        className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-[12px] font-bold ${
-                          done
-                            ? 'bg-[#3a5bff] text-white'
-                            : 'border-2 border-gray-200 bg-white text-gray-400'
-                        } ${current ? 'ring-4 ring-[#3a5bff]/25' : ''}`}
+                      {done ? '✓' : i + 1}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p
+                        className={`text-[17px] font-semibold leading-snug ${done ? 'text-gray-900' : 'text-gray-400'}`}
                       >
-                        {done ? '✓' : i + 1}
-                      </span>
-                      <div className="min-w-0 flex-1">
-                        <p
-                          className={`text-[17px] font-semibold leading-snug ${done ? 'text-gray-900' : 'text-gray-400'}`}
-                        >
-                          {statusLabel(step)}
+                        {statusLabel(step)}
+                      </p>
+                      {dateExtra && (
+                        <p className="mt-1 text-[11px] text-gray-500">
+                          {formatWhen(dateExtra)}
                         </p>
-                        {dateExtra && (
-                          <p className="mt-1 text-[11px] text-gray-500">
-                            {formatWhen(dateExtra)}
-                          </p>
-                        )}
-                      </div>
+                      )}
                     </div>
-                  );
-                })}
-              </div>
+                  </div>
+                );
+              })}
             </div>
-          )}
+          </div>
 
           <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm md:p-6">
             <h2 className="mb-4 text-[17px] font-semibold uppercase tracking-wider text-gray-500">

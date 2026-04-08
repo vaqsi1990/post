@@ -24,7 +24,6 @@ const ALL_KNOWN_STATUSES = [
   'region',
   'ready_for_pickup',
   'delivered',
-  'cancelled',
 ] as const;
 
 type KnownStatus = (typeof ALL_KNOWN_STATUSES)[number];
@@ -71,7 +70,6 @@ export default function EmployeeMyParcelsTable({ rows: initialRows }: { rows: Em
       | 'statusRegion'
       | 'statusReadyForPickup'
       | 'statusDelivered'
-      | 'statusCancelled'
     > = {
       pending: 'statusPending',
       in_transit: 'statusInTransit',
@@ -79,7 +77,6 @@ export default function EmployeeMyParcelsTable({ rows: initialRows }: { rows: Em
       region: 'statusRegion',
       ready_for_pickup: 'statusReadyForPickup',
       delivered: 'statusDelivered',
-      cancelled: 'statusCancelled',
     };
     return t(keyMap[value]);
   };

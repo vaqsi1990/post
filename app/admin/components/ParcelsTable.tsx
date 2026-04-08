@@ -79,7 +79,6 @@ export default function ParcelsTable({
     arrived: isRu ? 'Прибывшие' : isEn ? 'Arrived' : 'ჩამოსული',
     region: isRu ? 'Регион' : isEn ? 'Region' : 'რეგიონი',
     delivered: isRu ? 'Доставленные' : isEn ? 'Delivered' : 'გატანილი',
-    cancelled: isRu ? 'Отмененные' : isEn ? 'Cancelled' : 'გაუქმებული',
     statusUpdateError: isRu ? 'Ошибка при обновлении статуса' : isEn ? 'Failed to update status' : 'სტატუსის განახლებისას მოხდა შეცდომა',
     courierFeeInvalid: isRu ? 'Курьерская сумма должна быть положительным числом или пустой (очистка).' : isEn ? 'Courier fee must be a positive number or empty (clear).' : 'საკურიერო თანხა უნდა იყოს დადებითი რიცხვი ან ცარიელი (გასუფთავება).',
     courierFeeSaveError: isRu ? 'Не удалось сохранить курьерскую сумму' : isEn ? 'Failed to save courier fee' : 'საკურიერო თანხის შენახვა ვერ მოხერხდა',
@@ -126,7 +125,6 @@ export default function ParcelsTable({
     { value: 'arrived', label: t.arrived },
     { value: 'region', label: t.region },
     { value: 'delivered', label: t.delivered },
-    { value: 'cancelled', label: t.cancelled },
   ];
 
   function renderUploaderBlock(parcel: Parcel) {

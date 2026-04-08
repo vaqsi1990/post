@@ -15,7 +15,6 @@ const STATUS_KEYS: Record<string, string> = {
   arrived: 'statusArrived',
   region: 'statusRegion',
   delivered: 'statusDelivered',
-  cancelled: 'statusCancelled',
   ready_for_pickup: 'statusReadyForPickup',
 };
 

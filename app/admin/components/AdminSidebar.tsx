@@ -33,7 +33,6 @@ type SectionCounts = {
   inTransit: number;
   warehouse: number;
   regions: number;
-  stopped: number;
   delivered: number;
   payments: number;
 };
@@ -45,7 +44,6 @@ const COUNT_KEY_BY_HREF: Record<string, keyof SectionCounts> = {
   '/admin/in-transit': 'inTransit',
   '/admin/warehouse': 'warehouse',
   '/admin/regions': 'regions',
-  '/admin/stopped': 'stopped',
   '/admin/delivered': 'delivered',
   '/admin/payments': 'payments',
 };
@@ -63,7 +61,6 @@ export default function AdminSidebar() {
     { label: t('warehouse'), href: '/admin/warehouse' },
     { label: t('regions'), href: '/admin/regions' },
     { label: t('reises'), href: '/admin/reises' },
-    { label: t('stopped'), href: '/admin/stopped' },
     { label: t('delivered'), href: '/admin/delivered' },
     { label: t('payments'), href: '/admin/payments' },
     { label: t('editTariffs'), href: '/admin/tariffs' },

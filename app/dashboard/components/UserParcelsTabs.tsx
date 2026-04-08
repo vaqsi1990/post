@@ -60,7 +60,6 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
         { value: 'in_transit', label: tStatus('in_transit') },
         { value: 'arrived', label: tStatus('arrived') },
         { value: 'delivered', label: tStatus('delivered') },
-        { value: 'cancelled', label: tStatus('cancelled') },
       ] as { value: string; label: string }[],
     [tStatus],
   );

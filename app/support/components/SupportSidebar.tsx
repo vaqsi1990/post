@@ -22,7 +22,6 @@ export default function SupportSidebar() {
       { label: tAdmin('inTransit'), href: '/support/in-transit' },
       { label: tAdmin('warehouse'), href: '/support/warehouse' },
       { label: tAdmin('regions'), href: '/support/regions' },
-      { label: tAdmin('stopped'), href: '/support/stopped' },
       { label: tAdmin('delivered'), href: '/support/delivered' },
 
       { label: tAdmin('chat'), href: '/support/chat' },
