@@ -13,6 +13,9 @@ export type UserParcel = {
   shippingAmount: number | null;
   currency: string;
   shippingFormula?: string | null;
+  onlineShop?: string | null;
+  description?: string | null;
+  comment?: string | null;
   weight: string;
   /** წონა კგ-ში — ტარიფის მიბმა */
   weightKg: number | null;
@@ -46,17 +49,9 @@ type Props = {
   parcels: UserParcel[];
 };
 
-const COURIER_LABEL = 'საკურიერო ';
-const COURIER_ERR = 'შენახვა ვერ მოხერხდა. სცადეთ თავიდან.';
-/** საკურიერო ჩართულია, საკურიერო გადასახადი ჯერ არ არის დაყენებული */
-const COURIER_FEE_PENDING_NOTICE =
-  'ადმინისტრაცია დააყენებს საკურიერო გადასახადს.';
-/** ტარიფი ვერ მოიძებნა (ქვეყანა/წონა ან /admin/tariffs-ში არ არის შესაბამისი ტარიფი) */
-const PAYABLE_AMOUNT_PENDING_NOTICE =
-  'ტარიფი ვერ მოიძებნა ამ ქვეყნისა და წონისთვის. დაუკავშირდით ადმინისტრაციას.';
-
 export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
   const tStatus = useTranslations('trackingPage.status');
+  const t = useTranslations('dashboard.parcelsTabs');
   const statusOptions = useMemo(
     () =>
       [
@@ -80,6 +75,7 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
 
   const filtered = parcels.filter((p) => p.status === activeStatus);
   const showCourierColumn = activeStatus === 'arrived';
+  const showEditColumn = activeStatus === 'pending';
   const hasAnyAmountDue = filtered.some((p) => totalDue(p) > 0);
   /** წითელი გადახდა, როცა სულ გადასახდელი > 0 */
   const showPaymentColumn = showCourierColumn && hasAnyAmountDue;
@@ -87,7 +83,9 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
     ? showPaymentColumn
       ? 10
       : 9
-    : 7;
+    : showEditColumn
+      ? 8
+      : 7;
 
   const handleCourierToggle = async (parcel: UserParcel, next: boolean) => {
     if (parcel.status !== 'arrived') return;
@@ -126,17 +124,17 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
     }
   };
 
+  const canEdit = (p: UserParcel) => p.status === 'pending';
+
   return (
     <div className="mt-10 space-y-4">
       <div className="flex justify-between items-center">
-        <h2 className="text-[18px] md:text-[20px] font-semibold text-black">
-          ამანათები
-        </h2>
+        <h2 className="text-[18px] md:text-[20px] font-semibold text-black">{t('title')}</h2>
         <Link
           href="/dashboard/parcels/new"
           className="inline-flex w-full md:w-auto items-center justify-center rounded-lg border border-slate-200 bg-[#3a5bff] px-4 py-3 text-center text-[16px] font-semibold text-white shadow-sm transition "
         >
-          ამანათის დამატება
+          {t('addParcel')}
         </Link>
       </div>
       {/* Status tabs */}
@@ -168,44 +166,52 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
       </div>
 
       {/* Desktop table */}
-      <div className="hidden overflow-x-auto rounded-xl border border-gray-200 bg-white md:block">
+      <div
+        key={activeStatus}
+        className="hidden overflow-x-auto rounded-xl border border-gray-200 bg-white md:block"
+      >
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
               <th className="px-4 py-3 text-left text-[16px] font-semibold text-black">
-                თრექინგი
+                {t('cols.tracking')}
               </th>
               <th className="px-4 py-3 text-left text-[16px] font-semibold text-black">
-                მომხმარებელი
+                {t('cols.customer')}
               </th>
               <th className="px-4 py-3 text-left text-[16px] font-semibold text-black">
-                რაოდენობა
+                {t('cols.quantity')}
               </th>
               <th className="px-4 py-3 text-left text-[16px] font-semibold text-black">
-                საიდან
+                {t('cols.from')}
               </th>
               <th className="px-4 py-3 text-left text-[16px] font-semibold text-black">
-                წონა
+                {t('cols.weight')}
               </th>
               <th className="px-4 py-3 text-left text-[16px] font-semibold text-black">
-                ნივთის ღირებულება
+                {t('cols.itemValue')}
               </th>
               <th className="px-4 py-3 text-left text-[16px] font-semibold text-black">
-                თარიღი
+                {t('cols.date')}
               </th>
-              {showCourierColumn && (
+              {showEditColumn && (
                 <th className="px-4 py-3 text-left text-[16px] font-semibold text-black">
-                  გადასახდელი
+                  {t('cols.action')}
                 </th>
               )}
               {showCourierColumn && (
                 <th className="px-4 py-3 text-left text-[16px] font-semibold text-black">
-                  {COURIER_LABEL}
+                  {t('cols.payable')}
+                </th>
+              )}
+              {showCourierColumn && (
+                <th className="px-4 py-3 text-left text-[16px] font-semibold text-black">
+                  {t('cols.courier')}
                 </th>
               )}
               {showPaymentColumn && (
                 <th className="px-4 py-3 text-left text-[16px] font-semibold text-black">
-                  გადახდა
+                  {t('cols.payment')}
                 </th>
               )}
             </tr>
@@ -217,7 +223,7 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
                   colSpan={emptyColSpan}
                   className="px-4 py-8 text-center text-[15px] text-black"
                 >
-                  არჩეულ სტატუსში ამანათი არ არის.
+                  {t('empty')}
                 </td>
               </tr>
             ) : (
@@ -244,6 +250,20 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
                   <td className="px-4 py-3 text-[15px] text-black">
                     {parcel.createdAt}
                   </td>
+                  {showEditColumn && (
+                    <td className="px-4 py-3 text-[15px] text-black">
+                      {canEdit(parcel) ? (
+                        <Link
+                          href={`/dashboard/parcels/${parcel.id}/edit`}
+                          className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-[13px] font-semibold text-black hover:bg-gray-50"
+                        >
+                          {t('edit')}
+                        </Link>
+                      ) : (
+                        <span className="text-gray-400">{t('dash')}</span>
+                      )}
+                    </td>
+                  )}
                   {showCourierColumn && (
                     <td className="px-4 py-3 text-[15px] text-black">
                       <div className="flex max-w-[17rem] flex-col gap-1">
@@ -260,7 +280,7 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
                             className="rounded-md border border-rose-200 bg-rose-50 px-2 py-1.5 text-[12px] leading-snug text-rose-900"
                             role="status"
                           >
-                            {PAYABLE_AMOUNT_PENDING_NOTICE}
+                            {t('payableAmountPendingNotice')}
                           </span>
                         )}
                       </div>
@@ -278,13 +298,13 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
                             onChange={(e) =>
                               handleCourierToggle(parcel, e.target.checked)
                             }
-                            aria-label={COURIER_LABEL}
+                            aria-label={t('courierLabel')}
                           />
                         </label>
                         {parcel.courierServiceRequested &&
                           parcel.courierFeeAmount != null && (
                             <p className="text-[13px] font-medium text-black">
-                              საკურიერო:{' '}
+                              {t('courierFeePrefix')}{' '}
                               {parcel.courierFeeAmount.toFixed(2)} {parcel.currency}
                             </p>
                           )}
@@ -294,12 +314,12 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
                               className="rounded-md border border-amber-200 bg-amber-50 px-2 py-1.5 text-[12px] leading-snug text-amber-950"
                               role="status"
                             >
-                              {COURIER_FEE_PENDING_NOTICE}
+                              {t('courierFeePendingNotice')}
                             </p>
                           )}
                         {courierErrorId === parcel.id && (
                           <span className="text-[12px] text-red-600">
-                            {COURIER_ERR}
+                            {t('courierSaveError')}
                           </span>
                         )}
                       </div>
@@ -310,17 +330,18 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
                       {totalDue(parcel) > 0 ? (
                         <div className="flex max-w-[11rem] flex-col gap-1.5">
                           <span className="text-[12px] font-medium text-black">
-                            სულ: {totalDue(parcel).toFixed(2)} {parcel.currency}
+                            {t('totalPrefix')}{' '}
+                            {totalDue(parcel).toFixed(2)} {parcel.currency}
                           </span>
                           <Link
                             href="/dashboard/balance"
                             className="inline-flex items-center justify-center rounded-lg bg-red-600 px-3 py-2 text-[13px] font-semibold text-white shadow-sm transition-colors hover:bg-red-700"
                           >
-                            გადახდა
+                            {t('pay')}
                           </Link>
                         </div>
                       ) : (
-                        <span className="text-[13px] text-gray-400">—</span>
+                        <span className="text-[13px] text-gray-400">{t('dash')}</span>
                       )}
                     </td>
                   )}
@@ -335,7 +356,7 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
       <div className="space-y-3 md:hidden">
         {filtered.length === 0 ? (
           <div className="rounded-xl border border-gray-200 bg-white p-4 text-center text-[15px] text-black">
-            არჩეულ სტატუსში ამანათი არ არის.
+            {t('empty')}
           </div>
         ) : (
           filtered.map((parcel) => (
@@ -358,26 +379,37 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
               </div>
 
               <div className="grid grid-cols-2 gap-2 text-[13px] text-black">
-                <span className="text-black">რაოდენობა</span>
+                <span className="text-black">{t('fields.quantity')}</span>
                 <span className="text-black tabular-nums">{parcel.quantity}</span>
 
-                <span className="text-black">საიდან</span>
+                <span className="text-black">{t('fields.from')}</span>
                 <span className="text-black">
                   {formatOriginCountryLabel(parcel.originCountry)}
                 </span>
 
-                <span className="text-black">წონა</span>
+                <span className="text-black">{t('fields.weight')}</span>
                 <span className="text-black">{parcel.weight || '—'}</span>
 
-                <span className="text-black">ნივთის ღირებულება</span>
+                <span className="text-black">{t('fields.itemValue')}</span>
                 <span className="text-black">
                   {parcel.price.toFixed(2)} {parcel.currency}
                 </span>
               </div>
 
+              {canEdit(parcel) ? (
+                <div className="mt-3">
+                  <Link
+                    href={`/dashboard/parcels/${parcel.id}/edit`}
+                    className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-[14px] font-semibold text-black hover:bg-gray-50"
+                  >
+                    {t('edit')}
+                  </Link>
+                </div>
+              ) : null}
+
               {showCourierColumn && parcel.status === 'arrived' && (
                 <div className="mt-3 rounded-lg border border-rose-200 bg-rose-50/90 px-3 py-2.5">
-                  <p className="text-[13px] font-semibold text-black">გადასახდელი</p>
+                  <p className="text-[13px] font-semibold text-black">{t('payableTitle')}</p>
                   {parcel.tariffShippingPayable != null ? (
                     <div className="mt-1 space-y-0.5">
                       <p className="text-[13px] font-medium text-black">
@@ -387,7 +419,7 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
                         parcel.weightKg != null && (
                           <p className="text-[12px] text-gray-600">
                             ({parcel.tariffPricePerKg.toFixed(2)} {parcel.currency}
-                            /კგ × {parcel.weightKg} კგ)
+                            /{t('kg')} × {parcel.weightKg} {t('kg')})
                           </p>
                         )}
                     </div>
@@ -396,7 +428,7 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
                       className="mt-2 rounded-md border border-rose-200/80 bg-white/80 px-2 py-1.5 text-[12px] leading-snug text-rose-900"
                       role="status"
                     >
-                      {PAYABLE_AMOUNT_PENDING_NOTICE}
+                      {t('payableAmountPendingNotice')}
                     </p>
                   )}
                 </div>
@@ -415,13 +447,13 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
                       }
                     />
                     <span className="text-[14px] font-semibold text-black">
-                      {COURIER_LABEL}
+                      {t('courierLabel')}
                     </span>
                   </label>
                   {parcel.courierServiceRequested &&
                     parcel.courierFeeAmount != null && (
                       <p className="mt-2 text-[14px] font-medium text-black">
-                        საკურიერო:{' '}
+                        {t('courierFeePrefix')}{' '}
                         {parcel.courierFeeAmount.toFixed(2)} {parcel.currency}
                       </p>
                     )}
@@ -431,25 +463,25 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
                         className="mt-2 rounded-md border border-amber-200 bg-white/90 px-2 py-1.5 text-[12px] leading-snug text-amber-950"
                         role="status"
                       >
-                        {COURIER_FEE_PENDING_NOTICE}
+                        {t('courierFeePendingNotice')}
                       </p>
                     )}
                   {courierErrorId === parcel.id && (
                     <p className="mt-1 text-[12px] text-red-600">
-                      {COURIER_ERR}
+                      {t('courierSaveError')}
                     </p>
                   )}
                   {totalDue(parcel) > 0 && (
                     <div className="mt-3 space-y-2 border-t border-gray-100 pt-3">
                       <p className="text-[14px] font-semibold text-black">
-                        სულ გადასახდელი: {totalDue(parcel).toFixed(2)}{' '}
+                        {t('totalDuePrefix')} {totalDue(parcel).toFixed(2)}{' '}
                         {parcel.currency}
                       </p>
                       <Link
                         href="/dashboard/balance"
                         className="flex w-full items-center justify-center rounded-lg bg-red-600 px-4 py-2.5 text-[14px] font-semibold text-white shadow-sm transition-colors hover:bg-red-700"
                       >
-                        გადახდა
+                        {t('pay')}
                       </Link>
                     </div>
                   )}
@@ -459,6 +491,7 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
           ))
         )}
       </div>
+
     </div>
   );
 }

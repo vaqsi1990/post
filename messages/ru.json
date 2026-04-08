@@ -421,7 +421,59 @@
       "corporate": "Корпоративный"
     },
     "tariffBannerTitle": "Ваши тарифы",
-    "tariffPerKgLabel": "1 кг"
+    "tariffPerKgLabel": "1 кг",
+    "parcelsTabs": {
+      "title": "Посылки",
+      "addParcel": "Добавить посылку",
+      "empty": "В выбранном статусе посылок нет.",
+      "dash": "—",
+      "edit": "Редактировать",
+      "pay": "Оплатить",
+      "totalPrefix": "Итого:",
+      "totalDuePrefix": "К оплате всего:",
+      "payableTitle": "К оплате",
+      "courierLabel": "Курьер",
+      "courierFeePrefix": "Курьер:",
+      "courierFeePendingNotice": "Администрация установит стоимость курьера.",
+      "courierSaveError": "Не удалось сохранить. Попробуйте снова.",
+      "payableAmountPendingNotice": "Тариф не найден для этой страны и веса. Обратитесь к администрации.",
+      "kg": "кг",
+      "cols": {
+        "tracking": "Трекинг",
+        "customer": "Клиент",
+        "quantity": "Количество",
+        "from": "Откуда",
+        "weight": "Вес",
+        "itemValue": "Стоимость товара",
+        "date": "Дата",
+        "action": "Действие",
+        "payable": "К оплате",
+        "courier": "Курьер",
+        "payment": "Оплата"
+      },
+      "fields": {
+        "quantity": "Количество",
+        "from": "Откуда",
+        "weight": "Вес",
+        "itemValue": "Стоимость товара"
+      }
+    },
+    "parcelEdit": {
+      "title": "Редактировать посылку",
+      "dash": "—",
+      "loadError": "Не удалось загрузить посылку.",
+      "saveError": "Не удалось сохранить.",
+      "saving": "Сохранение...",
+      "fields": {
+        "price": "Стоимость товара",
+        "quantity": "Количество",
+        "onlineShop": "Интернет-магазин",
+        "country": "Страна",
+        "weight": "Вес (кг)",
+        "description": "Описание",
+        "comment": "Комментарий"
+      }
+    }
   },
   "addresses": {
     "title": "Адреса",

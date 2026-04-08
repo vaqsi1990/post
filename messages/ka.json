@@ -422,7 +422,59 @@
       "corporate": "კორპორატიული"
     },
     "tariffBannerTitle": "თქვენი ტარიფი",
-    "tariffPerKgLabel": "1 კგ"
+    "tariffPerKgLabel": "1 კგ",
+    "parcelsTabs": {
+      "title": "ამანათები",
+      "addParcel": "ამანათის დამატება",
+      "empty": "არჩეულ სტატუსში ამანათი არ არის.",
+      "dash": "—",
+      "edit": "რედაქტირება",
+      "pay": "გადახდა",
+      "totalPrefix": "სულ:",
+      "totalDuePrefix": "სულ გადასახდელი:",
+      "payableTitle": "გადასახდელი",
+      "courierLabel": "საკურიერო",
+      "courierFeePrefix": "საკურიერო:",
+      "courierFeePendingNotice": "ადმინისტრაცია დააყენებს საკურიერო გადასახადს.",
+      "courierSaveError": "შენახვა ვერ მოხერხდა. სცადეთ თავიდან.",
+      "payableAmountPendingNotice": "ტარიფი ვერ მოიძებნა ამ ქვეყნისა და წონისთვის. დაუკავშირდით ადმინისტრაციას.",
+      "kg": "კგ",
+      "cols": {
+        "tracking": "თრექინგი",
+        "customer": "მომხმარებელი",
+        "quantity": "რაოდენობა",
+        "from": "საიდან",
+        "weight": "წონა",
+        "itemValue": "ნივთის ღირებულება",
+        "date": "თარიღი",
+        "action": "მოქმედება",
+        "payable": "გადასახდელი",
+        "courier": "საკურიერო",
+        "payment": "გადახდა"
+      },
+      "fields": {
+        "quantity": "რაოდენობა",
+        "from": "საიდან",
+        "weight": "წონა",
+        "itemValue": "ნივთის ღირებულება"
+      }
+    },
+    "parcelEdit": {
+      "title": "ამანათის რედაქტირება",
+      "dash": "—",
+      "loadError": "ამანათის ჩატვირთვა ვერ მოხერხდა.",
+      "saveError": "შენახვა ვერ მოხერხდა.",
+      "saving": "ინახება...",
+      "fields": {
+        "price": "ნივთის ღირებულება",
+        "quantity": "რაოდენობა",
+        "onlineShop": "ონლაინ მაღაზია",
+        "country": "ქვეყანა",
+        "weight": "წონა (კგ)",
+        "description": "აღწერა",
+        "comment": "კომენტარი"
+      }
+    }
   },
   "addresses": {
     "title": "მისამართები",

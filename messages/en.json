@@ -421,7 +421,59 @@
       "corporate": "Corporate"
     },
     "tariffBannerTitle": "Your rates",
-    "tariffPerKgLabel": "1 kg"
+    "tariffPerKgLabel": "1 kg",
+    "parcelsTabs": {
+      "title": "Parcels",
+      "addParcel": "Add parcel",
+      "empty": "There are no parcels in the selected status.",
+      "dash": "—",
+      "edit": "Edit",
+      "pay": "Pay",
+      "totalPrefix": "Total:",
+      "totalDuePrefix": "Total due:",
+      "payableTitle": "Payable",
+      "courierLabel": "Courier",
+      "courierFeePrefix": "Courier:",
+      "courierFeePendingNotice": "Administration will set the courier fee.",
+      "courierSaveError": "Could not save. Please try again.",
+      "payableAmountPendingNotice": "No tariff found for this country and weight. Please contact administration.",
+      "kg": "kg",
+      "cols": {
+        "tracking": "Tracking",
+        "customer": "Customer",
+        "quantity": "Quantity",
+        "from": "From",
+        "weight": "Weight",
+        "itemValue": "Item value",
+        "date": "Date",
+        "action": "Action",
+        "payable": "Payable",
+        "courier": "Courier",
+        "payment": "Payment"
+      },
+      "fields": {
+        "quantity": "Quantity",
+        "from": "From",
+        "weight": "Weight",
+        "itemValue": "Item value"
+      }
+    },
+    "parcelEdit": {
+      "title": "Edit parcel",
+      "dash": "—",
+      "loadError": "Could not load parcel.",
+      "saveError": "Could not save.",
+      "saving": "Saving...",
+      "fields": {
+        "price": "Item value",
+        "quantity": "Quantity",
+        "onlineShop": "Online shop",
+        "country": "Country",
+        "weight": "Weight (kg)",
+        "description": "Description",
+        "comment": "Comment"
+      }
+    }
   },
   "addresses": {
     "title": "Addresses",

@@ -108,6 +108,9 @@ export default async function DashboardPage({ params }: Props) {
       trackingNumber: parcel.trackingNumber,
       status: parcel.status,
       price: parcel.price,
+      onlineShop: parcel.onlineShop ?? null,
+      description: parcel.description ?? null,
+      comment: parcel.comment ?? null,
       shippingAmount:
         breakdown?.amountGel ?? parcel.shippingAmount ?? null,
       currency: 'GEL',
