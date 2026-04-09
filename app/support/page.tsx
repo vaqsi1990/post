@@ -51,7 +51,7 @@ export default async function SupportHomePage() {
         <div className="rounded-2xl border border-gray-200 bg-gray-50/80 p-6">
           <p className="text-[16px] text-black">{t('homeHint')}</p>
           <Link
-            href="/support/parcels/new"
+            href="/support/incoming/new"
             className="mt-5 inline-flex items-center justify-center rounded-xl bg-[#3a5bff] px-6 py-3 text-base font-semibold text-white transition hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-[#3a5bff]"
           >
             {t('addParcelCta')}

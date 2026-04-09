@@ -27,7 +27,7 @@ export default function SupportSidebar() {
 
       { label: tAdmin('chat'), href: '/support/chat' },
 
-      { label: tEmployee('addParcel'), href: '/support/parcels/new' },
+     
     ],
     [tEmployee, tAdmin],
   );
@@ -94,7 +94,7 @@ export default function SupportSidebar() {
                     href={item.href}
                     className={`block py-2.5 px-3 text-[15px] font-medium transition-colors rounded-lg border-l-2 ${
                       active
-                        ? 'border-emerald-700 bg-emerald-200 text-emerald-950'
+                        ? 'border-black bg-white text-black'
                         : 'border-transparent text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                     }`}
                   >
