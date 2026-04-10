@@ -274,7 +274,7 @@ const RegisterPage = () => {
                   type="button"
                   onClick={handleSendOtp}
                   disabled={otpCooldown > 0}
-                  className="px-4 py-2 rounded-md text-[16px] font-medium bg-gray-800 text-white hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                  className="px-4 py-2 rounded-md text-[16px] font-medium bg-[#3a5bff] text-white disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
                 >
                   {otpCooldown > 0 ? `${otpCooldown} ${t('seconds')}` : t('sendCode')}
                 </button>
@@ -476,7 +476,7 @@ const RegisterPage = () => {
             <button
               type="submit"
               disabled={isLoading || !formData.termsAccepted}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-[16px] font-medium rounded-md text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black disabled:opacity-50 disabled:cursor-not-allowed"
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-[16px] font-medium rounded-md text-white bg-[#3a5bff] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? tCommon('loading') : t('registerButton')}
             </button>

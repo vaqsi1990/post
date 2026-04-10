@@ -777,7 +777,7 @@ export default function AdminCreateParcelForm({
           <button
             type="submit"
             disabled={loading}
-            className="rounded-lg bg-black px-5 py-2.5 text-[15px] font-semibold text-white hover:bg-gray-900 disabled:opacity-70"
+            className="rounded-lg bg-[#3a5bff] px-5 py-2.5 text-[15px] font-semibold text-white disabled:opacity-70"
           >
             {loading ? t('creating') : t('submit')}
           </button>

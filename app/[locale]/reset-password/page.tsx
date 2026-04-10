@@ -135,7 +135,7 @@ const ResetPasswordPage = () => {
                     type="button"
                     onClick={handleSendResetOtp}
                     disabled={otpCooldown > 0}
-                    className="rounded-md bg-gray-800 px-4 py-2 text-[14px] font-medium text-white hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                    className="rounded-md bg-[#3a5bff] px-4 py-2 text-[14px] font-medium text-white disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
                   >
                     {otpCooldown > 0 ? `${otpCooldown} ${t('seconds')}` : t('resetSendCode')}
                   </button>
@@ -245,7 +245,7 @@ const ResetPasswordPage = () => {
               <button
                 type="submit"
                 disabled={resetLoading}
-                className="w-full rounded-md bg-black py-2 px-4 text-[16px] font-medium text-white hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full rounded-md bg-[#3a5bff] py-2 px-4 text-[16px] font-medium text-white disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {resetLoading ? tCommon('loading') : t('resetButton')}
               </button>
