@@ -324,7 +324,7 @@ export default function Tariffs() {
             <div className="-mx-px overflow-x-auto">
               <table className="w-full min-w-[340px] sm:min-w-[280px]">
                 <thead>
-                  <tr className="border-b border-indigo-100/80 bg-gradient-to-r from-indigo-100/90 via-white to-pink-100/80">
+                  <tr className="border-b   border-violet-200/70 bg-gradient-to-b from-[#f7f1ff] via-[#f6f3ff] to-[#f1f5ff] via-white ">
                     <th className="px-2 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-[#3a5bff] sm:px-4 sm:py-4 sm:text-xs md:px-8 md:py-5 md:text-[18px] md:normal-case md:tracking-normal">
                       {t('tariffCountry')}
                     </th>
