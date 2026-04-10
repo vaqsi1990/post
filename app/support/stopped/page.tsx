@@ -17,7 +17,7 @@ export default async function SupportStoppedPage() {
 
   const parcels = await prisma.parcel.findMany({
     where: { status: 'stopped' },
-    orderBy: { createdAt: 'desc' },
+    orderBy: [{ originCountry: 'asc' }, { createdAt: 'desc' }],
     include: adminParcelInclude,
   });
 
@@ -33,6 +33,7 @@ export default async function SupportStoppedPage() {
           initialParcels={formattedParcels}
           currentStatus="stopped"
           allowDelete={false}
+          countryHub
         />
       </div>
     </SupportShell>

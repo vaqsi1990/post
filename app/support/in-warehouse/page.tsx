@@ -17,7 +17,7 @@ export default async function SupportInWarehousePage() {
 
   const parcels = await prisma.parcel.findMany({
     where: { status: 'in_warehouse' },
-    orderBy: { createdAt: 'desc' },
+    orderBy: [{ originCountry: 'asc' }, { createdAt: 'desc' }],
     include: adminParcelInclude,
   });
 
@@ -33,6 +33,7 @@ export default async function SupportInWarehousePage() {
           initialParcels={formattedParcels}
           currentStatus="in_warehouse"
           allowDelete={false}
+          countryHub
         />
       </div>
     </SupportShell>

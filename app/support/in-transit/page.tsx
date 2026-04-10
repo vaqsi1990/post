@@ -17,7 +17,7 @@ export default async function SupportInTransitPage() {
 
   const parcels = await prisma.parcel.findMany({
     where: { status: 'in_transit' },
-    orderBy: { createdAt: 'desc' },
+    orderBy: [{ originCountry: 'asc' }, { createdAt: 'desc' }],
     include: adminParcelInclude,
   });
 
@@ -33,6 +33,7 @@ export default async function SupportInTransitPage() {
           initialParcels={formattedParcels}
           currentStatus="in_transit"
           allowDelete={false}
+          countryHub
         />
       </div>
     </SupportShell>

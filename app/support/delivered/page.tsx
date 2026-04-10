@@ -17,7 +17,7 @@ export default async function SupportDeliveredPage() {
 
   const parcels = await prisma.parcel.findMany({
     where: { status: 'delivered' },
-    orderBy: { createdAt: 'desc' },
+    orderBy: [{ originCountry: 'asc' }, { createdAt: 'desc' }],
     include: adminParcelInclude,
   });
 
@@ -33,6 +33,7 @@ export default async function SupportDeliveredPage() {
           initialParcels={formattedParcels}
           currentStatus="delivered"
           allowDelete={false}
+          countryHub
         />
       </div>
     </SupportShell>
