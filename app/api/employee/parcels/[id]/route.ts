@@ -38,6 +38,7 @@ export async function PATCH(
         id: true,
         status: true,
         trackingNumber: true,
+        originCountry: true,
         user: { select: { phone: true } },
       },
     });
@@ -76,6 +77,7 @@ export async function PATCH(
         newStatus: nextStatus,
         trackingNumber: parcel.trackingNumber,
         ownerPhone: parcel.user.phone,
+        originCountry: parcel.originCountry,
       });
     }
 

@@ -1,4 +1,5 @@
 import prisma from '@/lib/prisma';
+import { warehouseFromPhraseKa } from '@/lib/parcelWarehouseSmsKa';
 import { sendSms, normalizePhone } from '@/lib/sms';
 
 /** სტატუსები, რომლებზეც მფლობელს SMS-ს ვუგზავნით */
@@ -10,19 +11,26 @@ const SMS_ON_STATUSES = new Set([
   'stopped',
 ]);
 
-function smsBodyForStatus(status: string, trackingNumber: string): string | null {
+function smsBodyForStatus(
+  status: string,
+  trackingNumber: string,
+  warehousePhrase: string | null,
+): string | null {
   const code = trackingNumber.trim();
+  const core = warehousePhrase
+    ? `თქვენი ამანათი ${warehousePhrase}, კოდით ${code}`
+    : `თქვენი ამანათი კოდით ${code}`;
   switch (status) {
     case 'in_warehouse':
-      return `კომპანია Postifly გაცნობებთ, რომ თქვენი ამანათი კოდით ${code} მიღებულია საწყობში`;
+      return `კომპანია Postifly გაცნობებთ, რომ ${core} მიღებულია საწყობში`;
     case 'in_transit':
-      return `კომპანია Postifly გაცნობებთ, რომ თქვენი ამანათი კოდით ${code} გზაშია`;
+      return `კომპანია Postifly გაცნობებთ, რომ ${core} გზაშია`;
     case 'arrived':
-      return `კომპანია Postifly გაცნობებთ, რომ თქვენი ამანათი კოდით ${code} ჩამოსულია`;
+      return `კომპანია Postifly გაცნობებთ, რომ ${core} ჩამოსულია`;
     case 'delivered':
-      return `კომპანია Postifly გაცნობებთ, რომ თქვენი ამანათი კოდით ${code} გატანილია`;
+      return `კომპანია Postifly გაცნობებთ, რომ ${core} გატანილია`;
     case 'stopped':
-      return `კომპანია Postifly გაცნობებთ, რომ თქვენი ამანათი კოდით ${code} გაჩერდა საბაჟოზე`;
+      return `კომპანია Postifly გაცნობებთ, რომ ${core} გაჩერდა საბაჟოზე`;
     default:
       return null;
   }
@@ -37,12 +45,16 @@ export async function notifyParcelOwnerStatusSms(params: {
   newStatus: string;
   trackingNumber: string;
   ownerPhone: string | null | undefined;
+  /** საერთაშორისო საწყობის ქვეყანა (ფორმის კოდი ან ISO, მაგ. uk / GB) */
+  originCountry?: string | null;
 }): Promise<void> {
-  const { parcelId, previousStatus, newStatus, trackingNumber, ownerPhone } = params;
+  const { parcelId, previousStatus, newStatus, trackingNumber, ownerPhone, originCountry } =
+    params;
   if (previousStatus === newStatus) return;
   if (!SMS_ON_STATUSES.has(newStatus)) return;
 
-  const text = smsBodyForStatus(newStatus, trackingNumber);
+  const warehousePhrase = warehouseFromPhraseKa(originCountry);
+  const text = smsBodyForStatus(newStatus, trackingNumber, warehousePhrase);
   if (!text) return;
 
   const raw = ownerPhone?.trim();

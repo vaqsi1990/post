@@ -213,6 +213,7 @@ export async function PATCH(
         newStatus: data.status,
         trackingNumber: updatedParcel.trackingNumber,
         ownerPhone: updatedParcel.user.phone,
+        originCountry: parcel.originCountry,
       });
     }
 
