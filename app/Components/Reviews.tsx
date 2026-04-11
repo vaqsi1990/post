@@ -46,7 +46,7 @@ const Reviews = () => {
         მიმოხილვები
       </h2>
 
-      <div className="relative mx-auto w-full max-w-3xl overflow-hidden rounded-[24px] border border-violet-200/70 bg-gradient-to-b from-[#f7f1ff] via-[#f6f3ff] to-[#f1f5ff] p-5 shadow-[0_20px_40px_-24px_rgba(130,76,255,0.7)] sm:p-7">
+      <div className="relative mx-auto w-full max-w-3xl overflow-hidden rounded-[24px] bg-sky-100 p-5 shadow-[0_20px_40px_-24px_rgba(130,76,255,0.7)] sm:p-7">
         <article className="min-h-[170px] rounded-2xl border border-violet-100/80 bg-white/95 p-5 shadow-[0_12px_30px_-20px_rgba(94,37,208,0.65)] sm:p-6">
           <div className="mb-3 text-xl tracking-[2px] text-amber-500">
             {'★'.repeat(REVIEWS[activeIndex].rating)}

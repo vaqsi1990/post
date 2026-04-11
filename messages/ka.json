@@ -444,6 +444,9 @@
       "courierSaveError": "შენახვა ვერ მოხერხდა. სცადეთ თავიდან.",
       "payableAmountPendingNotice": "ტარიფი ვერ მოიძებნა ამ ქვეყნისა და წონისთვის. დაუკავშირდით ადმინისტრაციას.",
       "kg": "კგ",
+      "paginationPrev": "წინა",
+      "paginationNext": "შემდეგი",
+      "paginationPage": "{current} / {total}",
       "cols": {
         "tracking": "თრექინგი",
         "customer": "მომხმარებელი",

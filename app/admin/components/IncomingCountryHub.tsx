@@ -4,6 +4,10 @@ import { useMemo, type ReactNode } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { GB, US, CN, IT, GR, ES, FR, DE, TR } from 'country-flag-icons/react/3x2';
 import { parcelOriginLabelKey } from '@/lib/parcelOriginLabels';
+import {
+  UNKNOWN_COUNTRY_KEY,
+  parcelOriginKey,
+} from '@/lib/parcelOriginKey';
 
 type FlagComponent = (props: { title?: string; className?: string }) => ReactNode;
 
@@ -31,14 +35,7 @@ const CODE_TO_FLAG: Record<string, string> = {
   tr: 'TR',
 };
 
-export const UNKNOWN_COUNTRY_KEY = '__unknown__';
-
 const ORIGIN_ORDER = ['uk', 'us', 'cn', 'it', 'gr', 'es', 'fr', 'de', 'tr'];
-
-export function parcelOriginKey(originCountry: string | null | undefined): string {
-  if (originCountry == null || String(originCountry).trim() === '') return UNKNOWN_COUNTRY_KEY;
-  return String(originCountry).trim().toLowerCase();
-}
 
 function sortCountryKeys(keys: string[]): string[] {
   return [...keys].sort((a, b) => {
@@ -57,11 +54,14 @@ type HubParcel = { originCountry: string | null };
 
 type IncomingCountryHubProps = {
   parcels: HubParcel[];
+  /** SSR/API-დან სრული რაოდენობები ქვეყნებით (პაგინაციისას parcels მოკლე სიაა) */
+  countsByOrigin?: Record<string, number> | null;
   onSelectCountry: (countryKey: string) => void;
 };
 
 export default function IncomingCountryHub({
   parcels,
+  countsByOrigin,
   onSelectCountry,
 }: IncomingCountryHubProps) {
   const locale = useLocale();
@@ -76,6 +76,15 @@ export default function IncomingCountryHub({
   const parcelsCountLabel = isRu ? 'посылок' : isEn ? 'parcels' : 'ამანათი';
 
   const groups = useMemo(() => {
+    if (countsByOrigin && Object.keys(countsByOrigin).length > 0) {
+      const keys = sortCountryKeys(Object.keys(countsByOrigin));
+      return keys
+        .filter((key) => (countsByOrigin[key] ?? 0) > 0)
+        .map((key) => ({
+          key,
+          count: countsByOrigin[key] ?? 0,
+        }));
+    }
     const map = new Map<string, number>();
     for (const p of parcels) {
       const k = parcelOriginKey(p.originCountry);
@@ -85,9 +94,14 @@ export default function IncomingCountryHub({
       key,
       count: map.get(key)!,
     }));
-  }, [parcels]);
+  }, [countsByOrigin, parcels]);
 
-  if (parcels.length === 0) {
+  const totalInHub =
+    countsByOrigin && Object.keys(countsByOrigin).length > 0
+      ? Object.values(countsByOrigin).reduce((a, b) => a + b, 0)
+      : parcels.length;
+
+  if (totalInHub === 0) {
     return (
       <div className="rounded-2xl border border-gray-200 bg-white p-8 text-center text-[16px] text-gray-600">
         {noParcels}

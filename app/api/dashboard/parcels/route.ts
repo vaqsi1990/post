@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { z } from 'zod';
 import { authOptions } from '../../../../lib/auth';
 import prisma from '../../../../lib/prisma';
+import { getCachedActiveTariffsForGeorgia } from '@/lib/cachedTariffs';
 import { recordParcelTrackingEvent } from '../../../../lib/parcelTrackingLog';
 import { resolveTariffForParcel } from '../../../../lib/tariffLookup';
 import { utapi } from '../../../../lib/uploadthing';
@@ -123,18 +124,7 @@ export async function POST(request: NextRequest) {
 
     let shippingAmount: number | null = null;
     if (parsed.weight != null) {
-      const tariffs = await prisma.tariff.findMany({
-        where: { isActive: true, destinationCountry: 'GE' },
-        select: {
-          originCountry: true,
-          destinationCountry: true,
-          minWeight: true,
-          maxWeight: true,
-          pricePerKg: true,
-          currency: true,
-          isActive: true,
-        },
-      });
+      const tariffs = await getCachedActiveTariffsForGeorgia();
       const resolved = resolveTariffForParcel(
         tariffs,
         parsed.originCountry,

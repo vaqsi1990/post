@@ -443,6 +443,9 @@
       "courierSaveError": "Could not save. Please try again.",
       "payableAmountPendingNotice": "No tariff found for this country and weight. Please contact administration.",
       "kg": "kg",
+      "paginationPrev": "Previous",
+      "paginationNext": "Next",
+      "paginationPage": "Page {current} of {total}",
       "cols": {
         "tracking": "Tracking",
         "customer": "Customer",

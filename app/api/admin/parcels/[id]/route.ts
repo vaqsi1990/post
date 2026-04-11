@@ -3,15 +3,12 @@ import { getServerSession } from 'next-auth';
 import { z } from 'zod';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { getCachedActiveTariffsForGeorgia } from '@/lib/cachedTariffs';
 import { recordParcelTrackingEvent } from '@/lib/parcelTrackingLog';
 import { notifyParcelOwnerStatusSms } from '@/lib/parcelStatusSms';
 import { convertToGel, fetchNbgRates } from '@/lib/nbgRates';
 import { computeShippingGelBreakdown } from '@/lib/parcelShippingGel';
-import {
-  CURRENCY_BY_ORIGIN_ISO,
-  FORM_TO_TARIFF_COUNTRY,
-  type TariffPick,
-} from '@/lib/tariffLookup';
+import { CURRENCY_BY_ORIGIN_ISO, FORM_TO_TARIFF_COUNTRY } from '@/lib/tariffLookup';
 
 const allowedStatuses = [
   'pending',
@@ -66,18 +63,7 @@ async function resolveShippingAfterWeightChange(
   | { error: string }
 > {
   const [tariffs, nbgRates] = await Promise.all([
-    prisma.tariff.findMany({
-      where: { isActive: true, destinationCountry: 'GE' },
-      select: {
-        originCountry: true,
-        destinationCountry: true,
-        minWeight: true,
-        maxWeight: true,
-        pricePerKg: true,
-        currency: true,
-        isActive: true,
-      },
-    }) as Promise<TariffPick[]>,
+    getCachedActiveTariffsForGeorgia(),
     fetchNbgRates().catch(() => null),
   ]);
 

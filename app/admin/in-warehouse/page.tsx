@@ -1,12 +1,16 @@
 import AdminShell from '../components/AdminShell';
-import prisma from '@/lib/prisma';
 import ParcelsManager from '../components/ParcelsManager';
 import { getLocale } from 'next-intl/server';
-import { adminParcelInclude } from '@/lib/adminParcelInclude';
+import { fetchAdminParcelsSsr } from '@/lib/adminParcelSsr';
 
 export const dynamic = 'force-dynamic';
 
-export default async function AdminInWarehousePage() {
+export default async function AdminInWarehousePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const sp = await searchParams;
   const locale = await getLocale();
   const text =
     locale === 'ru'
@@ -26,11 +30,7 @@ export default async function AdminInWarehousePage() {
             description: 'საწყობში მყოფი ამანათების მართვა.',
           };
 
-  const parcels = await prisma.parcel.findMany({
-    where: { status: 'in_warehouse' },
-    orderBy: [{ originCountry: 'asc' }, { createdAt: 'desc' }],
-    include: adminParcelInclude,
-  });
+  const { parcels } = await fetchAdminParcelsSsr('in_warehouse', sp);
 
   const formattedParcels = parcels.map((parcel) => ({
     ...parcel,

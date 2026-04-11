@@ -1,39 +1,26 @@
 import AdminShell from '../components/AdminShell';
-import prisma from '../../../lib/prisma';
+import { getCachedActiveTariffsForGeorgia } from '@/lib/cachedTariffs';
 import ParcelsManager from '../components/ParcelsManager';
 import { getLocale } from 'next-intl/server';
-import { adminParcelInclude } from '@/lib/adminParcelInclude';
 import { fetchNbgRates } from '@/lib/nbgRates';
 import { computeShippingGelBreakdown } from '@/lib/parcelShippingGel';
-import type { TariffPick } from '@/lib/tariffLookup';
+import { fetchAdminParcelsSsr } from '@/lib/adminParcelSsr';
 
-export default async function AdminWarehousePage() {
+export default async function AdminWarehousePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const sp = await searchParams;
   const locale = await getLocale();
   const text = locale === 'ru'
     ? { title: 'Прибывшие', description: 'Управление прибывшими посылками.' }
     : locale === 'en'
       ? { title: 'Arrived', description: 'Manage arrived parcels.' }
       : { title: 'ჩამოსული', description: 'ჩამოსული ამანათების მართვა.' };
-  const [parcels, tariffs, nbgRates] = await Promise.all([
-    prisma.parcel.findMany({
-      where: {
-        status: 'arrived',
-      },
-      orderBy: [{ originCountry: 'asc' }, { createdAt: 'desc' }],
-      include: adminParcelInclude,
-    }),
-    prisma.tariff.findMany({
-      where: { isActive: true, destinationCountry: 'GE' },
-      select: {
-        originCountry: true,
-        destinationCountry: true,
-        minWeight: true,
-        maxWeight: true,
-        pricePerKg: true,
-        currency: true,
-        isActive: true,
-      },
-    }) as Promise<TariffPick[]>,
+  const [{ parcels }, tariffs, nbgRates] = await Promise.all([
+    fetchAdminParcelsSsr('arrived', sp),
+    getCachedActiveTariffsForGeorgia(),
     fetchNbgRates().catch(() => null),
   ]);
 

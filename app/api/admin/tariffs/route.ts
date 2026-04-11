@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { z } from 'zod';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { revalidateActiveTariffsCache } from '@/lib/cachedTariffs';
 
 // All tariff data is stored only in Prisma (PostgreSQL). No other storage.
 
@@ -102,6 +103,7 @@ export async function POST(request: NextRequest) {
         isActive: data.isActive ?? true,
       },
     });
+    revalidateActiveTariffsCache();
     return NextResponse.json({ message: 'ტარიფი დაემატა', tariff }, { status: 201 });
   } catch (e) {
     if (e instanceof z.ZodError) {
@@ -145,6 +147,7 @@ export async function PUT(request: NextRequest) {
       },
     });
 
+    revalidateActiveTariffsCache();
     return NextResponse.json({ message: 'შენახულია', tariff }, { status: 200 });
   } catch (e) {
     if (e instanceof z.ZodError) {
@@ -169,6 +172,7 @@ export async function DELETE(request: NextRequest) {
     const body = await request.json();
     const { id } = z.object({ id: z.string().min(1) }).parse(body);
     await prisma.tariff.delete({ where: { id } });
+    revalidateActiveTariffsCache();
     return NextResponse.json({ message: 'ტარიფი წაიშალა' }, { status: 200 });
   } catch (e) {
     if (e instanceof z.ZodError) {

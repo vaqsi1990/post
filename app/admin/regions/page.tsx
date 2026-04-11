@@ -1,23 +1,21 @@
 import AdminShell from '../components/AdminShell';
-import prisma from '../../../lib/prisma';
 import ParcelsManager from '../components/ParcelsManager';
 import { getLocale } from 'next-intl/server';
-import { adminParcelInclude } from '@/lib/adminParcelInclude';
+import { fetchAdminParcelsSsr } from '@/lib/adminParcelSsr';
 
-export default async function AdminRegionsPage() {
+export default async function AdminRegionsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const sp = await searchParams;
   const locale = await getLocale();
   const text = locale === 'ru'
     ? { title: 'Регионы', description: 'Управление посылками в регионах/филиалах.' }
     : locale === 'en'
       ? { title: 'Regions', description: 'Manage parcels in regions/branches.' }
       : { title: 'რეგიონი', description: 'რეგიონებში/ფილიალებში მყოფი ამანათების მართვა.' };
-  const parcels = await prisma.parcel.findMany({
-    where: {
-      status: 'region',
-    },
-    orderBy: { createdAt: 'desc' },
-    include: adminParcelInclude,
-  });
+  const { parcels } = await fetchAdminParcelsSsr('region', sp);
 
   const formattedParcels = parcels.map((parcel) => ({
     ...parcel,

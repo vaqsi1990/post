@@ -2,7 +2,12 @@ import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 import { authOptions } from '../../lib/auth';
 import prisma from '../../lib/prisma';
-import { resolveTariffForParcel } from '../../lib/tariffLookup';
+import { getCachedActiveTariffsForGeorgia } from '@/lib/cachedTariffs';
+import {
+  DASHBOARD_PARCEL_PAGE_SIZE,
+  parseDashboardParcelPage,
+  parseDashboardParcelTab,
+} from '@/lib/dashboardParcelList';
 import { fetchNbgRates } from '../../lib/nbgRates';
 import { computeShippingGelBreakdown } from '../../lib/parcelShippingGel';
 import DashboardHeader from './components/DashboardHeader';
@@ -10,7 +15,14 @@ import UserParcelsTabs, { UserParcel } from './components/UserParcelsTabs';
 
 export const dynamic = 'force-dynamic';
 
-export default async function DashboardPage() {
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ status?: string; page?: string }>;
+}) {
+  const sp = await searchParams;
+  const parcelTab = parseDashboardParcelTab(sp.status);
+  const pageRequested = parseDashboardParcelPage(sp.page);
   const session = await getServerSession(authOptions);
 
   if (!session?.user) redirect('/login');
@@ -19,32 +31,39 @@ export default async function DashboardPage() {
   if (session.user.role === 'SUPPORT') redirect('/support');
 
   const userId = session.user.id;
-  const [parcels, tariffs, nbgRates] = await Promise.all([
-    prisma.parcel.findMany({
+
+  const [statusGroups, totalForTab, tariffs, nbgRates] = await Promise.all([
+    prisma.parcel.groupBy({
+      by: ['status'],
       where: { userId },
-      orderBy: { createdAt: 'desc' },
+      _count: { _all: true },
     }),
-    prisma.tariff.findMany({
-      where: { isActive: true, destinationCountry: 'GE' },
-      select: {
-        originCountry: true,
-        destinationCountry: true,
-        minWeight: true,
-        maxWeight: true,
-        pricePerKg: true,
-        currency: true,
-        isActive: true,
-      },
+    prisma.parcel.count({
+      where: { userId, status: parcelTab },
     }),
+    getCachedActiveTariffsForGeorgia(),
     fetchNbgRates().catch(() => null),
   ]);
 
+  const totalPages = Math.max(
+    1,
+    Math.ceil(totalForTab / DASHBOARD_PARCEL_PAGE_SIZE),
+  );
+  const page = Math.min(pageRequested, totalPages);
+
+  const parcels = await prisma.parcel.findMany({
+    where: { userId, status: parcelTab },
+    orderBy: { createdAt: 'desc' },
+    skip: (page - 1) * DASHBOARD_PARCEL_PAGE_SIZE,
+    take: DASHBOARD_PARCEL_PAGE_SIZE,
+  });
+
+  const statusCounts: Partial<Record<string, number>> = {};
+  for (const row of statusGroups) {
+    statusCounts[row.status] = row._count._all;
+  }
+
   const formattedParcels: UserParcel[] = parcels.map((parcel) => {
-    const resolved = resolveTariffForParcel(
-      tariffs,
-      parcel.originCountry,
-      parcel.weight,
-    );
     const breakdown = computeShippingGelBreakdown(
       { originCountry: parcel.originCountry, weight: parcel.weight },
       tariffs,
@@ -81,7 +100,14 @@ export default async function DashboardPage() {
       <div className="mx-auto mt-24 w-full max-w-7xl px-4">
         <main className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <DashboardHeader />
-          <UserParcelsTabs parcels={formattedParcels} />
+          <UserParcelsTabs
+            parcels={formattedParcels}
+            statusCounts={statusCounts}
+            selectedStatus={parcelTab}
+            page={page}
+            totalPages={totalPages}
+            dashboardBasePath="/dashboard"
+          />
         </main>
       </div>
     </div>

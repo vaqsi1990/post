@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import prisma from '@/lib/prisma';
+import { getCachedActiveTariffsForGeorgia } from '@/lib/cachedTariffs';
 import { fetchNbgRates } from '@/lib/nbgRates';
 import { computeShippingGelBreakdown } from '@/lib/parcelShippingGel';
 import type { TariffPick } from '@/lib/tariffLookup';
@@ -24,18 +24,7 @@ export async function GET(req: Request) {
 
   try {
     const [tariffs, nbgRates] = await Promise.all([
-      prisma.tariff.findMany({
-        where: { destinationCountry: 'GE', isActive: true },
-        select: {
-          originCountry: true,
-          destinationCountry: true,
-          minWeight: true,
-          maxWeight: true,
-          pricePerKg: true,
-          currency: true,
-          isActive: true,
-        },
-      }),
+      getCachedActiveTariffsForGeorgia(),
       fetchNbgRates().catch(() => null),
     ]);
 

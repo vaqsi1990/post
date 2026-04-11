@@ -1,26 +1,24 @@
 import AdminShell from '../components/AdminShell';
-import prisma from '../../../lib/prisma';
 import ParcelsManager from '../components/ParcelsManager';
 import Link from 'next/link';
 import { getLocale } from 'next-intl/server';
-import { adminParcelInclude } from '@/lib/adminParcelInclude';
+import { fetchAdminParcelsSsr } from '@/lib/adminParcelSsr';
 
 export const dynamic = 'force-dynamic';
 
-export default async function AdminIncomingPage() {
+export default async function AdminIncomingPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const sp = await searchParams;
   const locale = await getLocale();
   const text = locale === 'ru'
     ? { title: 'Поступившие', description: 'Управление поступившими посылками.', newParcel: 'Создать новую посылку' }
     : locale === 'en'
       ? { title: 'Incoming', description: 'Manage incoming parcels.', newParcel: 'Create new parcel' }
       : { title: 'მოლოდინში', description: 'მოლოდინში ამანათების მართვა.', newParcel: 'ახალი ამანათის შექმნა' };
-  const parcels = await prisma.parcel.findMany({
-    where: {
-      status: 'pending',
-    },
-    orderBy: [{ originCountry: 'asc' }, { createdAt: 'desc' }],
-    include: adminParcelInclude,
-  });
+  const { parcels } = await fetchAdminParcelsSsr('pending', sp);
 
   const formattedParcels = parcels.map((parcel) => ({
     ...parcel,

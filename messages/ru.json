@@ -443,6 +443,9 @@
       "courierSaveError": "Не удалось сохранить. Попробуйте снова.",
       "payableAmountPendingNotice": "Тариф не найден для этой страны и веса. Обратитесь к администрации.",
       "kg": "кг",
+      "paginationPrev": "Назад",
+      "paginationNext": "Вперёд",
+      "paginationPage": "Стр. {current} из {total}",
       "cols": {
         "tracking": "Трекинг",
         "customer": "Клиент",

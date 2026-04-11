@@ -3,10 +3,15 @@ import { redirect } from 'next/navigation';
 import { Link } from '@/i18n/navigation';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { getCachedActiveTariffsForGeorgia } from '@/lib/cachedTariffs';
+import {
+  DASHBOARD_PARCEL_PAGE_SIZE,
+  parseDashboardParcelPage,
+  parseDashboardParcelTab,
+} from '@/lib/dashboardParcelList';
 import {
   buildDashboardTariffRows,
   formKeyForTariffIso,
-  resolveTariffForParcel,
 } from '@/lib/tariffLookup';
 import { fetchNbgRates } from '@/lib/nbgRates';
 import { computeShippingGelBreakdown } from '@/lib/parcelShippingGel';
@@ -17,10 +22,16 @@ import { getTranslations } from 'next-intl/server';
 
 export const dynamic = 'force-dynamic';
 
-type Props = { params: Promise<{ locale: string }> };
+type Props = {
+  params: Promise<{ locale: string }>;
+  searchParams: Promise<{ status?: string; page?: string }>;
+};
 
-export default async function DashboardPage({ params }: Props) {
+export default async function DashboardPage({ params, searchParams }: Props) {
   const { locale } = await params;
+  const sp = await searchParams;
+  const parcelTab = parseDashboardParcelTab(sp.status);
+  const pageRequested = parseDashboardParcelPage(sp.page);
   const session = await getServerSession(authOptions);
   const tDashboard = await getTranslations('dashboard');
   const tParcels = await getTranslations('parcels');
@@ -33,29 +44,40 @@ export default async function DashboardPage({ params }: Props) {
 
   const userId = session.user.id;
 
-  const [parcels, tariffs, user, nbgRates] = await Promise.all([
-    prisma.parcel.findMany({
+  const [statusGroups, totalForTab, tariffs, user, nbgRates] = await Promise.all([
+    prisma.parcel.groupBy({
+      by: ['status'],
       where: { userId },
-      orderBy: { createdAt: 'desc' },
+      _count: { _all: true },
     }),
-    prisma.tariff.findMany({
-      where: { isActive: true, destinationCountry: 'GE' },
-      select: {
-        originCountry: true,
-        destinationCountry: true,
-        minWeight: true,
-        maxWeight: true,
-        pricePerKg: true,
-        currency: true,
-        isActive: true,
-      },
+    prisma.parcel.count({
+      where: { userId, status: parcelTab },
     }),
+    getCachedActiveTariffsForGeorgia(),
     prisma.user.findUnique({
       where: { id: userId },
       select: { balance: true, firstName: true, lastName: true, roomNumber: true },
     }),
     fetchNbgRates().catch(() => null),
   ]);
+
+  const totalPages = Math.max(
+    1,
+    Math.ceil(totalForTab / DASHBOARD_PARCEL_PAGE_SIZE),
+  );
+  const page = Math.min(pageRequested, totalPages);
+
+  const parcels = await prisma.parcel.findMany({
+    where: { userId, status: parcelTab },
+    orderBy: { createdAt: 'desc' },
+    skip: (page - 1) * DASHBOARD_PARCEL_PAGE_SIZE,
+    take: DASHBOARD_PARCEL_PAGE_SIZE,
+  });
+
+  const statusCounts: Partial<Record<string, number>> = {};
+  for (const row of statusGroups) {
+    statusCounts[row.status] = row._count._all;
+  }
 
   const intlLocale =
     locale === 'ka' ? 'ka-GE' : locale === 'ru' ? 'ru-RU' : 'en-US';
@@ -93,11 +115,6 @@ export default async function DashboardPage({ params }: Props) {
   });
 
   const formattedParcels: UserParcel[] = parcels.map((parcel) => {
-    const resolved = resolveTariffForParcel(
-      tariffs,
-      parcel.originCountry,
-      parcel.weight,
-    );
     const breakdown = computeShippingGelBreakdown(
       { originCountry: parcel.originCountry, weight: parcel.weight },
       tariffs,
@@ -177,7 +194,14 @@ export default async function DashboardPage({ params }: Props) {
           </div>
           <DashboardAddressesSection />
           
-          <UserParcelsTabs parcels={formattedParcels} />
+          <UserParcelsTabs
+            parcels={formattedParcels}
+            statusCounts={statusCounts}
+            selectedStatus={parcelTab}
+            page={page}
+            totalPages={totalPages}
+            dashboardBasePath="/dashboard"
+          />
         </main>
       </div>
     </div>

@@ -47,9 +47,30 @@ function totalDue(p: UserParcel): number {
 
 type Props = {
   parcels: UserParcel[];
+  /** ტაბებზე რაოდენობები — სრული სია DB-დან (groupBy), არა მხოლოდ მიმდინარე გვერდი */
+  statusCounts: Partial<Record<string, number>>;
+  selectedStatus: string;
+  page: number;
+  totalPages: number;
+  /** `next-intl` Link-ს ლოკალი თავად უმატებს — მხოლოდ გზა ლოკალის გარეშე, მაგ. `/dashboard` */
+  dashboardBasePath: string;
 };
 
-export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
+function listHref(base: string, status: string, pageNum: number) {
+  const q = new URLSearchParams();
+  q.set('status', status);
+  q.set('page', String(pageNum));
+  return `${base}?${q.toString()}`;
+}
+
+export default function UserParcelsTabs({
+  parcels: parcelsProp,
+  statusCounts,
+  selectedStatus,
+  page,
+  totalPages,
+  dashboardBasePath,
+}: Props) {
   const tStatus = useTranslations('trackingPage.status');
   const t = useTranslations('dashboard.parcelsTabs');
   const statusOptions = useMemo(
@@ -64,7 +85,6 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
       ] as { value: string; label: string }[],
     [tStatus],
   );
-  const [activeStatus, setActiveStatus] = useState<string>('pending');
   const [parcels, setParcels] = useState<UserParcel[]>(parcelsProp);
   const [courierSavingId, setCourierSavingId] = useState<string | null>(null);
   const [courierErrorId, setCourierErrorId] = useState<string | null>(null);
@@ -73,9 +93,9 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
     setParcels(parcelsProp);
   }, [parcelsProp]);
 
-  const filtered = parcels.filter((p) => p.status === activeStatus);
-  const showCourierColumn = activeStatus === 'arrived';
-  const showEditColumn = activeStatus === 'pending';
+  const filtered = parcels;
+  const showCourierColumn = selectedStatus === 'arrived';
+  const showEditColumn = selectedStatus === 'pending';
   const hasAnyAmountDue = filtered.some((p) => totalDue(p) > 0);
   /** წითელი გადახდა, როცა სულ გადასახდელი > 0 */
   const showPaymentColumn = showCourierColumn && hasAnyAmountDue;
@@ -140,14 +160,14 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
       {/* Status tabs */}
       <div className="flex flex-wrap gap-2 rounded-xl border border-gray-200 bg-gray-50 p-2 text-[14px] md:text-[15px]">
         {statusOptions.map((status) => {
-          const isActive = activeStatus === status.value;
-          const count = parcels.filter((p) => p.status === status.value).length;
+          const isActive = selectedStatus === status.value;
+          const count = statusCounts[status.value] ?? 0;
 
           return (
-            <button
+            <Link
               key={status.value}
-              type="button"
-              onClick={() => setActiveStatus(status.value)}
+              href={listHref(dashboardBasePath, status.value, 1)}
+              scroll={false}
               className={`inline-flex items-center gap-2 rounded-lg px-3 py-1.5 transition-colors ${isActive
                   ? 'bg-sky-900 text-white'
                   : 'bg-white text-gray-800 hover:bg-gray-100'
@@ -160,14 +180,14 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
               >
                 {count}
               </span>
-            </button>
+            </Link>
           );
         })}
       </div>
 
       {/* Desktop table */}
       <div
-        key={activeStatus}
+        key={selectedStatus}
         className="hidden overflow-x-auto rounded-xl border border-gray-200 bg-white md:block"
       >
         <table className="min-w-full divide-y divide-gray-200">
@@ -351,6 +371,40 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
           </tbody>
         </table>
       </div>
+
+      {totalPages > 1 && (
+        <div className="flex flex-wrap items-center justify-center gap-3 py-2 text-[14px] text-gray-800">
+          {page > 1 ? (
+            <Link
+              href={listHref(dashboardBasePath, selectedStatus, page - 1)}
+              scroll={false}
+              className="rounded-lg border border-gray-300 bg-white px-4 py-2 font-medium hover:bg-gray-50"
+            >
+              {t('paginationPrev')}
+            </Link>
+          ) : (
+            <span className="rounded-lg border border-transparent px-4 py-2 text-gray-400">
+              {t('paginationPrev')}
+            </span>
+          )}
+          <span className="tabular-nums text-[15px] font-medium text-gray-700">
+            {t('paginationPage', { current: page, total: totalPages })}
+          </span>
+          {page < totalPages ? (
+            <Link
+              href={listHref(dashboardBasePath, selectedStatus, page + 1)}
+              scroll={false}
+              className="rounded-lg border border-gray-300 bg-white px-4 py-2 font-medium hover:bg-gray-50"
+            >
+              {t('paginationNext')}
+            </Link>
+          ) : (
+            <span className="rounded-lg border border-transparent px-4 py-2 text-gray-400">
+              {t('paginationNext')}
+            </span>
+          )}
+        </div>
+      )}
 
       {/* Mobile cards */}
       <div className="space-y-3 md:hidden">

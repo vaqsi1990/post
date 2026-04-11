@@ -3,7 +3,8 @@ import { getServerSession } from 'next-auth';
 import { z } from 'zod';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
-import { resolveTariffForParcel, type TariffPick } from '@/lib/tariffLookup';
+import { getCachedActiveTariffsForGeorgia } from '@/lib/cachedTariffs';
+import { resolveTariffForParcel } from '@/lib/tariffLookup';
 import { convertToGel, fetchNbgRates } from '@/lib/nbgRates';
 
 export const dynamic = 'force-dynamic';
@@ -122,6 +123,8 @@ export async function PATCH(
       );
     }
 
+    const tariffsForCalc = await getCachedActiveTariffsForGeorgia();
+
     // Recalculate shippingAmount if weight/origin changed (or if it exists and we want to keep consistent).
     const updatedRow = await prisma.$transaction(async (tx) => {
       const updated = await tx.parcel.update({
@@ -158,19 +161,11 @@ export async function PATCH(
 
       let shippingAmount: number | null = null;
       if (updated.weight != null) {
-        const tariffs = (await tx.tariff.findMany({
-          where: { isActive: true, destinationCountry: 'GE' },
-          select: {
-            originCountry: true,
-            destinationCountry: true,
-            minWeight: true,
-            maxWeight: true,
-            pricePerKg: true,
-            currency: true,
-            isActive: true,
-          },
-        })) as TariffPick[];
-        const resolved = resolveTariffForParcel(tariffs, updated.originCountry, updated.weight);
+        const resolved = resolveTariffForParcel(
+          tariffsForCalc,
+          updated.originCountry,
+          updated.weight,
+        );
         if (!resolved) {
           // Keep existing if no tariff now; still allow edit (e.g., editing comment).
           shippingAmount = updated.shippingAmount ?? null;

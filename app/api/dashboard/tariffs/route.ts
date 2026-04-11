@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import prisma from '@/lib/prisma';
+import { getCachedActiveTariffsForGeorgia } from '@/lib/cachedTariffs';
 import { convertToGel, fetchNbgRates } from '@/lib/nbgRates';
 
 export const dynamic = 'force-dynamic';
@@ -50,12 +50,11 @@ export async function GET() {
 
   try {
     const nbgRates = await fetchNbgRates().catch(() => null);
-    const tariffs = await prisma.tariff.findMany({
-      where: {
-        destinationCountry: 'GE',
-        isActive: true,
-      },
-      orderBy: [{ originCountry: 'asc' }, { minWeight: 'asc' }],
+    const tariffsRaw = await getCachedActiveTariffsForGeorgia();
+    const tariffs = [...tariffsRaw].sort((a, b) => {
+      const o = a.originCountry.localeCompare(b.originCountry);
+      if (o !== 0) return o;
+      return a.minWeight - b.minWeight;
     });
 
     const byFormCountry: Record<string, number> = {};

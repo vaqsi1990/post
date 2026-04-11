@@ -1,12 +1,16 @@
 import AdminShell from '../components/AdminShell';
-import prisma from '@/lib/prisma';
 import ParcelsManager from '../components/ParcelsManager';
 import { getLocale } from 'next-intl/server';
-import { adminParcelInclude } from '@/lib/adminParcelInclude';
+import { fetchAdminParcelsSsr } from '@/lib/adminParcelSsr';
 
 export const dynamic = 'force-dynamic';
 
-export default async function AdminStoppedPage() {
+export default async function AdminStoppedPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const sp = await searchParams;
   const locale = await getLocale();
   const text =
     locale === 'ru'
@@ -24,11 +28,7 @@ export default async function AdminStoppedPage() {
             description: 'გაჩერებული სტატუსის ამანათები.',
           };
 
-  const parcels = await prisma.parcel.findMany({
-    where: { status: 'stopped' },
-    orderBy: [{ originCountry: 'asc' }, { createdAt: 'desc' }],
-    include: adminParcelInclude,
-  });
+  const { parcels } = await fetchAdminParcelsSsr('stopped', sp);
 
   const formattedParcels = parcels.map((parcel) => ({
     ...parcel,

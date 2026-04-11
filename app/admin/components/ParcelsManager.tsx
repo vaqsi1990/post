@@ -1,10 +1,13 @@
 'use client';
 
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
+import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useLocale } from 'next-intl';
+import { ADMIN_PARCEL_PAGE_SIZE } from '@/lib/adminParcelList';
+import { parcelOriginKey } from '@/lib/parcelOriginKey';
 import ParcelsTable from './ParcelsTable';
-import IncomingCountryHub, { parcelOriginKey } from './IncomingCountryHub';
+import IncomingCountryHub from './IncomingCountryHub';
 
 type Parcel = {
   id: string;
@@ -66,11 +69,16 @@ function ParcelsManagerWithCountryUrl(props: ParcelsManagerProps) {
   const onSelectCountry = (key: string) => {
     const p = new URLSearchParams(searchParams.toString());
     p.set('country', key);
+    p.set('page', '1');
     router.replace(`${pathname}?${p.toString()}`, { scroll: false });
   };
 
   const onClearCountry = () => {
-    router.replace(pathname, { scroll: false });
+    const p = new URLSearchParams(searchParams.toString());
+    p.delete('country');
+    p.delete('page');
+    const qs = p.toString();
+    router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
   };
 
   return (
@@ -101,15 +109,40 @@ function ParcelsManagerContent({
   onClearCountry,
 }: ParcelsManagerContentProps) {
   const locale = useLocale();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const page = Math.max(
+    1,
+    parseInt(searchParams.get('page') || '1', 10) || 1,
+  );
   const isEn = locale === 'en';
   const isRu = locale === 'ru';
   const backLabel =
     isRu ? '← Все страны' : isEn ? '← All countries' : '← ყველა ქვეყანა';
+  const prevLabel = isRu ? 'Назад' : isEn ? 'Previous' : 'წინა';
+  const nextLabel = isRu ? 'Вперёд' : isEn ? 'Next' : 'შემდეგი';
+  const pageLabel = (cur: number, tot: number) =>
+    isRu
+      ? `Стр. ${cur} из ${tot}`
+      : isEn
+        ? `Page ${cur} of ${tot}`
+        : `${cur} / ${tot}`;
 
   const [parcels, setParcels] = useState(initialParcels);
+  const [totalPages, setTotalPages] = useState(1);
+  const [originCounts, setOriginCounts] = useState<Record<
+    string,
+    number
+  > | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const isInitialMount = useRef(true);
+
+  const buildPageHref = (nextPage: number) => {
+    const p = new URLSearchParams(searchParams.toString());
+    p.set('page', String(nextPage));
+    return `${pathname}?${p.toString()}`;
+  };
 
   useEffect(() => {
     const fetchParcels = async (showLoading = true) => {
@@ -117,7 +150,14 @@ function ParcelsManagerContent({
         setIsLoading(true);
       }
       try {
-        const res = await fetch(`/api/admin/parcels?status=${currentStatus}`, {
+        const params = new URLSearchParams();
+        params.set('status', currentStatus);
+        params.set('page', String(page));
+        params.set('limit', String(ADMIN_PARCEL_PAGE_SIZE));
+        if (countryFilter) {
+          params.set('country', countryFilter);
+        }
+        const res = await fetch(`/api/admin/parcels?${params.toString()}`, {
           cache: 'no-store',
           headers: {
             'Cache-Control': 'no-cache, no-store, must-revalidate',
@@ -128,6 +168,12 @@ function ParcelsManagerContent({
         const data = await res.json();
         if (data.parcels) {
           setParcels(data.parcels);
+        }
+        if (typeof data.totalPages === 'number') {
+          setTotalPages(Math.max(1, data.totalPages));
+        }
+        if (data.originCounts && typeof data.originCounts === 'object') {
+          setOriginCounts(data.originCounts as Record<string, number>);
         }
       } catch (error) {
         console.error('Failed to fetch parcels:', error);
@@ -174,7 +220,7 @@ function ParcelsManagerContent({
       }
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, [currentStatus]);
+  }, [currentStatus, page, countryFilter]);
 
   const handleParcelUpdated = (updatedParcel: Parcel) => {
     if (updatedParcel.status !== currentStatus) {
@@ -207,7 +253,11 @@ function ParcelsManagerContent({
         </div>
       )}
       {showMainHub ? (
-        <IncomingCountryHub parcels={parcels} onSelectCountry={onSelectCountry!} />
+        <IncomingCountryHub
+          parcels={parcels}
+          countsByOrigin={originCounts}
+          onSelectCountry={onSelectCountry!}
+        />
       ) : (
         <>
           {showCountryParcels ? (
@@ -227,6 +277,39 @@ function ParcelsManagerContent({
             allowDelete={allowDelete}
             onParcelUpdated={handleParcelUpdated}
           />
+          {totalPages > 1 && (
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-[14px] text-gray-800">
+              {page > 1 ? (
+                <Link
+                  href={buildPageHref(page - 1)}
+                  scroll={false}
+                  className="rounded-lg border border-gray-300 bg-white px-4 py-2 font-medium hover:bg-gray-50"
+                >
+                  {prevLabel}
+                </Link>
+              ) : (
+                <span className="rounded-lg border border-transparent px-4 py-2 text-gray-400">
+                  {prevLabel}
+                </span>
+              )}
+              <span className="tabular-nums text-[15px] font-medium text-gray-700">
+                {pageLabel(page, totalPages)}
+              </span>
+              {page < totalPages ? (
+                <Link
+                  href={buildPageHref(page + 1)}
+                  scroll={false}
+                  className="rounded-lg border border-gray-300 bg-white px-4 py-2 font-medium hover:bg-gray-50"
+                >
+                  {nextLabel}
+                </Link>
+              ) : (
+                <span className="rounded-lg border border-transparent px-4 py-2 text-gray-400">
+                  {nextLabel}
+                </span>
+              )}
+            </div>
+          )}
         </>
       )}
     </div>
@@ -241,5 +324,9 @@ export default function ParcelsManager(props: ParcelsManagerProps) {
       </Suspense>
     );
   }
-  return <ParcelsManagerContent {...props} />;
+  return (
+    <Suspense fallback={<HubSuspenseFallback />}>
+      <ParcelsManagerContent {...props} />
+    </Suspense>
+  );
 }

@@ -324,7 +324,7 @@ export default function Tariffs() {
             <div className="-mx-px overflow-x-auto">
               <table className="w-full min-w-[340px] sm:min-w-[280px]">
                 <thead>
-                  <tr className="border-b   border-violet-200/70 bg-gradient-to-b from-[#f7f1ff] via-[#f6f3ff] to-[#f1f5ff] via-white ">
+                  <tr className="  bg-sky-100 ">
                     <th className="px-2 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-[#3a5bff] sm:px-4 sm:py-4 sm:text-xs md:px-8 md:py-5 md:text-[18px] md:normal-case md:tracking-normal">
                       {t('tariffCountry')}
                     </th>
@@ -424,9 +424,9 @@ export default function Tariffs() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={viewport}
               transition={{ duration: 0.45, delay: 0.25, ease: 'easeOut' }}
-              className="rounded-[18px] border border-violet-200/70 bg-gradient-to-b from-[#f7f1ff] via-[#f6f3ff] to-[#f1f5ff] p-3.5 shadow-[0_20px_40px_-24px_rgba(130,76,255,0.7)] sm:rounded-[20px] sm:p-4"
+              className="rounded-[18px] bg-sky-100 p-3.5 shadow-[0_20px_40px_-24px_rgba(130,76,255,0.7)] sm:rounded-[20px] sm:p-4"
             >
-            <p className="mb-2 text-sm font-semibold text-violet-700">{t('tariffCountry')}</p>
+            <p className="mb-2 text-sm font-semibold text-[#3a5bff]">{t('tariffCountry')}</p>
             <div className="relative">
               {SelectedCountryFlag ? (
                 <SelectedCountryFlag

@@ -2,14 +2,20 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { z } from 'zod';
 import { authOptions } from '@/lib/auth';
+import type { Prisma } from '@/app/generated/prisma/client';
 import prisma from '@/lib/prisma';
+import {
+  ADMIN_PARCEL_PAGE_SIZE,
+  adminParcelsOrderBy,
+  parseAdminParcelPage,
+} from '@/lib/adminParcelList';
+import { getCachedActiveTariffsForGeorgia } from '@/lib/cachedTariffs';
+import { UNKNOWN_COUNTRY_KEY, parcelOriginKey } from '@/lib/parcelOriginKey';
 import { recordParcelTrackingEvent } from '@/lib/parcelTrackingLog';
 import { utapi } from '@/lib/uploadthing';
 import { adminParcelInclude } from '@/lib/adminParcelInclude';
 import { convertToGel, fetchNbgRates } from '@/lib/nbgRates';
 import { computeShippingGelBreakdown } from '@/lib/parcelShippingGel';
-import type { TariffPick } from '@/lib/tariffLookup';
-
 export const dynamic = 'force-dynamic';
 
 const allowedStatuses = [
@@ -111,6 +117,14 @@ function isParcelStaff(role: string | undefined): role is 'ADMIN' | 'EMPLOYEE' |
   return role === 'ADMIN' || role === 'EMPLOYEE' || role === 'SUPPORT';
 }
 
+function countryFilterWhere(country: string | null): Prisma.ParcelWhereInput | undefined {
+  if (!country) return undefined;
+  if (country === UNKNOWN_COUNTRY_KEY) {
+    return { OR: [{ originCountry: null }, { originCountry: '' }] };
+  }
+  return { originCountry: { equals: country, mode: 'insensitive' } };
+}
+
 export async function GET(request: NextRequest) {
   const session = await getServerSession(authOptions);
 
@@ -129,26 +143,50 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid status' }, { status: 400 });
   }
 
-  const [parcels, tariffs, nbgRates] = await Promise.all([
+  const page = parseAdminParcelPage(searchParams.get('page') ?? undefined);
+  const limitRaw = parseInt(searchParams.get('limit') ?? '', 10);
+  const limit = Math.min(
+    100,
+    Math.max(
+      1,
+      Number.isFinite(limitRaw) && limitRaw > 0 ? limitRaw : ADMIN_PARCEL_PAGE_SIZE,
+    ),
+  );
+  const countryParam = searchParams.get('country')?.trim() || null;
+
+  const countryWhere = countryFilterWhere(countryParam);
+  const where: Prisma.ParcelWhereInput = {
+    status,
+    ...(countryWhere ? countryWhere : {}),
+  };
+
+  const orderBy = adminParcelsOrderBy(status);
+
+  const [totalCount, parcels, originGroups, tariffs, nbgRates] = await Promise.all([
+    prisma.parcel.count({ where }),
     prisma.parcel.findMany({
-      where: { status },
-      orderBy: [{ originCountry: 'asc' }, { createdAt: 'desc' }],
+      where,
+      orderBy,
+      skip: (page - 1) * limit,
+      take: limit,
       include: adminParcelInclude,
     }),
-    prisma.tariff.findMany({
-      where: { isActive: true, destinationCountry: 'GE' },
-      select: {
-        originCountry: true,
-        destinationCountry: true,
-        minWeight: true,
-        maxWeight: true,
-        pricePerKg: true,
-        currency: true,
-        isActive: true,
-      },
-    }) as Promise<TariffPick[]>,
+    prisma.parcel.groupBy({
+      by: ['originCountry'],
+      where: { status },
+      _count: { _all: true },
+    }),
+    getCachedActiveTariffsForGeorgia(),
     fetchNbgRates().catch(() => null),
   ]);
+
+  const originCounts: Record<string, number> = {};
+  for (const g of originGroups) {
+    const k = parcelOriginKey(g.originCountry);
+    originCounts[k] = (originCounts[k] ?? 0) + g._count._all;
+  }
+
+  const totalPages = Math.max(1, Math.ceil(totalCount / limit));
 
   return NextResponse.json(
     {
@@ -167,6 +205,11 @@ export async function GET(request: NextRequest) {
             breakdown != null ? breakdown.formula : null,
         };
       }),
+      page,
+      pageSize: limit,
+      totalCount,
+      totalPages,
+      originCounts,
     },
     {
       headers: {
