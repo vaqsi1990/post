@@ -21,7 +21,7 @@ export default async function SupportIncomingPage() {
         : {
             title: 'მოლოდინში',
             description: 'მოლოდინში ამანათების მართვა.',
-            newParcel: 'ახალი ამანათის შექმნა',
+            newParcel: 'ამანათის დამატება',
           };
 
   const parcels = await prisma.parcel.findMany({

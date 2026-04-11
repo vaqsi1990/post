@@ -27,7 +27,7 @@ export default async function AdminInWarehousePage({
           }
         : {
             title: 'საწყობში',
-            description: 'საწყობში მყოფი ამანათების მართვა.',
+            description: ' მყოფი ამანათების მართვა.',
           };
 
   const { parcels } = await fetchAdminParcelsSsr('in_warehouse', sp);

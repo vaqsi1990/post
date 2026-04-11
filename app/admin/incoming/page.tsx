@@ -17,7 +17,7 @@ export default async function AdminIncomingPage({
     ? { title: 'Поступившие', description: 'Управление поступившими посылками.', newParcel: 'Создать новую посылку' }
     : locale === 'en'
       ? { title: 'Incoming', description: 'Manage incoming parcels.', newParcel: 'Create new parcel' }
-      : { title: 'მოლოდინში', description: 'მოლოდინში ამანათების მართვა.', newParcel: 'ახალი ამანათის შექმნა' };
+      : { title: 'მოლოდინში', description: 'მოლოდინში ამანათების მართვა.', newParcel: 'ამანათის დამატება' };
   const { parcels } = await fetchAdminParcelsSsr('pending', sp);
 
   const formattedParcels = parcels.map((parcel) => ({

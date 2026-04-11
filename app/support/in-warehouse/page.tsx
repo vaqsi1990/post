@@ -13,7 +13,7 @@ export default async function SupportInWarehousePage() {
       ? { title: 'На складе', description: 'Управление посылками на складе.' }
       : locale === 'en'
         ? { title: 'In warehouse', description: 'Manage parcels in warehouse.' }
-        : { title: 'საწყობში', description: 'საწყობში მყოფი ამანათების მართვა.' };
+        : { title: 'საწყობში', description: ' მყოფი ამანათების მართვა.' };
 
   const parcels = await prisma.parcel.findMany({
     where: { status: 'in_warehouse' },

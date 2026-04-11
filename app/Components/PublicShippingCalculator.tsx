@@ -4,7 +4,7 @@ import { useCallback, useState } from 'react';
 import { useTranslations } from 'next-intl';
 
 /** საერთაშორისო საკურიერო პრაქტიკა: სმ³ → კგ (ჩვეულებრივ 5000 ან 6000) */
-const CM3_PER_KG_VOLUMETRIC = 5000;
+const CM3_PER_KG_VOLUMETRIC = 6000;
 
 function parseDecimal(s: string): number {
   const n = parseFloat(s.replace(',', '.').trim());
