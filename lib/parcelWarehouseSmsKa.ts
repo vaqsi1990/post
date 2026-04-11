@@ -1,16 +1,16 @@
 import { FORM_TO_TARIFF_COUNTRY } from '@/lib/tariffLookup';
 
-/** ფორმის კოდი (uk, us, …) → ქართული ფრაზა «რომელი ქვეყნის საწყობიდან» (SMS-ისთვის) */
+/** ფორმის კოდი → ქვეყნის მესამე პირი SMS-ში: «მიღებულია [აქ] ქვეყნის საწყობში» (მხოლოდ `in_warehouse`) */
 const WAREHOUSE_FROM_PHRASE_KA: Record<string, string> = {
-  uk: 'დიდი ბრიტანეთიდან',
-  us: 'ამერიკიდან',
-  cn: 'ჩინეთიდან',
-  it: 'იტალიიდან',
-  gr: 'საბერძნეთიდან',
-  es: 'ესპანეთიდან',
-  fr: 'საფრანგეთიდან',
-  de: 'გერმანიიდან',
-  tr: 'თურქეთიდან',
+  uk: 'დიდი ბრიტანეთის',
+  us: 'ამერიკის',
+  cn: 'ჩინეთის',
+  it: 'იტალიის',
+  gr: 'საბერძნეთის',
+  es: 'ესპანეთის',
+  fr: 'საფრანგეთის',
+  de: 'გერმანიის',
+  tr: 'თურქეთის',
 };
 
 const ISO_TO_FORM: Record<string, string> = Object.fromEntries(
@@ -21,7 +21,7 @@ const ISO_TO_FORM: Record<string, string> = Object.fromEntries(
 );
 
 /**
- * SMS ტექსტისთვის: საიდან არის ამანათი (საერთაშორისო საწყობი ქვეყნის მიხედვით).
+ * ქვეყნის ნაწილი "X ქვეყნის საწყობში" — მხოლოდ `in_warehouse` SMS-ში.
  * null თუ ქვეყანა ცარიელია ან უცნობი კოდია.
  */
 export function warehouseFromPhraseKa(

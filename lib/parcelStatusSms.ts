@@ -17,12 +17,17 @@ function smsBodyForStatus(
   warehousePhrase: string | null,
 ): string | null {
   const code = trackingNumber.trim();
+  if (status === 'in_warehouse') {
+    if (warehousePhrase) {
+      return `კომპანია Postifly გაცნობებთ, რომ თქვენი ამანათი კოდით ${code} მიღებულია ${warehousePhrase}  საწყობში`;
+    }
+    return `კომპანია Postifly გაცნობებთ, რომ თქვენი ამანათი კოდით ${code} მიღებულია საწყობში`;
+  }
+
   const core = warehousePhrase
     ? `თქვენი ამანათი ${warehousePhrase}, კოდით ${code}`
     : `თქვენი ამანათი კოდით ${code}`;
   switch (status) {
-    case 'in_warehouse':
-      return `კომპანია Postifly გაცნობებთ, რომ ${core} მიღებულია საწყობში`;
     case 'in_transit':
       return `კომპანია Postifly გაცნობებთ, რომ ${core} გზაშია`;
     case 'arrived':
@@ -45,7 +50,7 @@ export async function notifyParcelOwnerStatusSms(params: {
   newStatus: string;
   trackingNumber: string;
   ownerPhone: string | null | undefined;
-  /** საერთაშორისო საწყობის ქვეყანა (ფორმის კოდი ან ISO, მაგ. uk / GB) */
+  /** საერთაშორისო საწყობის ქვეყანა — SMS-ში ჩანს მხოლოდ `in_warehouse` სტატუსზე */
   originCountry?: string | null;
 }): Promise<void> {
   const { parcelId, previousStatus, newStatus, trackingNumber, ownerPhone, originCountry } =
@@ -53,7 +58,8 @@ export async function notifyParcelOwnerStatusSms(params: {
   if (previousStatus === newStatus) return;
   if (!SMS_ON_STATUSES.has(newStatus)) return;
 
-  const warehousePhrase = warehouseFromPhraseKa(originCountry);
+  const warehousePhrase =
+    newStatus === 'in_warehouse' ? warehouseFromPhraseKa(originCountry) : null;
   const text = smsBodyForStatus(newStatus, trackingNumber, warehousePhrase);
   if (!text) return;
 
