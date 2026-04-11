@@ -1,102 +1,94 @@
 "use client";
 
-import Image from "next/image";
 import React from "react";
 import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
+import type { IconType } from "react-icons";
+import {
+  FaBolt,
+  FaDollarSign,
+  FaLocationDot,
+  FaShieldHalved,
+} from "react-icons/fa6";
+
+const FEATURES: {
+  titleKey: "whyCard1Title" | "whyCard2Title" | "whyCard3Title" | "whyCard4Title";
+  descKey:
+    | "whyCard1Description"
+    | "whyCard2Description"
+    | "whyCard3Description"
+    | "whyCard4Description";
+  Icon: IconType;
+  iconWrap: string;
+}[] = [
+  {
+    titleKey: "whyCard1Title",
+    descKey: "whyCard1Description",
+    Icon: FaBolt,
+    iconWrap: "bg-sky-100 text-sky-600",
+  },
+  {
+    titleKey: "whyCard2Title",
+    descKey: "whyCard2Description",
+    Icon: FaDollarSign,
+    iconWrap: "bg-amber-100 text-amber-600",
+  },
+  {
+    titleKey: "whyCard3Title",
+    descKey: "whyCard3Description",
+    Icon: FaShieldHalved,
+    iconWrap: "bg-emerald-100 text-emerald-600",
+  },
+  {
+    titleKey: "whyCard4Title",
+    descKey: "whyCard4Description",
+    Icon: FaLocationDot,
+    iconWrap: "bg-rose-100 text-rose-600",
+  },
+];
 
 const Why = () => {
   const t = useTranslations("home");
-  const containerVariants = {
-    hidden: { opacity: 1 },
-    show: {
-      opacity: 1,
-      transition: {
-        delayChildren: 0.08,
-        staggerChildren: 0.12,
-      },
-    },
-  };
-
-  const cardVariants = {
-    hidden: { opacity: 0, y: 36, rotate: -1, filter: "blur(6px)" },
-    show: {
-      opacity: 1,
-      y: 0,
-      rotate: 0,
-      filter: "blur(0px)",
-      transition: {
-        duration: 0.5,
-      },
-    },
-  };
-
-  const cards = [
-    {
-      title: t("whyCard1Title"),
-      description: t("whyCard1Description"),
-      image: "/why/1.png",
-      alt: t("whyCard1Title"),
-    },
-    {
-      title: t("whyCard2Title"),
-      description: t("whyCard2Description"),
-      image: "/why/2.png",
-      alt: t("whyCard2Title"),
-    },
-    {
-      title: t("whyCard3Title"),
-      description: t("whyCard3Description"),
-      image: "/why/3.png",
-      alt: t("whyCard3Title"),
-    },
-  ];
 
   return (
-    <>
-      <section className=" mt-10 flex w-full flex-col items-center justify-center overflow-hidden bg-white px-4 pb-0 md:px-0 md:pb-14">
-        <div className="mb-8 text-center">
-          <h2 className="text-2xl font-extrabold tracking-tight text-black md:text-3xl">
-            {t("whyTitle")}
-          </h2>
-        </div>
+    <section
+      className="pointer-events-none absolute bottom-0 left-0 right-0 z-30 mt-0 w-full -translate-y-1/2 px-4 pb-0 md:px-5"
+      aria-labelledby="why-heading"
+    >
+      
 
-        <motion.div
-          className="grid w-full max-w-7xl grid-cols-1 gap-4 sm:gap-5 md:grid-cols-3"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, amount: 0.2 }}
-        >
-          {cards.map((card) => (
-            <motion.article
-              key={card.title}
-              className="rounded-[24px] border border-[#e8e9ff] bg-[#f7f8ff] px-4 pb-6 pt-5 text-center shadow-[0_14px_30px_-24px_rgba(58,91,255,0.55)] transition duration-300 sm:rounded-[28px] sm:px-5 sm:pb-7 sm:pt-6"
-              variants={cardVariants}
-              whileHover={{ y: -8, scale: 1.02, transition: { duration: 0.24 } }}
+      <motion.div
+        className="pointer-events-auto mx-auto w-full max-w-6xl overflow-hidden rounded-2xl border border-[#e8eaf0] bg-[#f5f7fa] shadow-[0_1px_3px_rgba(15,23,42,0.06)]"
+        initial={{ opacity: 0, y: 12 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.25 }}
+        transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <div className="flex flex-col  md:flex-row ">
+          {FEATURES.map(({ titleKey, descKey, Icon, iconWrap }) => (
+            <div
+              key={titleKey}
+              className="flex min-w-0 flex-1 items-center gap-3 px-4 py-3.5 sm:gap-3.5 sm:px-5 sm:py-4"
             >
-              <div className="relative mx-auto mb-4 h-[180px] w-[180px] sm:h-[220px] sm:w-[220px] md:h-[250px] md:w-[250px]">
-                <Image
-                  src={card.image}
-                  alt={card.alt}
-                  fill
-                  className="object-contain transition duration-300 group-hover:scale-[1.06]"
-                />
+              <div
+                className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full sm:h-11 sm:w-11 ${iconWrap}`}
+                aria-hidden
+              >
+                <Icon className="h-[1.1rem] w-[1.1rem] sm:h-5 sm:w-5" />
               </div>
-              <h3 className="text-[20px] font-extrabold leading-tight text-[#3a5bff] sm:text-[24px] md:text-[28px]">
-                {card.title}
-              </h3>
-              <div className="mx-auto my-4 h-px w-4/5 bg-[#d8daf5]" />
-              <p className="mx-auto max-w-full text-base leading-snug text-black sm:max-w-[24ch] sm:text-[19px] md:max-w-[22ch] md:text-[22px]">
-                {card.description}
-              </p>
-            </motion.article>
+              <div className="min-w-0 text-left">
+                <h3 className="text-sm font-bold leading-snug text-[#1a2550] sm:text-[0.95rem] md:text-base">
+                  {t(titleKey)}
+                </h3>
+                <p className="mt-0.5 text-xs leading-snug text-[#6b7280] sm:text-[0.8125rem] md:text-sm">
+                  {t(descKey)}
+                </p>
+              </div>
+            </div>
           ))}
-        </motion.div>
-      </section>
-
-
-    </>
+        </div>
+      </motion.div>
+    </section>
   );
 };
 

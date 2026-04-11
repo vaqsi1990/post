@@ -85,6 +85,8 @@ export default function ParcelsTable({
     courierFeeSaveError: isRu ? 'Не удалось сохранить курьерскую сумму' : isEn ? 'Failed to save courier fee' : 'საკურიერო თანხის შენახვა ვერ მოხერხდა',
     payableInvalid: isRu ? 'Сумма к оплате должна быть положительным числом или пустой.' : isEn ? 'Payable amount must be a positive number or empty.' : 'გადასახდელი თანხა უნდა იყოს დადებითი რიცხვი ან ცარიელი.',
     payableSaveError: isRu ? 'Не удалось сохранить сумму к оплате' : isEn ? 'Failed to save payable amount' : 'გადასახდელი თანხის შენახვა ვერ მოხერხდა',
+    weightInvalid: isRu ? 'Вес должен быть числом не меньше 0,001 кг.' : isEn ? 'Weight must be a number of at least 0.001 kg.' : 'წონა უნდა იყოს რიცხვი მინიმუმ 0,001 კგ.',
+    weightSaveError: isRu ? 'Не удалось сохранить вес' : isEn ? 'Failed to save weight' : 'წონის შენახვა ვერ მოხერხდა',
     genericError: isRu ? 'Произошла ошибка. Пожалуйста, попробуйте снова.' : isEn ? 'An error occurred. Please try again.' : 'დაფიქსირდა შეცდომა. გთხოვთ სცადოთ თავიდან.',
     deleteConfirm: isRu ? 'Вы уверены, что хотите удалить посылку?' : isEn ? 'Are you sure you want to delete the parcel?' : 'დარწმუნებული ხართ, რომ გსურთ ამანათის წაშლა?',
     deleteError: isRu ? 'Ошибка при удалении посылки' : isEn ? 'Failed to delete parcel' : 'ამანათის წაშლისას მოხდა შეცდომა',
@@ -164,6 +166,8 @@ export default function ParcelsTable({
   const [courierFeeSavingId, setCourierFeeSavingId] = useState<string | null>(null);
   const [payableDraftById, setPayableDraftById] = useState<Record<string, string>>({});
   const [payableSavingId, setPayableSavingId] = useState<string | null>(null);
+  const [weightDraftById, setWeightDraftById] = useState<Record<string, string>>({});
+  const [weightSavingId, setWeightSavingId] = useState<string | null>(null);
 
   const handleStatusChange = async (parcelId: string, newStatus: string) => {
     setUpdatingId(parcelId);
@@ -245,6 +249,50 @@ export default function ParcelsTable({
       setError(t.genericError);
     } finally {
       setCourierFeeSavingId(null);
+    }
+  };
+
+  const handleSaveWeight = async (parcel: Parcel) => {
+    const raw = weightDraftById[parcel.id];
+    const trimmed = raw?.trim() ?? '';
+    if (trimmed === '') {
+      setError(t.weightInvalid);
+      return;
+    }
+    const n = parseFloat(trimmed.replace(',', '.'));
+    if (Number.isNaN(n) || n < 0.001) {
+      setError(t.weightInvalid);
+      return;
+    }
+    const value = Math.round(n * 1000) / 1000;
+
+    setWeightSavingId(parcel.id);
+    setError('');
+    try {
+      const res = await fetch(`/api/admin/parcels/${parcel.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ weight: value }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || t.weightSaveError);
+        return;
+      }
+      const updatedParcel: Parcel = data.parcel;
+      setParcels((prev) =>
+        prev.map((p) => (p.id === parcel.id ? updatedParcel : p)),
+      );
+      setWeightDraftById((prev) => {
+        const next = { ...prev };
+        delete next[parcel.id];
+        return next;
+      });
+      if (onParcelUpdated) onParcelUpdated(updatedParcel);
+    } catch {
+      setError(t.genericError);
+    } finally {
+      setWeightSavingId(null);
     }
   };
 
@@ -364,9 +412,42 @@ export default function ParcelsTable({
                 <span className="text-black">{parcel.quantity}</span>
 
                 <span className="text-black">{t.weight}</span>
-                <span className="text-black">
-                  {parcel.weight != null ? `${parcel.weight} kg` : '—'}
-                </span>
+                {currentStatus === 'arrived' ? (
+                  <span className="flex flex-wrap items-center gap-2 text-black">
+                    <input
+                      type="text"
+                      inputMode="decimal"
+                      placeholder="0"
+                      value={
+                        weightDraftById[parcel.id] !== undefined
+                          ? weightDraftById[parcel.id]
+                          : parcel.weight != null
+                            ? String(parcel.weight)
+                            : ''
+                      }
+                      onChange={(e) =>
+                        setWeightDraftById((prev) => ({
+                          ...prev,
+                          [parcel.id]: e.target.value,
+                        }))
+                      }
+                      className="w-28 rounded-md border border-gray-300 px-2 py-1 text-[14px] text-black"
+                    />
+                    <span className="text-[13px] text-gray-600">kg</span>
+                    <button
+                      type="button"
+                      disabled={weightSavingId === parcel.id}
+                      onClick={() => handleSaveWeight(parcel)}
+                      className="rounded-md bg-black px-2 py-1 text-[12px] font-medium text-white hover:bg-gray-800 disabled:opacity-50"
+                    >
+                      {weightSavingId === parcel.id ? '...' : t.save}
+                    </button>
+                  </span>
+                ) : (
+                  <span className="text-black">
+                    {parcel.weight != null ? `${parcel.weight} kg` : '—'}
+                  </span>
+                )}
 
                 <span className="text-black">{t.itemValue}</span>
                 <span className="text-black">
@@ -613,9 +694,44 @@ export default function ParcelsTable({
                           <span>{formatOriginCountryLabel(parcel.originCountry)}</span>
 
                           <span className="text-black">{t.weight}</span>
-                          <span>
-                            {parcel.weight != null ? `${parcel.weight} kg` : '—'}
-                          </span>
+                          {currentStatus === 'arrived' ? (
+                            <span className="flex flex-wrap items-center gap-2">
+                              <input
+                                type="text"
+                                inputMode="decimal"
+                                placeholder="0"
+                                value={
+                                  weightDraftById[parcel.id] !== undefined
+                                    ? weightDraftById[parcel.id]
+                                    : parcel.weight != null
+                                      ? String(parcel.weight)
+                                      : ''
+                                }
+                                onChange={(e) =>
+                                  setWeightDraftById((prev) => ({
+                                    ...prev,
+                                    [parcel.id]: e.target.value,
+                                  }))
+                                }
+                                className="w-32 rounded-md border border-gray-300 px-2 py-1 text-[14px] text-black"
+                              />
+                              <span className="text-black">kg</span>
+                              <button
+                                type="button"
+                                disabled={weightSavingId === parcel.id}
+                                onClick={() => handleSaveWeight(parcel)}
+                                className="rounded-md bg-black px-2 py-1 text-[12px] font-medium text-white hover:bg-gray-800 disabled:opacity-50"
+                              >
+                                {weightSavingId === parcel.id ? t.saving : t.save}
+                              </button>
+                            </span>
+                          ) : (
+                            <span>
+                              {parcel.weight != null
+                                ? `${parcel.weight} kg`
+                                : '—'}
+                            </span>
+                          )}
 
                           <span className="text-black">{t.itemValue}</span>
                           <span>

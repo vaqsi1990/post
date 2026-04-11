@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
@@ -75,7 +74,6 @@ const Services = () => {
         className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-black/25"
         aria-hidden
       />
-   
     </div>
   );
 
@@ -83,10 +81,13 @@ const Services = () => {
     <div
       className={`flex h-full min-h-[200px] flex-col justify-center px-6 py-8 sm:min-h-[220px] lg:min-h-0 lg:px-8 lg:py-10 ${tonePanelClass[s.tone]}`}
     >
+      <p className="mb-2 text-[13px] font-semibold uppercase tracking-[0.2em] text-white/75">
+        {s.num}
+      </p>
       <h3 className="mb-3 text-xl font-bold leading-tight text-white sm:text-2xl md:text-[1.65rem]">
         {t(s.titleKey)}
       </h3>
-      <p className="md:text-[18px] text-[16px] leading-relaxed text-white/95 sm:text-[15px] md:text-base">
+      <p className="text-[15px] leading-relaxed text-white/95 sm:text-base md:text-[17px]">
         {t(s.descKey)}
       </p>
     </div>
@@ -94,7 +95,10 @@ const Services = () => {
 
   return (
     <>
-      <section className="relative flex w-full items-center justify-center overflow-hidden bg-white pb-0 md:pb-14">
+      <section
+        className="relative flex w-full items-center justify-center overflow-hidden bg-white pb-0 md:pb-14"
+        aria-labelledby="home-services-heading"
+      >
         <div
           className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(58,91,255,0.06),transparent)]"
           aria-hidden
@@ -112,7 +116,10 @@ const Services = () => {
               transition={{ duration: 0.55, ease: "easeOut" }}
               className="mb-4 text-center md:mb-6"
             >
-              <h2 className="text-[18px] font-bold text-black md:text-[30px]">
+              <h2
+                id="home-services-heading"
+                className="text-[18px] font-bold text-black md:text-[30px]"
+              >
                 {t("servicesTitle")}
               </h2>
             </motion.div>
@@ -183,8 +190,6 @@ const Services = () => {
           </div>
         </div>
       </section>
-
-      {/* How It Works Section */}
     </>
   );
 };

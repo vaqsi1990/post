@@ -10,10 +10,10 @@ import Reviews from '../Components/Reviews';
 const Page = () => {
   return (
     <div>
-    
-      <Hero />
-      {/* <Services /> */}
-      <Why />
+      <div className="relative pb-24 sm:pb-28 md:pb-24">
+        <Hero />
+        <Why />
+      </div>
       <Tariffs />
       {/* <HomeMarqueeBand /> */}
       {/* <Reviews /> */}

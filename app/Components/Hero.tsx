@@ -23,7 +23,7 @@ export default function Hero() {
 
   return (
     <section className="relative w-full overflow-hidden mt-14">
-      <div className="relative h-[560px] md:h-[600px]">
+      <div className="relative h-[560px] md:h-[500px]">
         <Image
           src="/hero/hero1.jpg"
           alt="pricing background"
@@ -68,8 +68,8 @@ export default function Hero() {
         </div>
       )}
       {activeSlide === 1 && (
-        <div className="absolute inset-x-0 bottom-1 z-10 mx-auto flex max-w-screen-1xl justify-center px-4 sm:px-6 lg:px-5">
-          <div className="flex flex-wrap  items-center justify-center gap-3">
+        <div className="absolute inset-0 mx-auto grid h-full max-w-screen-1xl grid-cols-1 content-start px-4 py-6 sm:px-6 md:py-8 lg:px-5">
+          <div className="flex w-full  items-center justify-start md:mt-50 gap-3">
             <Link
               href="/register"
               className="w-[150px] rounded-xl inline-flex items-center justify-center text-center bg-[#3a5bff] px-6 py-3 text-base font-semibold text-white transition hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-[#3a5bff]"

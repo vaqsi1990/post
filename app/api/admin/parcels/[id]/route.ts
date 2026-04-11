@@ -5,6 +5,13 @@ import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { recordParcelTrackingEvent } from '@/lib/parcelTrackingLog';
 import { notifyParcelOwnerStatusSms } from '@/lib/parcelStatusSms';
+import { convertToGel, fetchNbgRates } from '@/lib/nbgRates';
+import { computeShippingGelBreakdown } from '@/lib/parcelShippingGel';
+import {
+  CURRENCY_BY_ORIGIN_ISO,
+  FORM_TO_TARIFF_COUNTRY,
+  type TariffPick,
+} from '@/lib/tariffLookup';
 
 const allowedStatuses = [
   'pending',
@@ -40,14 +47,86 @@ const patchParcelSchema = z
     status: z.enum(allowedStatuses).optional(),
     courierFeeAmount: z.union([z.number().min(0), z.null()]).optional(),
     payableAmount: z.union([z.number().min(0), z.null()]).optional(),
+    weight: z.union([z.number().min(0.001), z.null()]).optional(),
   })
   .refine(
     (d) =>
       d.status !== undefined ||
       d.courierFeeAmount !== undefined ||
-      d.payableAmount !== undefined,
+      d.payableAmount !== undefined ||
+      d.weight !== undefined,
     { message: 'მინიმუმ ერთი ველი სავალდებულოა' },
   );
+
+async function resolveShippingAfterWeightChange(
+  weight: number,
+  originCountry: string | null
+): Promise<
+  | { shippingAmount: number; shippingFormula: string | null }
+  | { error: string }
+> {
+  const [tariffs, nbgRates] = await Promise.all([
+    prisma.tariff.findMany({
+      where: { isActive: true, destinationCountry: 'GE' },
+      select: {
+        originCountry: true,
+        destinationCountry: true,
+        minWeight: true,
+        maxWeight: true,
+        pricePerKg: true,
+        currency: true,
+        isActive: true,
+      },
+    }) as Promise<TariffPick[]>,
+    fetchNbgRates().catch(() => null),
+  ]);
+
+  const breakdown = computeShippingGelBreakdown(
+    { originCountry, weight },
+    tariffs,
+    nbgRates
+  );
+  if (breakdown) {
+    return {
+      shippingAmount: breakdown.amountGel,
+      shippingFormula: breakdown.formula,
+    };
+  }
+
+  const lower = originCountry?.trim().toLowerCase() ?? '';
+  if (!lower) {
+    return { error: 'წონისთვის ქვეყანა განისაზღვრული არ არის' };
+  }
+  const tariffCountry = FORM_TO_TARIFF_COUNTRY[lower] ?? lower.toUpperCase();
+  const tariff = await prisma.tariff.findFirst({
+    where: {
+      originCountry: tariffCountry,
+      destinationCountry: 'GE',
+      isActive: true,
+      minWeight: { lte: weight },
+      OR: [{ maxWeight: null }, { maxWeight: { gte: weight } }],
+    },
+    orderBy: { minWeight: 'desc' },
+  });
+  if (!tariff) {
+    return {
+      error:
+        'ამ ქვეყნის ტარიფი ვერ მოიძებნა. გთხოვთ შეამოწმოთ ტარიფები.',
+    };
+  }
+  const amount = Math.round(weight * tariff.pricePerKg * 100) / 100;
+  const currency = (
+    tariff.currency ||
+    CURRENCY_BY_ORIGIN_ISO[tariffCountry] ||
+    'GEL'
+  ).toUpperCase();
+  const nbg = nbgRates ?? (await fetchNbgRates().catch(() => null));
+  const converted =
+    nbg && currency ? convertToGel(nbg, amount, currency) : null;
+  const shippingAmount =
+    converted != null ? Math.round(converted * 100) / 100 : amount;
+  return { shippingAmount, shippingFormula: null };
+}
 
 export async function PATCH(
   request: NextRequest,
@@ -76,6 +155,39 @@ export async function PATCH(
       return NextResponse.json({ error: 'ამანათი ვერ მოიძებნა' }, { status: 404 });
     }
 
+    if (data.weight !== undefined && parcel.status !== 'arrived') {
+      return NextResponse.json(
+        {
+          error:
+            'წონის რედაქტირება ხელმისაწვდომია მხოლოდ «ჩამოსული» სტატუსის ამანათებზე',
+        },
+        { status: 400 }
+      );
+    }
+
+    let shippingPatch: {
+      shippingAmount: number | null;
+      shippingFormula: string | null;
+    } | null = null;
+
+    if (data.weight !== undefined) {
+      if (data.weight === null) {
+        shippingPatch = { shippingAmount: null, shippingFormula: null };
+      } else {
+        const resolved = await resolveShippingAfterWeightChange(
+          data.weight,
+          parcel.originCountry
+        );
+        if ('error' in resolved) {
+          return NextResponse.json({ error: resolved.error }, { status: 400 });
+        }
+        shippingPatch = {
+          shippingAmount: resolved.shippingAmount,
+          shippingFormula: resolved.shippingFormula,
+        };
+      }
+    }
+
     const statusChanged =
       data.status !== undefined && data.status !== parcel.status;
 
@@ -86,6 +198,10 @@ export async function PATCH(
           ...(data.status !== undefined ? { status: data.status } : {}),
           ...(data.courierFeeAmount !== undefined ? { courierFeeAmount: data.courierFeeAmount } : {}),
           ...(data.payableAmount !== undefined ? { payableAmount: data.payableAmount } : {}),
+          ...(data.weight !== undefined ? { weight: data.weight } : {}),
+          ...(shippingPatch
+            ? { shippingAmount: shippingPatch.shippingAmount }
+            : {}),
         },
         include: {
           user: {
@@ -120,6 +236,12 @@ export async function PATCH(
         parcel: {
           ...updatedParcel,
           createdAt: new Date(updatedParcel.createdAt).toLocaleDateString('ka-GE'),
+          ...(shippingPatch
+            ? {
+                shippingAmount: shippingPatch.shippingAmount,
+                shippingFormula: shippingPatch.shippingFormula,
+              }
+            : {}),
         },
       },
       { status: 200 }
