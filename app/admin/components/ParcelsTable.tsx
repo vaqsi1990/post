@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { formatOriginCountryLabel } from '@/lib/formatOriginCountry';
 import { employeeCountryLabel } from '@/lib/employeeCountryLabel';
 import { useLocale } from 'next-intl';
@@ -120,6 +120,14 @@ export default function ParcelsTable({
     uploadedBy: isRu ? 'Кто загрузил' : isEn ? 'Uploaded by' : 'ატვირთა',
     uploadedByCountry: isRu ? 'Страна сотрудника' : isEn ? 'Staff country' : 'თანამშრომლის ქვეყანა',
     uploaderAdmin: isRu ? 'Администратор' : isEn ? 'Administrator' : 'ადმინისტრატორი',
+    bulkSelectAll: isRu ? 'Выбрать все' : isEn ? 'Select all' : 'ყველას მონიშვნა',
+    bulkClearSelection: isRu ? 'Снять выделение' : isEn ? 'Clear selection' : 'მონიშვნის გასუფთავება',
+    bulkSelectedLabel: isRu ? 'Выбрано' : isEn ? 'Selected' : 'არჩეულია',
+    bulkNewStatus: isRu ? 'Новый статус' : isEn ? 'New status' : 'ახალი სტატუსი',
+    bulkApply: isRu ? 'Применить' : isEn ? 'Apply' : 'გამოყენება',
+    bulkPickStatus: isRu ? 'Выберите статус' : isEn ? 'Choose status' : 'აირჩიეთ სტატუსი',
+    bulkApplying: isRu ? 'Применение...' : isEn ? 'Applying...' : 'იგზავნება...',
+    bulkSelectParcel: isRu ? 'Выбрать посылку' : isEn ? 'Select parcel' : 'ამანათის მონიშვნა',
   } as const;
   const statusOptions = [
     { value: 'pending', label: t.pending },
@@ -168,6 +176,114 @@ export default function ParcelsTable({
   const [payableSavingId, setPayableSavingId] = useState<string | null>(null);
   const [weightDraftById, setWeightDraftById] = useState<Record<string, string>>({});
   const [weightSavingId, setWeightSavingId] = useState<string | null>(null);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [bulkTargetStatus, setBulkTargetStatus] = useState('');
+  const [bulkUpdating, setBulkUpdating] = useState(false);
+  const selectAllRef = useRef<HTMLInputElement>(null);
+
+  const allSelected =
+    parcels.length > 0 && selectedIds.length === parcels.length;
+  const someSelected =
+    selectedIds.length > 0 && selectedIds.length < parcels.length;
+
+  useEffect(() => {
+    const valid = new Set(parcels.map((p) => p.id));
+    setSelectedIds((prev) => prev.filter((id) => valid.has(id)));
+  }, [parcels]);
+
+  useEffect(() => {
+    const el = selectAllRef.current;
+    if (el) el.indeterminate = someSelected;
+  }, [someSelected]);
+
+  const toggleSelect = (id: string) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
+    );
+  };
+
+  const toggleSelectAll = () => {
+    if (allSelected) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(parcels.map((p) => p.id));
+    }
+  };
+
+  const handleBulkStatusApply = async () => {
+    if (selectedIds.length === 0) return;
+    const newStatus = bulkTargetStatus;
+    if (!newStatus) {
+      setError(t.bulkPickStatus);
+      return;
+    }
+
+    setBulkUpdating(true);
+    setError('');
+
+    const ids = [...selectedIds];
+    try {
+      const results = await Promise.allSettled(
+        ids.map(async (parcelId) => {
+          const res = await fetch(`/api/admin/parcels/${parcelId}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: newStatus }),
+          });
+          const data = await res.json();
+          if (!res.ok) {
+            throw new Error(
+              typeof data.error === 'string' ? data.error : t.statusUpdateError,
+            );
+          }
+          return { parcelId, parcel: data.parcel as Parcel };
+        }),
+      );
+
+      const succeeded: { parcelId: string; parcel: Parcel }[] = [];
+      let failCount = 0;
+      for (const r of results) {
+        if (r.status === 'fulfilled') {
+          succeeded.push(r.value);
+        } else {
+          failCount++;
+        }
+      }
+
+      setParcels((prev) => {
+        let next = [...prev];
+        for (const { parcelId, parcel } of succeeded) {
+          if (parcel.status !== currentStatus) {
+            next = next.filter((p) => p.id !== parcelId);
+          } else {
+            next = next.map((p) => (p.id === parcelId ? parcel : p));
+          }
+        }
+        return next;
+      });
+
+      const okIds = new Set(succeeded.map((s) => s.parcelId));
+      for (const { parcel } of succeeded) {
+        onParcelUpdated?.(parcel);
+      }
+      setSelectedIds((prev) => prev.filter((id) => !okIds.has(id)));
+
+      if (failCount > 0) {
+        const total = ids.length;
+        setError(
+          isRu
+            ? `Не удалось обновить ${failCount} из ${total}`
+            : isEn
+              ? `Failed to update ${failCount} of ${total} parcels`
+              : `${failCount}/${total} ამანათის სტატუსი ვერ განახლდა`,
+        );
+      }
+    } catch {
+      setError(t.genericError);
+    } finally {
+      setBulkUpdating(false);
+    }
+  };
 
   const handleStatusChange = async (parcelId: string, newStatus: string) => {
     setUpdatingId(parcelId);
@@ -377,6 +493,61 @@ export default function ParcelsTable({
         </div>
       ) : null}
 
+      {parcels.length > 0 ? (
+        <div className="mb-4 flex flex-col gap-3 rounded-2xl border border-gray-200 bg-gray-50 p-3 sm:flex-row sm:flex-wrap sm:items-center">
+          <label className="flex cursor-pointer items-center gap-2 text-[14px] text-black">
+            <input
+              ref={selectAllRef}
+              type="checkbox"
+              checked={allSelected}
+              onChange={toggleSelectAll}
+              disabled={bulkUpdating}
+              className="h-4 w-4 rounded border-gray-300"
+            />
+            <span>{t.bulkSelectAll}</span>
+          </label>
+          <span className="text-[14px] text-gray-700">
+            {t.bulkSelectedLabel}: {selectedIds.length}
+          </span>
+          <button
+            type="button"
+            onClick={() => setSelectedIds([])}
+            disabled={selectedIds.length === 0 || bulkUpdating}
+            className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-[14px] text-black hover:bg-gray-100 disabled:opacity-50"
+          >
+            {t.bulkClearSelection}
+          </button>
+          <div className="flex flex-wrap items-center gap-2 sm:ml-auto">
+            <label className="flex items-center gap-2 text-[14px] text-black">
+              <span className="whitespace-nowrap">{t.bulkNewStatus}</span>
+              <select
+                value={bulkTargetStatus}
+                onChange={(e) => setBulkTargetStatus(e.target.value)}
+                disabled={bulkUpdating}
+                className="rounded-md border border-gray-300 bg-white px-2 py-1.5 text-[14px] text-black"
+              >
+                <option value="">{t.bulkPickStatus}</option>
+                {statusOptions.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <button
+              type="button"
+              onClick={handleBulkStatusApply}
+              disabled={
+                selectedIds.length === 0 || !bulkTargetStatus || bulkUpdating
+              }
+              className="rounded-md bg-black px-4 py-1.5 text-[14px] font-medium text-white hover:bg-gray-800 disabled:opacity-50"
+            >
+              {bulkUpdating ? t.bulkApplying : t.bulkApply}
+            </button>
+          </div>
+        </div>
+      ) : null}
+
       {/* Mobile / small screens: card layout */}
       <div className="space-y-3 md:hidden">
         {parcels.length === 0 ? (
@@ -390,13 +561,23 @@ export default function ParcelsTable({
               className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm"
             >
               <div className="mb-2 flex items-center justify-between gap-2">
-                <div>
+                <div className="flex min-w-0 flex-1 items-start gap-2">
+                  <input
+                    type="checkbox"
+                    checked={selectedIds.includes(parcel.id)}
+                    onChange={() => toggleSelect(parcel.id)}
+                    disabled={bulkUpdating}
+                    className="mt-1 h-4 w-4 shrink-0 rounded border-gray-300"
+                    aria-label={t.bulkSelectParcel}
+                  />
+                  <div className="min-w-0">
                   <p className="text-[15px] font-semibold text-black">
                     {parcel.customerName}
                   </p>
                   <p className="text-[13px] text-gray-600">
                     {parcel.user.email}
                   </p>
+                  </div>
                 </div>
                 <div className="text-right text-[13px] text-black">
                   <p>{parcel.createdAt}</p>
@@ -591,7 +772,11 @@ export default function ParcelsTable({
                   <select
                     value={parcel.status}
                     onChange={(e) => handleStatusChange(parcel.id, e.target.value)}
-                    disabled={updatingId === parcel.id || deletingId === parcel.id}
+                    disabled={
+                      updatingId === parcel.id ||
+                      deletingId === parcel.id ||
+                      bulkUpdating
+                    }
                     className="flex-1 rounded-md border border-gray-300 bg-white px-2 py-1 text-[14px] text-black focus:outline-none focus:ring-2 focus:ring-black disabled:opacity-50"
                   >
                     {statusOptions.map((opt) => (
@@ -642,6 +827,14 @@ export default function ParcelsTable({
                   <tr className="hover:bg-gray-50">
                     <td className="px-4 py-2 align-top text-[16px] text-black">
                       <span className="inline-flex flex-wrap items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={selectedIds.includes(parcel.id)}
+                          onChange={() => toggleSelect(parcel.id)}
+                          disabled={bulkUpdating}
+                          className="h-4 w-4 shrink-0 rounded border-gray-300"
+                          aria-label={t.bulkSelectParcel}
+                        />
                         <span>{parcel.user.email}</span>
                         {parcel.courierServiceRequested ? (
                           <span className="rounded-md bg-amber-100 px-2 py-0.5 text-[11px] font-semibold text-amber-900">
@@ -868,7 +1061,11 @@ export default function ParcelsTable({
                               onChange={(e) =>
                                 handleStatusChange(parcel.id, e.target.value)
                               }
-                              disabled={updatingId === parcel.id || deletingId === parcel.id}
+                              disabled={
+                                updatingId === parcel.id ||
+                                deletingId === parcel.id ||
+                                bulkUpdating
+                              }
                               className="mt-1 w-full rounded-md border border-gray-300 bg-white px-2 py-1 text-[14px] text-black focus:outline-none focus:ring-2 focus:ring-black disabled:opacity-50"
                             >
                               {statusOptions.map((opt) => (
