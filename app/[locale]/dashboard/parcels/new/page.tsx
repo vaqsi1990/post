@@ -455,11 +455,7 @@ export default function NewParcelPage() {
               {fieldErrors.weight && (
                 <p className="mt-1 text-[13px] text-red-600">{fieldErrors.weight}</p>
               )}
-              {calculatedPrice != null && (
-                <p className="mt-1.5 text-[15px] font-medium text-black">
-                  {t('calculatedPrice')}: {calculatedPrice.toFixed(2)} GEL
-                </p>
-              )}
+            
             </div>
             <div>
               <label
