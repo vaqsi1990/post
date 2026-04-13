@@ -1,16 +1,38 @@
+"use client";
+
 import React from "react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
-type Step = {
-  id: number;
-  title: string;
-  subtitle: string;
+const STEPS: {
+  id: 1 | 2 | 3;
   imageSrc: string;
-  imageAlt: string;
-};
-
-
-
+  titleKey: "worksStep1Title" | "worksStep2Title" | "worksStep3Title";
+  subtitleKey: "worksStep1Subtitle" | "worksStep2Subtitle" | "worksStep3Subtitle";
+  altKey: "worksStep1ImageAlt" | "worksStep2ImageAlt" | "worksStep3ImageAlt";
+}[] = [
+  {
+    id: 1,
+    imageSrc: "/works/1.png",
+    titleKey: "worksStep1Title",
+    subtitleKey: "worksStep1Subtitle",
+    altKey: "worksStep1ImageAlt",
+  },
+  {
+    id: 2,
+    imageSrc: "/works/2.png",
+    titleKey: "worksStep2Title",
+    subtitleKey: "worksStep2Subtitle",
+    altKey: "worksStep2ImageAlt",
+  },
+  {
+    id: 3,
+    imageSrc: "/works/5.png",
+    titleKey: "worksStep3Title",
+    subtitleKey: "worksStep3Subtitle",
+    altKey: "worksStep3ImageAlt",
+  },
+];
 
 function StepBadge({ n }: { n: number }) {
   return (
@@ -41,40 +63,18 @@ function ArrowDivider() {
 }
 
 export default function Works() {
-  const steps: Step[] = [
-    {
-      id: 1,
-      title: "რეგისტრაცია",
-      subtitle: "იღებ ჩვენ უცხოურ მისამართს",
-      imageSrc: "/works/1.png",
-      imageAlt: "Step 1",
-    },
-    {
-      id: 2,
-      title: "აგზავნი ამანათს",
-      subtitle: "ონლაინ შოპონგიდან ან პირადად",
-      imageSrc: "/works/2.png",
-      imageAlt: "Step 2",
-    },
-    {
-      id: 3,
-      title: "იღებ საქართველოში",
-      subtitle: "სწრაფად და უსაფრთხოდ",
-      imageSrc: "/works/5.png",
-      imageAlt: "Step 3",
-    },
-  ];
+  const t = useTranslations("home");
 
   return (
     <section className="relative flex w-full items-center justify-center overflow-hidden bg-white pb-0 md:pb-14">
       <div className="pointer-events-auto mx-auto w-full max-w-8xl overflow-hidden rounded-2xl border border-[#e8eaf0] bg-[#f5f7fa] shadow-[0_1px_3px_rgba(15,23,42,0.06)]">
         <div className="px-4 py-5 sm:px-6 md:px-8 md:py-7">
           <h2 className="text-center text-lg font-semibold text-slate-900 md:text-xl">
-            როგორ მუშაობს
+            {t("worksTitle")}
           </h2>
 
           <div className="mt-5 grid grid-cols-1 justify-items-center gap-4 md:mt-6 lg:justify-items-stretch lg:grid-cols-[1fr_auto_1fr_auto_1fr] lg:items-center">
-            {steps.map((s, idx) => (
+            {STEPS.map((s, idx) => (
               <React.Fragment key={s.id}>
                 <div className="flex flex-col items-center gap-3 rounded-2xl bg-white/70 px-4 py-4 text-center ring-1 ring-[#e8eaf0] backdrop-blur-[2px] md:flex-row md:items-center md:gap-4 md:bg-transparent md:px-0 md:py-0 md:text-left md:ring-0 md:backdrop-blur-0">
                   <div
@@ -82,30 +82,27 @@ export default function Works() {
                       s.id === 3 ? "h-[140px]" : "h-[170px]"
                     }`}
                   >
-                      <Image
-                        src={s.imageSrc}
-                        alt={s.imageAlt}
-                        width={150}
-                        height={150}
-                        className="h-full w-full object-contain object-center"
-                        priority={s.id === 1}
-                      />
-                      <StepBadge n={s.id} />
-                  
-                 
-                 
+                    <Image
+                      src={s.imageSrc}
+                      alt={t(s.altKey)}
+                      width={150}
+                      height={150}
+                      className="h-full w-full object-contain object-center"
+                      priority={s.id === 1}
+                    />
+                    <StepBadge n={s.id} />
                   </div>
                   <div className="min-w-0">
                     <p className="text-sm font-semibold text-slate-900 md:text-[15px]">
-                      {s.title}
+                      {t(s.titleKey)}
                     </p>
                     <p className="mt-1 text-sm leading-snug text-slate-500">
-                      {s.subtitle}
+                      {t(s.subtitleKey)}
                     </p>
                   </div>
                 </div>
 
-                {idx !== steps.length - 1 && <ArrowDivider />}
+                {idx !== STEPS.length - 1 && <ArrowDivider />}
               </React.Fragment>
             ))}
           </div>

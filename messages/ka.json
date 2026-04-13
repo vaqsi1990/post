@@ -306,7 +306,17 @@
     "tariffDeliveryDays": " დღე",
     "tariffAirShipping": "(საჰაერო გადაზიდვა)",
     "tariffLandShipping": "(სახმელეთო გადაზიდვა)",
-    "tariffPerKgLabel": "1 კგ"
+    "tariffPerKgLabel": "1 კგ",
+    "worksTitle": "როგორ მუშაობს",
+    "worksStep1Title": "რეგისტრაცია",
+    "worksStep1Subtitle": "იღებ ჩვენ უცხოურ მისამართს",
+    "worksStep1ImageAlt": "ნაბიჯი 1",
+    "worksStep2Title": "აგზავნი ამანათს",
+    "worksStep2Subtitle": "ონლაინ შოპინგიდან ან პირადად",
+    "worksStep2ImageAlt": "ნაბიჯი 2",
+    "worksStep3Title": "იღებ საქართველოში",
+    "worksStep3Subtitle": "სწრაფად და უსაფრთხოდ",
+    "worksStep3ImageAlt": "ნაბიჯი 3"
   },
   "homeConsent": {
     "title": "პირობების დადასტურება",

@@ -306,7 +306,17 @@
     "tariffDeliveryDays": "days",
     "tariffAirShipping": "(air shipping)",
     "tariffLandShipping": "(land shipping)",
-    "tariffPerKgLabel": "1 kg"
+    "tariffPerKgLabel": "1 kg",
+    "worksTitle": "How it works",
+    "worksStep1Title": "Registration",
+    "worksStep1Subtitle": "You get your foreign warehouse address",
+    "worksStep1ImageAlt": "Step 1",
+    "worksStep2Title": "Send your parcel",
+    "worksStep2Subtitle": "From online shopping or in person",
+    "worksStep2ImageAlt": "Step 2",
+    "worksStep3Title": "Receive in Georgia",
+    "worksStep3Subtitle": "Fast and secure",
+    "worksStep3ImageAlt": "Step 3"
   },
   "homeConsent": {
     "title": "Terms confirmation",

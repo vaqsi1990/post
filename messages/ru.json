@@ -306,7 +306,17 @@
     "tariffDeliveryDays": "дней",
     "tariffAirShipping": "(авиа-доставка)",
     "tariffLandShipping": "(наземная доставка)",
-    "tariffPerKgLabel": "1 кг"
+    "tariffPerKgLabel": "1 кг",
+    "worksTitle": "Как это работает",
+    "worksStep1Title": "Регистрация",
+    "worksStep1Subtitle": "Вы получаете наш зарубежный адрес",
+    "worksStep1ImageAlt": "Шаг 1",
+    "worksStep2Title": "Отправьте посылку",
+    "worksStep2Subtitle": "Из интернет-магазина или самостоятельно",
+    "worksStep2ImageAlt": "Шаг 2",
+    "worksStep3Title": "Получите в Грузии",
+    "worksStep3Subtitle": "Быстро и безопасно",
+    "worksStep3ImageAlt": "Шаг 3"
   },
   "homeConsent": {
     "title": "Подтверждение условий",
