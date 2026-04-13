@@ -23,7 +23,7 @@ export default function Hero() {
 
   return (
     <section className="relative w-full overflow-hidden mt-14">
-      <div className="relative h-[560px] md:h-[500px]">
+      <div className="relative  md:h-[500px]">
         <Image
           src="/hero/hero1.jpg"
           alt="pricing background"
