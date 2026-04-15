@@ -26,7 +26,7 @@ export default function Hero() {
 
   return (
     <section className="relative w-full overflow-hidden mt-14">
-      <div className="relative  md:h-[900px]">
+      <div className="relative  md:h-[500px]">
         <Image
           src="/hero/hero1.jpg"
           alt="pricing background"
@@ -47,7 +47,7 @@ export default function Hero() {
         />
       </div>
       {activeSlide === 0 && (
-        <div className="absolute inset-0 mx-auto flex h-full max-w-screen-1xl flex-col justify-end gap-4 px-4 pb-16 sm:px-6 sm:pb-20 md:justify-center md:pb-0 md:py-8 lg:px-5">
+        <div className="absolute inset-0 mx-auto grid h-full max-w-screen-1xl grid-cols-1 content-start px-4 py-6 sm:px-6 md:py-8 lg:px-5">
           <div className="relative z-10 flex justify-center  flex-col max-w-2xl rounded-2xl p-6 sm:p-8 ">
             <p className="text-balance text-[25px] md:text-[30px] font-semibold leading-tight text-white ">
               Postifly
@@ -71,7 +71,7 @@ export default function Hero() {
         </div>
       )}
       {activeSlide === 1 && (
-        <div className="absolute inset-0 mx-auto flex h-full max-w-screen-1xl flex-col justify-end px-4 pb-16 sm:px-6 sm:pb-20 md:justify-center md:pb-0 md:py-8 lg:px-5">
+        <div className="absolute inset-0 mx-auto grid h-full max-w-screen-1xl grid-cols-1 content-start px-4 py-6 sm:px-6 md:py-8 lg:px-5">
           <div className="relative z-10 flex justify-center  flex-col max-w-2xl rounded-2xl p-6 sm:p-8 ">
             <p className="text-balance text-[22px] font-semibold leading-tight text-white sm:text-[26px] md:text-[30px]">
               {slide2Title}

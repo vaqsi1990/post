@@ -45,6 +45,7 @@ type AddressRow = {
   cityKey?: string;
   stateKey?: string;
   adress: string;
+  adress2?: string;
   postalCode: string;
   phone?: string;
 };
@@ -59,7 +60,16 @@ const ADDRESS_ROWS: AddressRow[] = [
     postalCode: 'RM10 7SA ',
     phone: '+44 7386 585212',
   },
-  { countryKey: 'us', phone: '+1 (934) 777-5589', countryCode: 'US', adress: '22 Parkway Circle, unit5 ', stateKey: 'DELAWARE (DE)', cityKey: 'New Castle', postalCode: '19720' },
+  {
+    countryKey: 'us',
+    phone: '+1 (934) 777-5589',
+    countryCode: 'US',
+    adress: '22 Parkway Circle',
+    adress2: 'Unit 5',
+    stateKey: 'DELAWARE (DE)',
+    cityKey: 'New Castle',
+    postalCode: '19720',
+  },
   { countryKey: 'cn', countryCode: 'CN', adress: '', postalCode: '' },
 
   {
@@ -122,6 +132,10 @@ export default async function DashboardAddressesSection() {
   const userLastName = user?.lastName ?? '';
   const hasUserName = Boolean(userFirstName || userLastName);
   const userRoomNumber = user?.roomNumber ?? '';
+  const street2Value = (row: { adress2?: string }) => {
+    if (!row.adress2) return userRoomNumber;
+    return userRoomNumber ? `${row.adress2}, ${userRoomNumber}` : row.adress2;
+  };
 
   const addressList = ADDRESS_ROWS.map((row) => {
     const country = tAddr.has(row.countryKey)
@@ -140,6 +154,7 @@ export default async function DashboardAddressesSection() {
       city,
       state,
       adress: row.adress,
+      adress2: row.adress2,
       postalCode: row.postalCode,
       phone: row.phone,
     };
@@ -191,7 +206,7 @@ export default async function DashboardAddressesSection() {
               </div>
               <div className="mb-1 flex justify-between gap-2">
                 <span className="shrink-0 font-semibold text-neutral-800">{tAddr('street2')}</span>
-                <span className="break-words text-right text-neutral-800">{userRoomNumber}</span>
+                <span className="break-words text-right text-neutral-800">{street2Value(row)}</span>
               </div>
               <div className="mb-2 flex items-start justify-between gap-2">
                 <span className="shrink-0 font-semibold text-neutral-800">{tAddr('country')}</span>
@@ -260,7 +275,7 @@ export default async function DashboardAddressesSection() {
             </div>
             <div className="mb-2 flex justify-between gap-2">
               <span className="shrink-0 font-semibold text-neutral-800">{tAddr('street2')}</span>
-              <span className="break-words text-right text-neutral-800">{userRoomNumber}</span>
+              <span className="break-words text-right text-neutral-800">{street2Value(row)}</span>
             </div>
             <div className="mb-2 flex justify-between gap-2">
               <span className="shrink-0 font-semibold text-neutral-800">{tAddr('country')}</span>
