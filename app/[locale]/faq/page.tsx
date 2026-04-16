@@ -1,5 +1,7 @@
 import React from "react";
+import type { Metadata } from 'next';
 import FaqAccordion from "./FaqAccordion";
+import { getPageSeoMetadata } from '@/lib/seo';
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -15,5 +17,10 @@ export default async function FaqPage({ params }: Props) {
       </section>
     </div>
   );
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  return getPageSeoMetadata(locale, '/faq');
 }
 

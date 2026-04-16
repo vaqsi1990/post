@@ -1,5 +1,16 @@
 import React from "react";
+import type { Metadata } from 'next';
 import prisma from "@/lib/prisma";
+import { getPageSeoMetadata } from '@/lib/seo';
+
+type Props = {
+  params: Promise<{ locale: string }>;
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  return getPageSeoMetadata(locale, '/dates');
+}
 
 const countryName: Record<string, string> = {
   GE: "საქართველო",

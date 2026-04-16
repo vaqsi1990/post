@@ -1,5 +1,7 @@
 import React from "react";
+import type { Metadata } from 'next';
 import ServicesAccordion from "./ServicesAccordion";
+import { getPageSeoMetadata } from '@/lib/seo';
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -19,5 +21,10 @@ export default async function ServicesPage({ params, searchParams }: Props) {
       <ServicesAccordion isKa={isKa} activeServiceId={service} />
     </section>
   );
+}
+
+export async function generateMetadata({ params }: Pick<Props, 'params'>): Promise<Metadata> {
+  const { locale } = await params;
+  return getPageSeoMetadata(locale, '/services');
 }
 

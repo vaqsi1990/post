@@ -1,5 +1,7 @@
 import React from 'react';
+import type { Metadata } from 'next';
 import GuideSection from './GuideSection';
+import { getPageSeoMetadata } from '@/lib/seo';
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -39,5 +41,10 @@ export default async function HelpGuidePage({ params }: Props) {
       </section>
     </div>
   );
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  return getPageSeoMetadata(locale, '/help');
 }
 
