@@ -70,7 +70,16 @@ const ADDRESS_ROWS: AddressRow[] = [
     cityKey: 'New Castle',
     postalCode: '19720',
   },
-  { countryKey: 'cn', countryCode: 'CN', adress: '', postalCode: '' },
+  {
+    countryKey: 'cn',
+    cityKey: 'Guangzhou City / 广州',
+    stateKey: 'GuangDong Province / 广东省',
+    postalCode: '510407',
+    countryCode: 'CN',
+    adress: 'BaiYun District/白云区, ',
+    adress2: 'ShiJing Street/石井街道',
+    phone: '+86 16602079929',
+  },
 
   {
     countryKey: 'it',
@@ -220,7 +229,9 @@ export default async function DashboardAddressesSection() {
 
               {row.state ? (
                 <div className="mb-1 flex justify-between gap-2">
-                  <span className="shrink-0 font-semibold text-neutral-800">{tAddr('state')}</span>
+                  <span className="shrink-0 font-semibold text-neutral-800">
+                    {row.countryCode === 'CN' ? tAddr('province') : tAddr('state')}
+                  </span>
                   <span className="text-right text-neutral-800">{row.state}</span>
                 </div>
               ) : null}
@@ -288,7 +299,9 @@ export default async function DashboardAddressesSection() {
 
             {row.state ? (
               <div className="mb-2 flex justify-between gap-2">
-                <span className="shrink-0 font-semibold text-neutral-800">{tAddr('state')}</span>
+                <span className="shrink-0 font-semibold text-neutral-800">
+                  {row.countryCode === 'CN' ? tAddr('province') : tAddr('state')}
+                </span>
                 <span className="text-right text-neutral-800">{row.state}</span>
               </div>
             ) : null}
