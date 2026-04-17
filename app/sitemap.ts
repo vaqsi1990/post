@@ -23,6 +23,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return routing.locales.flatMap((locale) =>
     publicRoutes.map((route) => ({
       url: `${siteUrl}/${locale}${route}`,
+      alternates: {
+        languages: Object.fromEntries(
+          routing.locales.map((lng) => [lng, `${siteUrl}/${lng}${route}`])
+        ),
+      },
       lastModified: now,
       changeFrequency: route === '' ? 'daily' : 'weekly',
       priority: route === '' ? 1 : 0.7,
