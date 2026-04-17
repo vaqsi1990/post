@@ -54,13 +54,12 @@ type AddressRow = {
 
 const ADDRESS_ROWS: AddressRow[] = [
   {
-    countryKey: 'uk',
-    countryCode: 'GB',
-    adress: '13 Oglethorpe Road',
-    cityKey: 'Dagenham',
-    stateKey: 'Essex',
-    postalCode: 'RM10 7SA ',
-    phone: '+44 7386 585212',
+    countryKey: 'fr',
+    countryCode: 'FR',
+    cityKey: 'paris',
+    adress: '7 bis rue decres',
+    postalCode: '75014',
+    phone: '+33 7 53 19 86 83',
   },
   {
     countryKey: 'us',
@@ -72,6 +71,16 @@ const ADDRESS_ROWS: AddressRow[] = [
     cityKey: 'New Castle',
     postalCode: '19720',
   },
+  {
+    countryKey: 'uk',
+    countryCode: 'GB',
+    adress: '13 Oglethorpe Road',
+    cityKey: 'Dagenham',
+    stateKey: 'Essex',
+    postalCode: 'RM10 7SA ',
+    phone: '+44 7386 585212',
+  },
+  
   {
     countryKey: 'cn',
     cityKey: 'Guangzhou City / 广州',
@@ -109,14 +118,7 @@ const ADDRESS_ROWS: AddressRow[] = [
     postalCode: '75014',
     phone: '+33 7 53 19 86 83',
   },
-  {
-    countryKey: 'fr',
-    countryCode: 'FR',
-    cityKey: 'paris',
-    adress: '7 bis rue decres',
-    postalCode: '75014',
-    phone: '+33 7 53 19 86 83',
-  },
+
   {
     countryKey: 'de',
     countryCode: 'DE',
