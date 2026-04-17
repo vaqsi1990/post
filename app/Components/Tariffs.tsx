@@ -286,7 +286,7 @@ export default function Tariffs() {
   return (
     <motion.section
       id="tariffs"
-      className="relative w-full overflow-hidden bg-white mt-10 pb-10"
+      className="relative w-full overflow-hidden bg-white mt-14 pb-14"
     >
       {/* Soft top glow — same family as bg, slightly lifted */}
       <div
