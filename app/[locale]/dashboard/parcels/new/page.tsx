@@ -86,7 +86,7 @@ export default function NewParcelPage() {
   }, [session]);
   const pdfLabel = useMemo(() => {
     const base = tDeclaration('pdfFile').replace(/\s*\*$/, '');
-    return requiresInvoicePdf ? `${base} *` : base;
+    return requiresInvoicePdf ? `${base} *` : `${base} (არასავალდებულო)`;
   }, [tDeclaration, requiresInvoicePdf]);
   const trackingLabel = useMemo(() => `${t('trackingCode').replace(/\s*\*$/, '')} *`, [t]);
   const onlineShopLabel = useMemo(() => `${t('onlineShop').replace(/\s*\*$/, '')} *`, [t]);
@@ -116,12 +116,16 @@ export default function NewParcelPage() {
         price: z.preprocess(numFromString, z.number({ message: t('priceError') }).min(0, t('priceError'))),
         onlineShop: z.string().trim().min(1, t('onlineShop') + ' აუცილებელია'),
         quantity: z
-          .preprocess(intFromString, z.number({ message: t('quantityError') }).int().min(1, t('quantityError')))
-          .optional(),
+          .preprocess(
+            intFromString,
+            z.number({ message: t('quantityError') }).int().min(1, t('quantityError')).optional(),
+          ),
         originCountry: z.string().trim().min(1, t('countryRequired')),
         weight: z
-          .preprocess(numFromString, z.number({ message: t('weightError') }).min(0.001, t('weightError')))
-          .optional(),
+          .preprocess(
+            numFromString,
+            z.number({ message: t('weightError') }).min(0.001, t('weightError')).optional(),
+          ),
         description: z.string().trim().min(1, t('descriptionRequired')),
         comment: z.string().trim().optional(),
         file: z.any().optional(),
@@ -315,7 +319,7 @@ export default function NewParcelPage() {
             </div>
             <div>
               <label htmlFor="quantity" className="mb-1 block text-[15px] md:text-[18px] font-bold text-[#3a5bff]">
-                {quantityLabel}
+                {quantityLabel} (არასავალდებულო)
               </label>
               <input
                 id="quantity"
@@ -335,6 +339,12 @@ export default function NewParcelPage() {
               )}
             </div>
             <div ref={countryRef} className="relative">
+              <label
+                htmlFor="originCountry"
+                className="mb-1 block text-[15px] md:text-[18px] font-bold text-[#3a5bff]"
+              >
+                {t('country')} *
+              </label>
              
               <input
                 id="originCountry"
@@ -402,7 +412,7 @@ export default function NewParcelPage() {
             </div>
             <div>
               <label htmlFor="weight" className="mb-1 block text-[15px] md:text-[18px] font-bold text-[#3a5bff]">
-                {weightLabel}
+                {weightLabel} (არასავალდებულო)
               </label>
               <input
                 id="weight"
