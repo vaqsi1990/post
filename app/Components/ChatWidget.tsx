@@ -239,9 +239,7 @@ export default function ChatWidget() {
                 </div>
                 <div>
                
-                  <p className="text-[12px] text-gray-200">
-                    {t('answer')}
-                  </p>
+                 
                 </div>
               </div>
               <button
@@ -353,11 +351,7 @@ export default function ChatWidget() {
                 </div>
               )}
 
-              {success && (
-                <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-3 py-2">
-                  <p className="text-[15px] text-emerald-800">{success}</p>
-                </div>
-              )}
+             
 
               {isGuest && !threadId && (
                 <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
