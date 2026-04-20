@@ -2,7 +2,7 @@ import prisma from '@/lib/prisma';
 import { sendSms, normalizePhone } from '@/lib/sms';
 
 /**
- * Sends one SMS to each SUPPORT user with a phone number when a new public chat thread starts.
+ * Sends one SMS to each ADMIN user with a phone number when a new public chat thread starts.
  * Does not throw — logs failures so the chat webhook can still return 200.
  */
 export async function notifySupportUsersNewChat(params: {
@@ -11,7 +11,7 @@ export async function notifySupportUsersNewChat(params: {
   try {
     const supporters = await prisma.user.findMany({
       where: {
-        role: 'SUPPORT',
+        role: 'ADMIN',
         phone: { not: null },
       },
       select: { phone: true },

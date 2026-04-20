@@ -29,7 +29,7 @@ export default function ChatWidget() {
   const { data: session, status: sessionStatus } = useSession();
   const isAuthed = sessionStatus === 'authenticated';
   const isGuest = sessionStatus === 'unauthenticated';
-  const supportOnline = isAuthed && session?.user?.role === 'SUPPORT';
+  const adminOnline = isAuthed && session?.user?.role === 'ADMIN';
   const [message, setMessage] = useState('');
   const [guestFirstName, setGuestFirstName] = useState('');
   const [guestLastName, setGuestLastName] = useState('');
@@ -257,17 +257,17 @@ export default function ChatWidget() {
             <div className="space-y-3 bg-gradient-to-b from-gray-50 via-white to-gray-50 px-4 py-3">
               {!threadId && (
                 <div className="rounded-2xl border border-indigo-100/80 bg-gradient-to-br from-white via-indigo-50/40 to-white px-3 py-3 text-center shadow-sm">
-                  <p className="text-[13px] font-semibold leading-snug text-gray-900">
+                  <p className="text-[15px] font-semibold leading-snug text-gray-900">
                     {t('welcomeLine1')}
                   </p>
-                  <p className="mt-2 text-[12px] leading-snug text-gray-700">
+                  <p className="mt-2 text-[15px] leading-snug text-gray-700">
                     {t('welcomeLine2')}
                   </p>
-                  <p className="mt-2 text-[12px] leading-snug text-gray-700">
+                  <p className="mt-2 text-[15px] leading-snug text-gray-700">
                     {t('welcomeLine3')}
                   </p>
-                  <p className="mt-2 text-[12px] font-medium leading-snug text-gray-800">
-                    {supportOnline ? t('supportOnline') : t('supportOffline')}
+                  <p className="mt-2 text-[15px] font-medium leading-snug text-gray-800">
+                    {adminOnline ? t('supportOnline') : t('supportOffline')}
                   </p>
                 </div>
               )}
@@ -277,10 +277,10 @@ export default function ChatWidget() {
                 <div className="flex h-[250px] flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white/70">
                   {isAuthed && session?.user && (
                     <div className="shrink-0 border-b border-gray-200 bg-gray-50/90 px-3 py-2">
-                      <p className="text-[12px] font-semibold text-gray-900">
+                      <p className="text-[15px] font-semibold text-gray-900">
                         {session.user.name?.trim() || session.user.email}
                       </p>
-                      <p className="text-[11px] text-gray-600">
+                      <p className="text-[15px] text-gray-600">
                         {t('roomNumber')}:{' '}
                         {session.user.roomNumber?.trim() || '—'}
                       </p>
@@ -288,21 +288,21 @@ export default function ChatWidget() {
                   )}
                   {isGuest && threadContact && (
                     <div className="shrink-0 border-b border-gray-200 bg-gray-50/90 px-3 py-2">
-                      <p className="text-[12px] font-semibold text-gray-900">
+                      <p className="text-[15px] font-semibold text-gray-900">
                         {threadContact.firstName} {threadContact.lastName}
                       </p>
-                      <p className="mt-0.5 break-all text-[11px] text-gray-600">
+                      <p className="mt-0.5 break-all text-[15px] text-gray-600">
                         {threadContact.email}
                       </p>
                     </div>
                   )}
                   <div className="min-h-0 flex-1 space-y-2 overflow-y-auto p-3">
                     {loadingMessages && (
-                      <p className="text-[11px] text-gray-500">{t('loading')}</p>
+                      <p className="text-[15px] text-gray-500">{t('loading')}</p>
                     )}
                     {threadId ? (
                       messages.length === 0 ? (
-                        <p className="text-[12px] text-gray-600">
+                        <p className="text-[15px] text-gray-600">
                           {t('noAnswer')}
                         </p>
                       ) : (
@@ -316,7 +316,7 @@ export default function ChatWidget() {
                             }`}
                           >
                             <div
-                              className={`max-w-[80%] rounded-2xl px-3 py-1.5 text-[12px] shadow-sm ${
+                              className={`max-w-[80%] rounded-2xl px-3 py-1.5 text-[15px] shadow-sm ${
                                 m.sender === 'ADMIN'
                                   ? 'bg-black text-white'
                                   : 'bg-gray-100 text-gray-900'
@@ -326,7 +326,7 @@ export default function ChatWidget() {
                                 {m.text}
                               </p>
                               <p
-                                className={`mt-1 text-right text-[10px] ${
+                                className={`mt-1 text-right text-[15px] ${
                                   m.sender === 'ADMIN'
                                     ? 'text-gray-300'
                                     : 'text-gray-500'
@@ -339,7 +339,7 @@ export default function ChatWidget() {
                         ))
                       )
                     ) : (
-                      <p className="text-[12px] text-gray-600">
+                      <p className="text-[15px] text-gray-600">
                         {t('noAnswer')}
                       </p>
                     )}
@@ -349,19 +349,19 @@ export default function ChatWidget() {
 
               {error && (
                 <div className="rounded-2xl border border-red-200 bg-red-50 px-3 py-2">
-                  <p className="text-[13px] text-red-800">{error}</p>
+                  <p className="text-[15px] text-red-800">{error}</p>
                 </div>
               )}
 
               {success && (
                 <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-3 py-2">
-                  <p className="text-[13px] text-emerald-800">{success}</p>
+                  <p className="text-[15px] text-emerald-800">{success}</p>
                 </div>
               )}
 
               {isGuest && !threadId && (
                 <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                  <label className="space-y-1 text-[13px] text-gray-600">
+                  <label className="space-y-1 text-[15px] text-gray-600">
                     <span>{t('firstName')} *</span>
                     <input
                       type="text"
@@ -451,7 +451,7 @@ export default function ChatWidget() {
                     <button
                       type="submit"
                       disabled={loading || sessionStatus === 'loading'}
-                      className="inline-flex items-center gap-1 rounded-full bg-black px-4 py-1.5 text-[13px] md:text-[15px] font-semibold text-white shadow-sm transition hover:bg-gray-900 disabled:cursor-not-allowed disabled:opacity-60"
+                      className="inline-flex items-center gap-1 rounded-full bg-[#3a5bff] px-4 py-1.5 text-[15px] md:text-[15px] font-semibold text-white shadow-sm transition  disabled:cursor-not-allowed disabled:opacity-60"
                     >
                       {loading ? t('loading') : t('send')}
                     </button>
