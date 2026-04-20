@@ -3,6 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { motion } from "framer-motion";
 
 const STEPS: {
   id: 1 | 2 | 3;
@@ -44,7 +45,14 @@ function StepBadge({ n }: { n: number }) {
 
 function ArrowDivider() {
   return (
-    <div className="hidden items-center justify-center lg:flex" aria-hidden="true">
+    <motion.div
+      className="hidden items-center justify-center lg:flex"
+      aria-hidden="true"
+      variants={{
+        hidden: { opacity: 0, y: 6 },
+        visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: "easeOut" } },
+      }}
+    >
       <div className="flex items-center gap-2 text-slate-300">
         <span className="h-px w-10 bg-slate-200" />
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
@@ -58,25 +66,52 @@ function ArrowDivider() {
         </svg>
         <span className="h-px w-10 bg-slate-200" />
       </div>
-    </div>
+    </motion.div>
   );
 }
 
 export default function Works() {
   const t = useTranslations("home");
+  const viewport = { once: true, amount: 0.25 } as const;
 
   return (
     <section className="relative mt-14 md:mt-24 flex w-full items-center justify-center overflow-hidden bg-white pb-0 md:pb-14">
       <div className="pointer-events-auto mx-auto w-full max-w-8xl overflow-hidden rounded-2xl border border-[#e8eaf0] bg-[#f5f7fa] shadow-[0_1px_3px_rgba(15,23,42,0.06)]">
         <div className="px-4 py-5 sm:px-6 md:px-8 md:py-7">
-          <h2 className="text-center text-lg font-semibold text-slate-900 md:text-xl">
+          <motion.h2
+            className="text-center text-lg font-semibold text-slate-900 md:text-xl"
+            initial={{ opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={viewport}
+            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+          >
             {t("worksTitle")}
-          </h2>
+          </motion.h2>
 
-          <div className="mt-5 grid grid-cols-1 justify-items-center gap-4 md:mt-6 lg:justify-items-stretch lg:grid-cols-[1fr_auto_1fr_auto_1fr] lg:items-center">
+          <motion.div
+            className="mt-5 grid grid-cols-1 justify-items-center gap-4 md:mt-6 lg:justify-items-stretch lg:grid-cols-[1fr_auto_1fr_auto_1fr] lg:items-center"
+            variants={{
+              hidden: { opacity: 0 },
+              visible: { opacity: 1, transition: { staggerChildren: 0.08, delayChildren: 0.05 } },
+            }}
+            initial="hidden"
+            whileInView="visible"
+            viewport={viewport}
+          >
             {STEPS.map((s, idx) => (
               <React.Fragment key={s.id}>
-                <div className="flex flex-col items-center gap-3  h-[250px] w-[250px] md:h-full md:w-full rounded-2xl  px-4 py-4 text-center  backdrop-blur-[2px] md:flex-row md:items-center md:gap-4 md:bg-transparent md:px-0 md:py-0 md:text-left md:ring-0 md:backdrop-blur-0">
+                <motion.div
+                  className="flex flex-col items-center gap-3  h-[250px] w-[250px] md:h-full md:w-full rounded-2xl  px-4 py-4 text-center  backdrop-blur-[2px] md:flex-row md:items-center md:gap-4 md:bg-transparent md:px-0 md:py-0 md:text-left md:ring-0 md:backdrop-blur-0"
+                  variants={{
+                    hidden: { opacity: 0, y: 18, scale: 0.98 },
+                    visible: {
+                      opacity: 1,
+                      y: 0,
+                      scale: 1,
+                      transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
+                    },
+                  }}
+                >
                   <div className="relative h-[170px] w-[170px] shrink-0">
                     <Image
                       src={s.imageSrc}
@@ -96,12 +131,12 @@ export default function Works() {
                       {t(s.subtitleKey)}
                     </p>
                   </div>
-                </div>
+                </motion.div>
 
                 {idx !== STEPS.length - 1 && <ArrowDivider />}
               </React.Fragment>
             ))}
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>
