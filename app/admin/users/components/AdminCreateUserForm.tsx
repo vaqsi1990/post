@@ -159,8 +159,8 @@ export default function AdminCreateUserForm({
           />
           {errors.confirmPassword && <p className="mt-1 text-[16px] text-red-600">{errors.confirmPassword}</p>}
         </div>
-        <div className="grid grid-cols-2 gap-3">
-          <div>
+        <div className="flex flex-wrap gap-3">
+          <div className="w-full md:w-[calc(50%-0.375rem)]">
             <label className="mb-1 block text-[14px] font-semibold text-black">{t.firstName}</label>
             <input
               type="text"
@@ -170,7 +170,7 @@ export default function AdminCreateUserForm({
               className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
             />
           </div>
-          <div>
+          <div className="w-full md:w-[calc(50%-0.375rem)]">
             <label className="mb-1 block text-[14px] font-semibold text-black">{t.lastName}</label>
             <input
               type="text"
