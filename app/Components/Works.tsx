@@ -75,11 +75,11 @@ export default function Works() {
   const viewport = { once: true, amount: 0.25 } as const;
 
   return (
-    <section className="relative mt-14 md:mt-24 flex w-full items-center justify-center overflow-hidden bg-white pb-0 md:pb-14">
-      <div className="pointer-events-auto mx-auto w-full max-w-8xl overflow-hidden rounded-2xl border border-[#e8eaf0] bg-[#f5f7fa] shadow-[0_1px_3px_rgba(15,23,42,0.06)]">
+    <section className="relative mt-10  flex w-full items-center justify-center overflow-hidden bg-white pb-0 md:pb-14">
+      <div className="pointer-events-auto mx-auto w-full max-w-8xl overflow-hidden rounded-2xl border border-gray-200 bg-gray-50 shadow-md">
         <div className="px-4 py-5 sm:px-6 md:px-8 md:py-7">
           <motion.h2
-            className="text-center text-lg font-semibold text-slate-900 md:text-xl"
+            className="text-center text-center text-2xl font-semibold text-slate-900 sm:text-3xl"
             initial={{ opacity: 0, y: 18 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={viewport}

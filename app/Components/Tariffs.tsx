@@ -261,7 +261,7 @@ export default function Tariffs() {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="mb-6 text-center sm:mb-8 md:mb-14"
         >
-          <h2 className="text-[20px] font-extrabold tracking-tight text-black sm:text-[22px] md:text-[34px]">
+          <h2 className="text-center text-2xl font-semibold text-slate-900 sm:text-3xl">
             {t('tariffsSectionTitle')}
           </h2>
         </motion.div>
@@ -273,7 +273,7 @@ export default function Tariffs() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={viewport}
             transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
-            className="overflow-hidden rounded-xl border border-pink-200/50 bg-gradient-to-br from-white via-indigo-50/40 to-pink-50/50 shadow-[0_20px_60px_-15px_rgba(58,91,255,0.18),0_8px_24px_-12px_rgba(255,79,216,0.12)] sm:rounded-2xl"
+            className="overflow-hidden rounded-xl border border-gray-200 bg-gray-50 shadow-md sm:rounded-2xl"
           >
             <div className="-mx-px overflow-x-auto">
               <table className="w-full min-w-[340px] sm:min-w-[280px]">
@@ -307,10 +307,10 @@ export default function Tariffs() {
                       <motion.tr
                         key={row.countryCode}
                         variants={item}
-                        className={`border-b border-indigo-100/60 transition-colors duration-200 last:border-b-0 hover:bg-indigo-50/70 ${rowIndex % 2 === 0 ? 'bg-white/80' : 'bg-indigo-50/35'
+                        className={`border-b border-gray-200 transition-colors duration-200 last:border-b-0  ${rowIndex % 2 === 0 ? 'bg-white/80' : 'bg-white/80'
                           }`}
                       >
-                        <td className="px-2 py-2 text-[11px] font-medium text-gray-800 sm:px-4 sm:py-3 sm:text-sm md:px-8 md:py-4 md:text-[18px]">
+                        <td className="px-2 py-2 text-[16px] font-medium text-gray-800 sm:px-4 sm:py-3 sm:text-sm md:px-8 md:py-4 md:text-[18px]">
                           <span className="inline-flex items-center gap-1.5 sm:gap-3">
                             {(() => {
                               const Flag = FLAGS[row.countryCode];
@@ -361,9 +361,9 @@ export default function Tariffs() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={viewport}
               transition={{ duration: 0.45, delay: 0.25, ease: 'easeOut' }}
-              className="rounded-[18px] bg-sky-100 p-3.5 shadow-[0_20px_40px_-24px_rgba(130,76,255,0.7)] sm:rounded-[20px] sm:p-4"
+              className="rounded-[18px] bg-sky-100 p-3.5 shadow-md sm:rounded-[20px] sm:p-4"
             >
-            <p className="mb-2 text-sm font-semibold text-[#3a5bff]">{t('tariffCountry')}</p>
+            <p className="mb-2 text-[16px] md:text-[18px] font-semibold text-[#3a5bff]">{t('tariffCountry')}</p>
             <div className="relative">
               {SelectedCountryFlag ? (
                 <SelectedCountryFlag
@@ -374,7 +374,7 @@ export default function Tariffs() {
               <select
                 value={selectedCountryCode}
                 onChange={(event) => setSelectedCountryCode(event.target.value)}
-                className="h-10 w-full rounded-xl border border-violet-100 bg-white pl-10 pr-3 text-sm font-medium text-gray-800 outline-none ring-0 focus:border-violet-300 sm:h-11 sm:pl-11 sm:text-[15px]"
+                className="h-10 w-full rounded-xl border border-gray-200 bg-white pl-10 pr-3 text-[16px] md:text-[18px] font-medium text-gray-800 outline-none ring-0 focus:border-violet-300 sm:h-11 sm:pl-11 sm:text-[15px]"
               >
                 {TARIFF_ROWS.map((row) => (
                   <option key={row.countryCode} value={row.countryCode}>
@@ -392,7 +392,7 @@ export default function Tariffs() {
                 step="0.1"
                 value={weightKg}
                 onChange={(event) => setWeightKg(event.target.value)}
-                className="h-10 w-full rounded-xl border border-violet-100 bg-white px-3 text-[18px] font-semibold text-violet-800 outline-none focus:border-violet-300 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none sm:h-11 sm:text-[20px]"
+                className="h-10 w-full rounded-xl border border-gray-200 bg-white px-3 text-[16px] md:text-[18px] font-semibold text-violet-800 outline-none focus:border-violet-300 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none sm:h-11 sm:text-[20px]"
                 aria-label={tCalc('weight')}
               />
               <div className="flex h-10 items-center justify-end rounded-xl bg-gradient-to-r from-[#8f48ff] to-[#b24dff] px-3 text-right text-base font-extrabold leading-none text-white sm:h-11 sm:px-4 sm:text-[18px]">
@@ -422,14 +422,14 @@ export default function Tariffs() {
             </h2>
 
             <div className="relative mx-auto w-full max-w-3xl overflow-hidden rounded-[20px] p-1.5 sm:rounded-[24px] sm:p-2">
-              <article className="min-h-[160px] rounded-2xl border border-violet-100/80 bg-white/95 p-4 shadow-[0_12px_30px_-20px_rgba(94,37,208,0.65)] sm:min-h-[170px] sm:p-6">
+              <article className="min-h-[160px] rounded-2xl border border-gray-200 bg-white/95 p-4 shadow-md sm:min-h-[170px] sm:p-6">
                 <div className="mb-3 text-lg tracking-[2px] text-amber-500 sm:text-xl">
                   {'★'.repeat(REVIEWS[activeIndex].rating)}
                 </div>
                 <p className="text-sm leading-6 text-gray-700 sm:text-base sm:leading-7">
                   &ldquo;{REVIEWS[activeIndex].text}&rdquo;
                 </p>
-                <p className="mt-4 text-xs font-bold text-violet-700 sm:text-sm">{REVIEWS[activeIndex].name}</p>
+                <p className="mt-4 text-[14px] md:text-[16px] font-bold text-violet-700">{REVIEWS[activeIndex].name}</p>
               </article>
 
               <div className="mt-5 flex items-center justify-center gap-2">

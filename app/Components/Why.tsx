@@ -58,7 +58,7 @@ const Why = () => {
       
 
       <motion.div
-        className="pointer-events-auto mx-auto w-full max-w-6xl overflow-hidden rounded-2xl border border-[#e8eaf0] bg-[#f5f7fa] shadow-[0_1px_3px_rgba(15,23,42,0.06)]"
+        className="pointer-events-auto mx-auto w-full max-w-6xl overflow-hidden rounded-2xl border border-gray-200 bg-gray-50 shadow-md"
         initial={{ opacity: 0, y: 12 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.25 }}
