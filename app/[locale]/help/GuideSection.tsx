@@ -28,12 +28,7 @@ export default function GuideSection({ title, text }: Props) {
           animate={{ y: [0, 12, 0] }}
           transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
         />
-        <motion.div
-          className="absolute -left-10 -bottom-10 h-32 w-32 rounded-full bg-indigo-400/20 blur-2xl"
-          animate={{ y: [0, -12, 0] }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-        />
-
+   
         <div className="relative z-10 grid gap-6 md:gap-8 md:grid-cols-[minmax(0,1.1fr)_minmax(0,1.4fr)] items-center">
           <motion.div
             className="relative overflow-hidden rounded-2xl "
