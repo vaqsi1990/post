@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { formatOriginCountryLabel } from '@/lib/formatOriginCountry';
 import { employeeCountryLabel } from '@/lib/employeeCountryLabel';
 import { useLocale } from 'next-intl';
-
+import {TrashIcon} from 'lucide-react';
 type Parcel = {
   id: string;
   trackingNumber: string;
@@ -152,14 +152,14 @@ export default function ParcelsTable({
     const name = [u.firstName, u.lastName].filter(Boolean).join(' ').trim() || u.email;
     return (
       <div className="mt-2 border-t border-gray-100 pt-2 text-[12px] text-gray-700">
-        <p className="font-semibold text-gray-900">{t.uploadedBy}</p>
-        <p className="text-black">{name}</p>
+        <p className="font-semibold text-[16px] text-gray-900">{t.uploadedBy}</p>
+        <p className="text-black text-[16px]">{name}</p>
         {u.role === 'EMPLOYEE' ? (
-          <p className="text-gray-700">
+          <p className="text-gray-700 text-[16px]">
             {t.uploadedByCountry}: {employeeCountryLabel(u.employeeCountry, locale)}
           </p>
         ) : (
-          <p className="text-gray-600">{t.uploaderAdmin}</p>
+          <p className="text-gray-600 text-[16px]">{t.uploaderAdmin}</p>
         )}
       </div>
     );
@@ -586,15 +586,15 @@ export default function ParcelsTable({
               </div>
 
                 <div className="mb-3 grid grid-cols-2 gap-2 text-[13px] text-black">
-                <span className="text-black">{t.tracking}</span>
-                <span className="text-black">{parcel.trackingNumber}</span>
+                <span className="text-black text-[16px]">{t.tracking}</span>
+                <span className="text-black text-[16px]">{parcel.trackingNumber}</span>
 
-                <span className="text-black">{t.quantity}</span>
-                <span className="text-black">{parcel.quantity}</span>
+                <span className="text-black text-[16px]">{t.quantity}</span>
+                <span className="text-black text-[16px]">{parcel.quantity}</span>
 
-                <span className="text-black">{t.weight}</span>
+                <span className="text-black text-[16px]">{t.weight}</span>
                 {currentStatus === 'arrived' || currentStatus === 'in_warehouse' ? (
-                  <span className="flex flex-wrap items-center gap-2 text-black">
+                  <span className="flex flex-wrap items-center gap-2 text-black text-[16px]">
                     <input
                       type="text"
                       inputMode="decimal"
@@ -625,20 +625,20 @@ export default function ParcelsTable({
                     </button>
                   </span>
                 ) : (
-                  <span className="text-black">
+                  <span className="text-black text-[16px]">
                     {parcel.weight != null ? `${parcel.weight} kg` : '—'}
                   </span>
                 )}
 
-                <span className="text-black">{t.itemValue}</span>
-                <span className="text-black">
+                <span className="text-black text-[16px]">{t.itemValue}</span>
+                <span className="text-black text-[16px]">
                   {parcel.price.toFixed(2)} {parcel.currency || 'GEL'}
                 </span>
 
                 {currentStatus === 'arrived' || currentStatus === 'delivered' ? (
                   <>
-                    <span className="text-black">{t.amount}</span>
-                    <span className="text-black">
+                    <span className="text-black text-[16px]">{t.amount}</span>
+                    <span className="text-black text-[16px]">
                       {parcel.shippingAmount != null
                         ? `${parcel.shippingAmount.toFixed(2)} GEL${
                             parcel.shippingFormula ? ` (${parcel.shippingFormula})` : ''
@@ -872,21 +872,21 @@ export default function ParcelsTable({
                     <tr className="bg-gray-50">
                       <td colSpan={2} className="px-4 pb-4 pt-0 text-black text-[14px] md:text-[18px]">
                         <div className="grid grid-cols-2 gap-2 pt-2">
-                            <span className="text-black">{t.user}</span>
-                          <span>{parcel.customerName}</span>
+                            <span className="text-black text-[16px]">{t.user}</span>
+                          <span className="text-[16px]">{parcel.customerName}</span>
 
-                          <div className="col-span-2">{renderUploaderBlock(parcel)}</div>
+                    
 
-                          <span className="text-black">{t.tracking}</span>
-                          <span>{parcel.trackingNumber}</span>
+                          <span className="text-black text-[16px]">{t.tracking}</span>
+                          <span className="text-[16px]">{parcel.trackingNumber}</span>
 
-                          <span className="text-black">{t.quantity}</span>
-                          <span>{parcel.quantity}</span>
+                          <span className="text-black text-[16px]">{t.quantity}</span>
+                          <span className="text-[16px]">{parcel.quantity}</span>
 
-                          <span className="text-black">{t.country}</span>
-                          <span>{formatOriginCountryLabel(parcel.originCountry)}</span>
+                          <span className="text-black text-[16px]">{t.country}</span>
+                          <span className="text-[16px]">{formatOriginCountryLabel(parcel.originCountry)}</span>
 
-                          <span className="text-black">{t.weight}</span>
+                          <span className="text-black text-[16px]">{t.weight}</span>
                           {currentStatus === 'arrived' || currentStatus === 'in_warehouse' ? (
                             <span className="flex flex-wrap items-center gap-2">
                               <input
@@ -908,7 +908,7 @@ export default function ParcelsTable({
                                 }
                                 className="w-32 rounded-md border border-gray-300 px-2 py-1 text-[14px] text-black"
                               />
-                              <span className="text-black">kg</span>
+                              <span className="text-black text-[16px]">kg</span>
                               <button
                                 type="button"
                                 disabled={weightSavingId === parcel.id}
@@ -919,22 +919,22 @@ export default function ParcelsTable({
                               </button>
                             </span>
                           ) : (
-                            <span>
+                            <span className="text-[16px]">
                               {parcel.weight != null
                                 ? `${parcel.weight} kg`
                                 : '—'}
                             </span>
                           )}
 
-                          <span className="text-black">{t.itemValue}</span>
-                          <span>
-                            {parcel.price.toFixed(2)} {parcel.currency || 'GEL'}
+                          <span className="text-black text-[16px]">{t.itemValue}</span>
+                          <span className="text-[16px]">
+                            <span className="text-[16px]">{parcel.price.toFixed(2)} {parcel.currency || 'GEL'}</span>
                           </span>
 
                           {currentStatus === 'arrived' || currentStatus === 'delivered' ? (
                             <>
-                              <span className="text-black">{t.amount}</span>
-                              <span>
+                              <span className="text-black text-[16px]">{t.amount}</span>
+                              <span className="text-[16px]">
                                 {parcel.shippingAmount != null
                                   ? `${parcel.shippingAmount.toFixed(2)} GEL${
                                       parcel.shippingFormula ? ` (${parcel.shippingFormula})` : ''
@@ -944,16 +944,16 @@ export default function ParcelsTable({
                             </>
                           ) : null}
 
-                          <span className="text-black">{t.phone}</span>
-                          <span>{formatPhone(parcel.user.phone)}</span>
+                          <span className="text-black text-[16px]">{t.phone}</span>
+                          <span className="text-[16px]">{formatPhone(parcel.user.phone)}</span>
 
-                          <span className="text-black">{t.city}</span>
-                          <span>{parcel.user.city || '—'}</span>
+                          <span className="text-black text-[16px]">{t.city}</span>
+                          <span className="text-[16px]">{parcel.user.city || '—'}</span>
 
-                          <span className="text-black">{t.street}</span>
-                          <span>{parcel.user.address || '—'}</span>
+                          <span className="text-black text-[16px]">{t.street}</span>
+                          <span className="text-[16px]">{parcel.user.address || '—'}</span>
 
-                          <span className="text-black">{t.file}</span>
+                          <span className="text-black text-[16px]">{t.file}</span>
                           {parcel.filePath ? (
                             <span className="flex flex-wrap gap-2">
                               <a
@@ -973,15 +973,15 @@ export default function ParcelsTable({
                               </a>
                             </span>
                           ) : (
-                            <span>—</span>
+                            <span className="text-[16px]">—</span>
                           )}
 
-                          <span className="text-black">{t.date}</span>
-                          <span>{parcel.createdAt}</span>
+                          <span className="text-black text-[16px]">{t.date}</span>
+                          <span className="text-[16px]">{parcel.createdAt}</span>
 
                           {currentStatus === 'arrived' ? (
                             <>
-                              <span className="text-black">{t.payable}</span>
+                              <span className="text-black text-[16px]">{t.payable}</span>
                               <span className="flex flex-wrap items-center gap-2">
                                 <input
                                   type="text"
@@ -1002,7 +1002,7 @@ export default function ParcelsTable({
                                   }
                                   className="w-32 rounded-md border border-gray-300 px-2 py-1 text-[14px] text-black"
                                 />
-                                <span className="text-black">{parcel.currency || 'GEL'}</span>
+                                <span className="text-black text-[16px]">{parcel.currency || 'GEL'}</span>
                                 <button
                                   type="button"
                                   disabled={payableSavingId === parcel.id}
@@ -1013,7 +1013,7 @@ export default function ParcelsTable({
                                 </button>
                               </span>
 
-                              <span className="text-black">{t.courier}</span>
+                              <span className="text-black text-[16px]">{t.courier}</span>
                               <span className="flex flex-col gap-1">
                                 {parcel.courierServiceRequested ? (
                                   <span className="text-[12px] text-amber-900">
@@ -1040,7 +1040,7 @@ export default function ParcelsTable({
                                     }
                                     className="w-32 rounded-md border border-gray-300 px-2 py-1 text-[14px] text-black"
                                   />
-                                  <span className="text-black">{parcel.currency || 'GEL'}</span>
+                                  <span className="text-black text-[16px]">{parcel.currency || 'GEL'}</span>
                                   <button
                                     type="button"
                                     disabled={courierFeeSavingId === parcel.id}
@@ -1054,7 +1054,7 @@ export default function ParcelsTable({
                             </>
                           ) : null}
 
-                          <span className="text-black">{t.status}</span>
+                          <span className="text-black text-[16px]">{t.status}</span>
                           <span className="flex items-center gap-2">
                             <select
                               value={parcel.status}
@@ -1079,9 +1079,9 @@ export default function ParcelsTable({
                                 type="button"
                                 onClick={() => handleDelete(parcel.id)}
                                 disabled={deletingId === parcel.id}
-                                className="mt-1 rounded-md bg-red-600 px-2 py-1 text-[12px] font-medium text-white hover:bg-red-700 disabled:opacity-50"
+                                className="mt-1 rounded-md  p-1 text-[16px] font-medium  disabled:opacity-50"
                               >
-                                {deletingId === parcel.id ? t.deleting : t.delete}
+                                {<TrashIcon className="w-6 h-6 text-red-600" />}
                               </button>
                             ) : null}
                           </span>
