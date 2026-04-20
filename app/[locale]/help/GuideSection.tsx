@@ -23,11 +23,7 @@ export default function GuideSection({ title, text }: Props) {
         viewport={{ once: true, amount: 0.4 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
       >
-        <motion.div
-          className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-pink-400/20 blur-2xl"
-          animate={{ y: [0, 12, 0] }}
-          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-        />
+    
    
         <div className="relative z-10 grid gap-6 md:gap-8 md:grid-cols-[minmax(0,1.1fr)_minmax(0,1.4fr)] items-center">
           <motion.div

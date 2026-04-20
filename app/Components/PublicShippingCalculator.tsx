@@ -61,13 +61,11 @@ export default function PublicShippingCalculator() {
 
   return (
     <div className="mx-auto w-full max-w-2xl px-1">
-      <h1 className="mb-8 text-center text-[20px] font-extrabold tracking-tight text-[#3a5bff] md:text-[28px]">
-        {t('title')}
-      </h1>
+      
 
       <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-md md:p-8">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <label className="flex flex-col gap-1.5 text-[14px] font-medium text-gray-800">
+          <label className="flex flex-col gap-1.5 md:text-[16px] text-[14px] font-medium text-gray-800">
             <span>{t('length')}</span>
             <input
               type="text"
@@ -77,7 +75,7 @@ export default function PublicShippingCalculator() {
               className="rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black shadow-sm focus:border-[#3a5bff] focus:outline-none focus:ring-2 focus:ring-[#3a5bff]/25"
             />
           </label>
-          <label className="flex flex-col gap-1.5 text-[14px] font-medium text-gray-800">
+          <label className="flex flex-col gap-1.5 md:text-[16px] text-[14px] font-medium text-gray-800">
             <span>{t('width')}</span>
             <input
               type="text"
@@ -87,7 +85,7 @@ export default function PublicShippingCalculator() {
               className="rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black shadow-sm focus:border-[#3a5bff] focus:outline-none focus:ring-2 focus:ring-[#3a5bff]/25"
             />
           </label>
-          <label className="flex flex-col gap-1.5 text-[14px] font-medium text-gray-800">
+          <label className="flex flex-col gap-1.5 md:text-[16px] text-[14px] font-medium text-gray-800">
             <span>{t('height')}</span>
             <input
               type="text"
@@ -100,7 +98,7 @@ export default function PublicShippingCalculator() {
         </div>
 
         <div className="mt-4 max-w-full sm:max-w-xs">
-          <label className="flex flex-col gap-1.5 text-[14px] font-medium text-gray-800">
+          <label className="flex flex-col gap-1.5 md:text-[16px] text-[14px] font-medium text-gray-800">
             <span>{t('weight')}</span>
             <input
               type="text"
@@ -116,7 +114,7 @@ export default function PublicShippingCalculator() {
           <button
             type="button"
             onClick={handleCalculate}
-            className="rounded-lg bg-[#3a5bff] px-8 py-3 text-[15px] font-semibold text-white shadow-md transition hover:bg-[#2f4fe0] focus:outline-none focus:ring-2 focus:ring-[#3a5bff] focus:ring-offset-2"
+            className="rounded-lg bg-blue-500 px-8 py-3 text-[14px] md:text-[16px] font-semibold text-white shadow-md transition hover:bg-blue-600 focus:outline-none focus:ring-blue-500 focus:ring-offset-2"
           >
             {t('calculate')}
           </button>

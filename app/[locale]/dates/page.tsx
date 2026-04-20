@@ -2,6 +2,11 @@ import React from "react";
 import type { Metadata } from 'next';
 import prisma from "@/lib/prisma";
 import { getPageSeoMetadata } from '@/lib/seo';
+import { getTranslations } from 'next-intl/server';
+import { CheckCircle2, XCircle } from 'lucide-react';
+import kaMessages from '../../../messages/ka.json';
+import enMessages from '../../../messages/en.json';
+import ruMessages from '../../../messages/ru.json';
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -12,29 +17,55 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return getPageSeoMetadata(locale, '/dates');
 }
 
-const countryName: Record<string, string> = {
-  GE: "საქართველო",
-  GB: "ბრიტანეთი",
-  US: "აშშ",
-  CN: "ჩინეთი",
-  GR: "საბერძნეთი",
-  FR: "საფრანგეთი",
-  TR: "თურქეთი",
+const countryNameByLocale: Record<string, Record<string, string>> = {
+  ka: {
+    GE: "საქართველო",
+    GB: "ბრიტანეთი",
+    US: "აშშ",
+    CN: "ჩინეთი",
+    GR: "საბერძნეთი",
+    FR: "საფრანგეთი",
+    TR: "თურქეთი",
+  },
+  en: {
+    GE: "Georgia",
+    GB: "United Kingdom",
+    US: "USA",
+    CN: "China",
+    GR: "Greece",
+    FR: "France",
+    TR: "Turkey",
+  },
+  ru: {
+    GE: "Грузия",
+    GB: "Великобритания",
+    US: "США",
+    CN: "Китай",
+    GR: "Греция",
+    FR: "Франция",
+    TR: "Турция",
+  },
 };
 
 const statusStyle: Record<string, string> = {
-  open: "bg-emerald-50 text-emerald-700 ring-emerald-200",
-  closed: "bg-slate-100 text-slate-700 ring-slate-200",
+  open: " text-black ",
+  closed: " text-black ",
 };
 
-const statusLabel: Record<string, string> = {
-  open: "აქტიური",
-  closed: "დახურული",
+const statusIcon: Record<string, React.ComponentType<{ className?: string }>> = {
+  open: CheckCircle2,
+  closed: XCircle,
 };
 
-function formatDateTime(date: Date | null) {
-  if (!date) return "არ არის მითითებული";
-  return new Intl.DateTimeFormat("ka-GE", {
+function getDateTimeLocale(locale: string) {
+  if (locale === 'ru') return 'ru-RU';
+  if (locale === 'en') return 'en-US';
+  return 'ka-GE';
+}
+
+function formatDateTime(date: Date | null, locale: string, fallback: string) {
+  if (!date) return fallback;
+  return new Intl.DateTimeFormat(getDateTimeLocale(locale), {
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
@@ -43,7 +74,19 @@ function formatDateTime(date: Date | null) {
   }).format(date);
 }
 
-export default async function Page() {
+export default async function Page({ params }: Props) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'dates' });
+  const countryName = countryNameByLocale[locale] ?? countryNameByLocale.ka;
+  const routeSeparator = t('routeSeparator');
+  const notSpecified = t('notSpecified');
+  const messagesByLocale: Record<string, any> = {
+    ka: kaMessages,
+    en: enMessages,
+    ru: ruMessages,
+  };
+  const messages = messagesByLocale[locale] ?? kaMessages;
+
   const flights = await prisma.reis.findMany({
     orderBy: [{ departureAt: "asc" }, { createdAt: "desc" }],
     select: {
@@ -58,67 +101,84 @@ export default async function Page() {
   });
 
   return (
-    <main className="min-h-screen mt-24 bg-gradient-to-b from-slate-50 via-white to-slate-100 px-4 py-12 sm:px-6 lg:px-10">
+    <main className="w-full pt-14 mt-14 md:pt-20 pb-16 md:pb-24 bg-gray-50">
       <div className="mx-auto w-full max-w-5xl">
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-semibold text-slate-900 sm:text-4xl">
-            უახლოესი რეისები
+          <h1 className="text-2xl font-semibold text-slate-900 sm:text-3xl">
+            {t('title')}
           </h1>
           <p className="mt-2 text-sm text-slate-600 sm:text-base">
-            აირჩიე სასურველი რეისი და გადაამოწმე თარიღები მარტივად.
+            {t('subtitle')}
           </p>
         </div>
 
         {flights.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center text-slate-600">
-            რეისები ჯერ არ არის დამატებული.
+            {t('empty')}
           </div>
         ) : (
           <div className="grid gap-4 sm:gap-5">
             {flights.map((flight) => {
-              const route = `${countryName[flight.originCountry] ?? flight.originCountry} -> ${
+              const route = `${countryName[flight.originCountry] ?? flight.originCountry} ${routeSeparator} ${
                 countryName[flight.destinationCountry] ?? flight.destinationCountry
               }`;
+              const flightDisplayName =
+                messages?.dates?.flightNames?.[flight.name] ?? flight.name;
 
               return (
                 <article
                   key={flight.id}
-                  className="group rounded-2xl border border-slate-200 bg-white/90 p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+                  className="group rounded-2xl border border-slate-200 bg-white/90 p-5 shadow-sm transition-all duration-200  hover:shadow-md"
                 >
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <div>
-                      <p className="text-xs font-medium uppercase tracking-widest text-slate-500">
-                        რეისი
+                      <p className="md:text-[16px] text-[14px] font-medium uppercase tracking-widest text-slate-500">
+                        {t('flightLabel')}
                       </p>
-                      <h2 className="mt-1 text-lg font-semibold text-slate-900 sm:text-xl">
-                        {flight.name}
+                      <h2 className="mt-1 md:text-[18px] text-[16px] font-semibold text-slate-900 ">
+                        {flightDisplayName}
                       </h2>
                     </div>
 
                     <span
-                      className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ring-1 ${
-                        statusStyle[flight.status] ?? "bg-slate-100 text-slate-700 ring-slate-200"
+                      className={`inline-flex px-3 py-1 text-[18px] font-semibold  ${
+                        statusStyle[flight.status] ?? " text-black "
                       }`}
                     >
-                      {statusLabel[flight.status] ?? flight.status}
+                      {(() => {
+                        const Icon = statusIcon[flight.status];
+                        const label =
+                          flight.status === 'open'
+                            ? t('status.open')
+                            : flight.status === 'closed'
+                              ? t('status.closed')
+                              : flight.status;
+
+                        return (
+                          <span className="inline-flex items-center gap-1.5" title={label}>
+                            {Icon ? <Icon className="h-[26px] text-green-500 w-[26px]" aria-hidden="true" /> : null}
+                            <span className="sr-only">{label}</span>
+                          </span>
+                        );
+                      })()}
                     </span>
                   </div>
 
                   <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
                     <div className="rounded-xl bg-slate-50 p-3">
-                      <p className="text-xs text-slate-500">გაფრენა</p>
-                      <p className="mt-1 font-medium text-slate-800">
-                        {formatDateTime(flight.departureAt)}
+                      <p className="md:text-[16px] text-[14px] text-slate-500">{t('departure')}</p>
+                      <p className="mt-1 md:text-[16px] text-[14px] font-medium text-slate-800">
+                        {formatDateTime(flight.departureAt, locale, notSpecified)}
                       </p>
                     </div>
                     <div className="rounded-xl bg-slate-50 p-3">
-                      <p className="text-xs text-slate-500">ჩამოსვლა</p>
+                      <p className="md:text-[16px] text-[14px] text-slate-500">{t('arrival')}</p>
                       <p className="mt-1 font-medium text-slate-800">
-                        {formatDateTime(flight.arrivalAt)}
+                        {formatDateTime(flight.arrivalAt, locale, notSpecified)}
                       </p>
                     </div>
                     <div className="rounded-xl bg-slate-50 p-3">
-                      <p className="text-xs text-slate-500">მიმართულება</p>
+                      <p className="md:text-[16px] text-[14px] text-slate-500">{t('direction')}</p>
                       <p className="mt-1 font-medium text-slate-800">{route}</p>
                     </div>
                   </div>

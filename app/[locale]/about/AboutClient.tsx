@@ -32,7 +32,7 @@ export default function AboutClient({ locale }: Props) {
   return (
     <section className="w-full pt-14 mt-14 md:pt-20 pb-16 md:pb-24 bg-gray-50" data-locale={locale}>
       <div className="max-w-4xl mx-auto px-4 md:px-0">
-        <div className="relative mb-8 md:mb-12">
+        <div className="relative mb-6">
           <div className="absolute -inset-x-10 -inset-y-4 bg-gray-200 blur-3xl pointer-events-none" />
           <div className="relative flex flex-col items-center gap-3">
             <h1 className="text-center text-2xl font-semibold text-slate-900 sm:text-3xl">
@@ -84,7 +84,7 @@ export default function AboutClient({ locale }: Props) {
             className="mt-4 md:mt-6 pt-4 md:pt-6 border-t border-indigo-100"
             variants={paragraphVariants}
           >
-              <h2 className="text-black md:text-[16px] text-[14px] font-bold mb-3 md:mb-4">
+              <h2 className="text-black md:text-[18px] text-[16px] font-bold mb-3 md:mb-4">
               {t('requisitesTitle')}
             </h2>
             <p className="text-black md:text-[16px] text-[14px] leading-relaxed text-justify whitespace-pre-line">

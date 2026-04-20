@@ -717,6 +717,21 @@
     "createError": "Не удалось создать посылку",
     "createSuccess": "Посылка успешно создана"
   },
+  "dates": {
+    "title": "Ближайшие рейсы",
+    "subtitle": "Выберите рейс и легко проверьте даты",
+    "empty": "Рейсы ещё не добавлены.",
+    "flightLabel": "Рейс",
+    "departure": "Отправление",
+    "arrival": "Прибытие",
+    "direction": "Маршрут",
+    "routeSeparator": "→",
+    "notSpecified": "Не указано",
+    "status": {
+      "open": "Активный",
+      "closed": "Закрыт"
+    }
+  },
   "locale": {
     "ka": "ქართ",
     "en": "Eng",

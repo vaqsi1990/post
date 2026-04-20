@@ -21,7 +21,7 @@ export default function ConditionsAccordion({ locale, sectionId }: Props) {
 
   return (
     <div
-      className={`mx-auto w-full max-w-4xl px-4${isFilteredToOneSection ? " md:mt-[60px]" : ""}`}
+      className={`mx-auto w-full max-w-4xl px-4${isFilteredToOneSection ? " " : ""}`}
     >
       <div className="space-y-3 md:space-y-4">
         {sections.map((section) => (
@@ -35,7 +35,7 @@ export default function ConditionsAccordion({ locale, sectionId }: Props) {
             transition={{ duration: 0.3, ease: "easeOut" }}
           >
             <div className="flex items-center gap-3 px-4 md:px-6 pb-3 md:pb-4">
-              <h2 className="text-left text-[15px] font-semibold text-black md:text-[16px]">
+              <h2 className="text-left text-[16px] font-semibold text-black md:text-[18px]">
                 {section.title}
               </h2>
             </div>
