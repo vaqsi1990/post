@@ -593,7 +593,7 @@ export default function ParcelsTable({
                 <span className="text-black">{parcel.quantity}</span>
 
                 <span className="text-black">{t.weight}</span>
-                {currentStatus === 'arrived' ? (
+                {currentStatus === 'arrived' || currentStatus === 'in_warehouse' ? (
                   <span className="flex flex-wrap items-center gap-2 text-black">
                     <input
                       type="text"
@@ -695,7 +695,7 @@ export default function ParcelsTable({
                         type="button"
                         disabled={payableSavingId === parcel.id}
                         onClick={() => handleSavePayable(parcel)}
-                        className="rounded-md bg-black px-2 py-1 text-[12px] font-medium text-white hover:bg-gray-800 disabled:opacity-50"
+                        className="rounded-md bg-[#3a5bff] px-2 py-1 text-[12px] font-medium text-white hover:bg-gray-800 disabled:opacity-50"
                       >
                         {payableSavingId === parcel.id ? '...' : t.save}
                       </button>
@@ -734,7 +734,7 @@ export default function ParcelsTable({
                         type="button"
                         disabled={courierFeeSavingId === parcel.id}
                         onClick={() => handleSaveCourierFee(parcel)}
-                        className="rounded-md bg-black px-2 py-1 text-[12px] font-medium text-white hover:bg-gray-800 disabled:opacity-50"
+                        className="rounded-md bg-[#3a5bff] px-2 py-1 text-[12px] font-medium text-white hover:bg-gray-800 disabled:opacity-50"
                       >
                         {courierFeeSavingId === parcel.id ? '...' : t.save}
                       </button>
@@ -887,7 +887,7 @@ export default function ParcelsTable({
                           <span>{formatOriginCountryLabel(parcel.originCountry)}</span>
 
                           <span className="text-black">{t.weight}</span>
-                          {currentStatus === 'arrived' ? (
+                          {currentStatus === 'arrived' || currentStatus === 'in_warehouse' ? (
                             <span className="flex flex-wrap items-center gap-2">
                               <input
                                 type="text"
@@ -913,7 +913,7 @@ export default function ParcelsTable({
                                 type="button"
                                 disabled={weightSavingId === parcel.id}
                                 onClick={() => handleSaveWeight(parcel)}
-                                className="rounded-md bg-black px-2 py-1 text-[12px] font-medium text-white hover:bg-gray-800 disabled:opacity-50"
+                                className="rounded-md bg-[#3a5bff] px-2 py-1 text-[12px] font-medium text-white hover:bg-gray-800 disabled:opacity-50"
                               >
                                 {weightSavingId === parcel.id ? t.saving : t.save}
                               </button>
@@ -1007,7 +1007,7 @@ export default function ParcelsTable({
                                   type="button"
                                   disabled={payableSavingId === parcel.id}
                                   onClick={() => handleSavePayable(parcel)}
-                                  className="rounded-md bg-black px-2 py-1 text-[12px] font-medium text-white hover:bg-gray-800 disabled:opacity-50"
+                                  className="rounded-md bg-[#3a5bff] px-2 py-1 text-[12px] font-medium text-white hover:bg-gray-800 disabled:opacity-50"
                                 >
                                   {payableSavingId === parcel.id ? t.saving : t.save}
                                 </button>

@@ -141,11 +141,15 @@ export async function PATCH(
       return NextResponse.json({ error: 'ამანათი ვერ მოიძებნა' }, { status: 404 });
     }
 
-    if (data.weight !== undefined && parcel.status !== 'arrived') {
+    if (
+      data.weight !== undefined &&
+      parcel.status !== 'arrived' &&
+      parcel.status !== 'in_warehouse'
+    ) {
       return NextResponse.json(
         {
           error:
-            'წონის რედაქტირება ხელმისაწვდომია მხოლოდ «ჩამოსული» სტატუსის ამანათებზე',
+            'წონის რედაქტირება ხელმისაწვდომია მხოლოდ «საწყობში» ან «ჩამოსული» სტატუსის ამანათებზე',
         },
         { status: 400 }
       );
