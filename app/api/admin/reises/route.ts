@@ -3,6 +3,8 @@ import { getServerSession } from 'next-auth';
 import { z } from 'zod';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { AdminCacheTags, cachedAdmin } from '@/lib/cache/adminCache';
+import { invalidateCacheTags } from '@/lib/cache/redisCache';
 
 export const dynamic = 'force-dynamic';
 
@@ -44,10 +46,17 @@ export async function GET() {
   if (!auth.ok) return auth.res;
 
   try {
-    const reises = await prisma.reis.findMany({
-      orderBy: [{ departureAt: 'desc' }, { createdAt: 'desc' }],
-      include: { _count: { select: { parcels: true } } },
-    });
+    const reises = await cachedAdmin(
+      'reises:list:v1',
+      { role: 'ADMIN' },
+      async () => {
+        return await prisma.reis.findMany({
+          orderBy: [{ departureAt: 'desc' }, { createdAt: 'desc' }],
+          include: { _count: { select: { parcels: true } } },
+        });
+      },
+      { ttlSeconds: 60, tags: [AdminCacheTags.reises] },
+    );
     return NextResponse.json(
       { reises },
       {
@@ -82,6 +91,7 @@ export async function POST(request: NextRequest) {
         notes: data.notes?.trim() ? data.notes.trim() : null,
       },
     });
+    void invalidateCacheTags([AdminCacheTags.reises]);
     return NextResponse.json({ message: 'რეისი დაემატა', reis }, { status: 201 });
   } catch (e) {
     if (e instanceof z.ZodError) {
@@ -119,6 +129,7 @@ export async function PUT(request: NextRequest) {
       },
     });
 
+    void invalidateCacheTags([AdminCacheTags.reises]);
     return NextResponse.json({ message: 'შენახულია', reis }, { status: 200 });
   } catch (e) {
     if (e instanceof z.ZodError) {
@@ -143,6 +154,7 @@ export async function DELETE(request: NextRequest) {
     const body = await request.json();
     const { id } = z.object({ id: z.string().min(1) }).parse(body);
     await prisma.reis.delete({ where: { id } });
+    void invalidateCacheTags([AdminCacheTags.reises]);
     return NextResponse.json({ message: 'რეისი წაიშალა' }, { status: 200 });
   } catch (e) {
     if (e instanceof z.ZodError) {

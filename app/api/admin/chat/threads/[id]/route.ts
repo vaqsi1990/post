@@ -3,6 +3,8 @@ import { getServerSession } from 'next-auth';
 import { z } from 'zod';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { AdminCacheTags, adminChatThreadTag, cachedAdmin } from '@/lib/cache/adminCache';
+import { invalidateCacheTags } from '@/lib/cache/redisCache';
 
 export const dynamic = 'force-dynamic';
 
@@ -34,24 +36,35 @@ export async function GET(
   }
 
   try {
-    const thread = await prisma.chatThread.findUnique({
-      where: { id },
-    });
-    if (!thread) {
+    const data = await cachedAdmin(
+      'chat:thread:get:v1',
+      { role: auth.ok ? 'ADMIN' : 'unknown', id },
+      async () => {
+        const thread = await prisma.chatThread.findUnique({
+          where: { id },
+        });
+        if (!thread) return null;
+
+        const messages = await prisma.chatMessage.findMany({
+          where: { threadId: id },
+          orderBy: { createdAt: 'asc' },
+        });
+
+        return { thread, messages };
+      },
+      { ttlSeconds: 30, tags: [AdminCacheTags.chatThreads, adminChatThreadTag(id)] },
+    );
+
+    if (!data) {
       return NextResponse.json({ error: 'Thread not found' }, { status: 404 });
     }
 
-    const messages = await prisma.chatMessage.findMany({
-      where: { threadId: id },
-      orderBy: { createdAt: 'asc' },
-    });
-
     return NextResponse.json({
       thread: {
-        ...thread,
-        createdAt: new Date(thread.createdAt).toLocaleString('ka-GE'),
+        ...data.thread,
+        createdAt: new Date(data.thread.createdAt).toLocaleString('ka-GE'),
       },
-      messages: messages.map((m) => ({
+      messages: data.messages.map((m) => ({
         ...m,
         createdAt: new Date(m.createdAt).toLocaleString('ka-GE'),
       })),
@@ -97,6 +110,7 @@ export async function POST(
     });
 
     // Optionally, could notify external system here via webhook call.
+    void invalidateCacheTags([AdminCacheTags.chatThreads, adminChatThreadTag(id)]);
 
     return NextResponse.json(
       {
@@ -148,6 +162,7 @@ export async function PATCH(
       data: { status },
     });
 
+    void invalidateCacheTags([AdminCacheTags.chatThreads, adminChatThreadTag(id)]);
     return NextResponse.json(
       {
         message: 'დიალოგის სტატუსი განახლდა',
@@ -181,6 +196,7 @@ export async function DELETE(
       where: { id },
     });
 
+    void invalidateCacheTags([AdminCacheTags.chatThreads, adminChatThreadTag(id)]);
     return NextResponse.json(
       { message: 'დიალოგი წაიშალა' },
       { status: 200 }

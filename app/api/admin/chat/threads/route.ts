@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { AdminCacheTags, cachedAdmin } from '@/lib/cache/adminCache';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,10 +17,28 @@ export async function GET() {
   }
 
   try {
-    const threads = await prisma.chatThread.findMany({
-      orderBy: { createdAt: 'desc' },
-      take: 100,
-    });
+    const threads = await cachedAdmin(
+      'chat:threads:list:v1',
+      { role: session.user.role, take: 100 },
+      async () => {
+        return await prisma.chatThread.findMany({
+          orderBy: { createdAt: 'desc' },
+          take: 100,
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            phone: true,
+            status: true,
+            userId: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        });
+      },
+      { ttlSeconds: 30, tags: [AdminCacheTags.chatThreads] },
+    );
 
     return NextResponse.json({
       threads: threads.map((t) => ({

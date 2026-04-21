@@ -52,9 +52,16 @@ async function safeConnect() {
   const redis = getRedis();
   if (!redis) return null;
   try {
-    if (redis.status !== 'ready') await redis.connect();
+    // ioredis throws if connect() is called while it's already connecting.
+    // Treat "connecting" as usable for our cache-aside reads/writes.
+    if (redis.status === 'ready' || redis.status === 'connecting') return redis;
+    await redis.connect();
     return redis;
   } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e);
+    if (msg.includes('already connecting/connected')) {
+      return redis;
+    }
     console.error('Redis connect error:', e);
     return null;
   }

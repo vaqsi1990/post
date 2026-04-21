@@ -24,27 +24,27 @@ export async function GET() {
       { role: session.user.role },
       async () => {
         console.log('FETCHING COUNTS FROM DB');
-        const [
-          users,
-          incoming,
-          inWarehouse,
-          inTransit,
-          warehouse,
-          regions,
-          stopped,
-          delivered,
-          payments,
-        ] = await Promise.all([
+        const [users, payments, parcelCounts] = await Promise.all([
           prisma.user.count(),
-          prisma.parcel.count({ where: { status: 'pending' } }),
-          prisma.parcel.count({ where: { status: 'in_warehouse' } }),
-          prisma.parcel.count({ where: { status: 'in_transit' } }),
-          prisma.parcel.count({ where: { status: 'arrived' } }),
-          prisma.parcel.count({ where: { status: 'region' } }),
-          prisma.parcel.count({ where: { status: 'stopped' } }),
-          prisma.parcel.count({ where: { status: 'delivered' } }),
           prisma.payment.count(),
+          prisma.parcel.groupBy({
+            by: ['status'],
+            _count: { _all: true },
+          }),
         ]);
+
+        const byStatus = new Map<string, number>();
+        for (const row of parcelCounts) {
+          byStatus.set(row.status, row._count._all);
+        }
+
+        const incoming = byStatus.get('pending') ?? 0;
+        const inWarehouse = byStatus.get('in_warehouse') ?? 0;
+        const inTransit = byStatus.get('in_transit') ?? 0;
+        const warehouse = byStatus.get('arrived') ?? 0;
+        const regions = byStatus.get('region') ?? 0;
+        const stopped = byStatus.get('stopped') ?? 0;
+        const delivered = byStatus.get('delivered') ?? 0;
 
         return {
           users,

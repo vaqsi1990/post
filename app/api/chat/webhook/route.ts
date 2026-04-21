@@ -3,6 +3,8 @@ import { getServerSession } from 'next-auth';
 import { z } from 'zod';
 import prisma from '@/lib/prisma';
 import { authOptions } from '@/lib/auth';
+import { AdminCacheTags, adminChatThreadTag } from '@/lib/cache/adminCache';
+import { invalidateCacheTags } from '@/lib/cache/redisCache';
 
 const baseSchema = z.object({
   threadId: z.string().optional(),
@@ -128,6 +130,7 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    void invalidateCacheTags([AdminCacheTags.chatThreads, adminChatThreadTag(threadId)]);
     return NextResponse.json(
       {
         threadId,

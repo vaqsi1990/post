@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { AdminCacheTags, adminChatThreadTag, cachedAdmin } from '@/lib/cache/adminCache';
+import { invalidateCacheTags } from '@/lib/cache/redisCache';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,26 +16,35 @@ export async function GET(
   }
 
   try {
-    const thread = await prisma.chatThread.findUnique({
-      where: { id },
-    });
+    const data = await cachedAdmin(
+      'public:chat:thread:get:v1',
+      { id },
+      async () => {
+        const thread = await prisma.chatThread.findUnique({
+          where: { id },
+        });
 
-    if (!thread) {
-      return NextResponse.json({ error: 'Thread not found' }, { status: 404 });
-    }
+        if (!thread) return null;
 
-    const messages = await prisma.chatMessage.findMany({
-      where: { threadId: id },
-      orderBy: { createdAt: 'asc' },
-    });
+        const messages = await prisma.chatMessage.findMany({
+          where: { threadId: id },
+          orderBy: { createdAt: 'asc' },
+        });
+
+        return { thread, messages };
+      },
+      { ttlSeconds: 10, tags: [AdminCacheTags.chatThreads, adminChatThreadTag(id)] },
+    );
+
+    if (!data) return NextResponse.json({ error: 'Thread not found' }, { status: 404 });
 
     return NextResponse.json({
       thread: {
-        firstName: thread.firstName,
-        lastName: thread.lastName,
-        email: thread.email,
+        firstName: data.thread.firstName,
+        lastName: data.thread.lastName,
+        email: data.thread.email,
       },
-      messages: messages.map((m) => ({
+      messages: data.messages.map((m) => ({
         id: m.id,
         sender: m.sender,
         text: m.text,
@@ -71,6 +82,7 @@ export async function PATCH(
       data: { status },
     });
 
+    void invalidateCacheTags([AdminCacheTags.chatThreads, adminChatThreadTag(id)]);
     return NextResponse.json(
       {
         message: 'დიალოგი დასრულდა',
