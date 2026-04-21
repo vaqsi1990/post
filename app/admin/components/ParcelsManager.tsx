@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
+import { Suspense, startTransition, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useLocale } from 'next-intl';
@@ -167,13 +167,16 @@ function ParcelsManagerContent({
         if (!res.ok) return;
         const data = await res.json();
         if (data.parcels) {
-          setParcels(data.parcels);
+          // Polling updates are non-urgent; keep INP snappy.
+          startTransition(() => setParcels(data.parcels));
         }
         if (typeof data.totalPages === 'number') {
-          setTotalPages(Math.max(1, data.totalPages));
+          startTransition(() => setTotalPages(Math.max(1, data.totalPages)));
         }
         if (data.originCounts && typeof data.originCounts === 'object') {
-          setOriginCounts(data.originCounts as Record<string, number>);
+          startTransition(() =>
+            setOriginCounts(data.originCounts as Record<string, number>)
+          );
         }
       } catch (error) {
         console.error('Failed to fetch parcels:', error);
@@ -195,7 +198,7 @@ function ParcelsManagerContent({
         if (!document.hidden) {
           fetchParcels(false);
         }
-      }, 3000);
+      }, 8000);
     };
 
     startPolling();

@@ -137,7 +137,9 @@ export async function cacheAside<T>(
 
   try {
     const cached = await redis.get(cacheKey);
-    if (cached != null) return JSON.parse(cached) as T;
+    if (cached != null) {
+      return JSON.parse(cached) as T;
+    }
   } catch (e) {
     console.error('Redis read/parse error:', e);
     // continue to DB
@@ -162,7 +164,9 @@ export async function cacheAside<T>(
       await sleep(jitter);
       try {
         const cached = await redis.get(cacheKey);
-        if (cached != null) return JSON.parse(cached) as T;
+        if (cached != null) {
+          return JSON.parse(cached) as T;
+        }
       } catch (e) {
         console.error('Redis retry read/parse error:', e);
         break;
@@ -176,7 +180,9 @@ export async function cacheAside<T>(
     // Double-check cache after lock to avoid duplicate work.
     try {
       const cached = await redis.get(cacheKey);
-      if (cached != null) return JSON.parse(cached) as T;
+      if (cached != null) {
+        return JSON.parse(cached) as T;
+      }
     } catch (e) {
       console.error('Redis read/parse after lock error:', e);
     }

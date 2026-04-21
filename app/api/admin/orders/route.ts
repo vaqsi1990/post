@@ -16,6 +16,7 @@ const createOrderSchema = z.object({
 });
 
 export async function GET(request: NextRequest) {
+  const t0 = Date.now();
   const session = await getServerSession(authOptions);
 
   if (!session || session.user.role !== 'ADMIN') {
@@ -25,44 +26,50 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const status = searchParams.get('status') || 'in_transit';
 
-  const orders = await cachedAdmin(
-    'orders:list:v1',
-    { status },
-    async () => {
-      return await prisma.order.findMany({
-        where: { status: status as string },
-        orderBy: { createdAt: 'desc' },
-        include: {
-          user: {
-            select: {
-              id: true,
-              email: true,
-              firstName: true,
-              lastName: true,
+  try {
+    const orders = await cachedAdmin(
+      'orders:list:v1',
+      { status },
+      async () => {
+        return await prisma.order.findMany({
+          where: { status: status as string },
+          orderBy: { createdAt: 'desc' },
+          include: {
+            user: {
+              select: {
+                id: true,
+                email: true,
+                firstName: true,
+                lastName: true,
+              },
             },
           },
-        },
-      });
-    },
-    { ttlSeconds: 60, tags: [AdminCacheTags.orders, adminOrdersTag(status)] },
-  );
-
-  return NextResponse.json(
-    {
-      orders: orders.map((o) => ({
-        ...o,
-        createdAt: new Date(o.createdAt).toLocaleDateString('ka-GE'),
-        currency: o.currency || 'GEL',
-      })),
-    },
-    {
-      headers: {
-        'Cache-Control': 'no-cache, no-store, must-revalidate',
-        'Pragma': 'no-cache',
-        'Expires': '0',
+        });
       },
+      { ttlSeconds: 60, tags: [AdminCacheTags.orders, adminOrdersTag(status)] },
+    );
+
+    return NextResponse.json(
+      {
+        orders: orders.map((o) => ({
+          ...o,
+          createdAt: new Date(o.createdAt).toLocaleDateString('ka-GE'),
+          currency: o.currency || 'GEL',
+        })),
+      },
+      {
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0',
+        },
+      }
+    );
+  } finally {
+    if (process.env.REQUEST_TIMING_DEBUG === '1') {
+      console.log('[timing]', 'GET /api/admin/orders', { status, ms: Date.now() - t0 });
     }
-  );
+  }
 }
 
 export async function POST(request: NextRequest) {

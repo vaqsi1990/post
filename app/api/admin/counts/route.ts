@@ -8,6 +8,7 @@ import { AdminCacheTags } from '@/lib/cache/adminCache';
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
+  const t0 = Date.now();
   const session = await getServerSession(authOptions);
 
   if (!session?.user) {
@@ -75,5 +76,9 @@ export async function GET() {
       { error: 'შეცდომა რაოდენობების წამოღებისას' },
       { status: 500 }
     );
+  } finally {
+    if (process.env.REQUEST_TIMING_DEBUG === '1') {
+      console.log('[timing]', 'GET /api/admin/counts', { ms: Date.now() - t0 });
+    }
   }
 }

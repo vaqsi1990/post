@@ -118,6 +118,7 @@ function countryFilterWhere(country: string | null): Prisma.ParcelWhereInput | u
 }
 
 export async function GET(request: NextRequest) {
+  const t0 = Date.now();
   const session = await getServerSession(authOptions);
 
   if (!session?.user) {
@@ -154,75 +155,87 @@ export async function GET(request: NextRequest) {
 
   const orderBy = adminParcelsOrderBy(status);
 
-  const data = await cachedAdmin(
-    'parcels:list:v1',
-    { role: session.user.role, status, page, limit, country: countryParam, orderBy },
-    async () => {
-      const [totalCount, parcels, originGroups, tariffs, nbgRates] = await Promise.all([
-        prisma.parcel.count({ where }),
-        prisma.parcel.findMany({
-          where,
-          orderBy,
-          skip: (page - 1) * limit,
-          take: limit,
-          include: adminParcelInclude,
-        }),
-        prisma.parcel.groupBy({
-          by: ['originCountry'],
-          where: { status },
-          _count: { _all: true },
-        }),
-        getCachedActiveTariffsForGeorgia(),
-        fetchNbgRates().catch(() => null),
-      ]);
+  try {
+    const data = await cachedAdmin(
+      'parcels:list:v1',
+      { role: session.user.role, status, page, limit, country: countryParam, orderBy },
+      async () => {
+        const [totalCount, parcels, originGroups, tariffs, nbgRates] = await Promise.all([
+          prisma.parcel.count({ where }),
+          prisma.parcel.findMany({
+            where,
+            orderBy,
+            skip: (page - 1) * limit,
+            take: limit,
+            include: adminParcelInclude,
+          }),
+          prisma.parcel.groupBy({
+            by: ['originCountry'],
+            where: { status },
+            _count: { _all: true },
+          }),
+          getCachedActiveTariffsForGeorgia(),
+          fetchNbgRates().catch(() => null),
+        ]);
 
-      const originCounts: Record<string, number> = {};
-      for (const g of originGroups) {
-        const k = parcelOriginKey(g.originCountry);
-        originCounts[k] = (originCounts[k] ?? 0) + g._count._all;
-      }
+        const originCounts: Record<string, number> = {};
+        for (const g of originGroups) {
+          const k = parcelOriginKey(g.originCountry);
+          originCounts[k] = (originCounts[k] ?? 0) + g._count._all;
+        }
 
-      const totalPages = Math.max(1, Math.ceil(totalCount / limit));
+        const totalPages = Math.max(1, Math.ceil(totalCount / limit));
 
-      return {
-        parcels: parcels.map((p) => {
-          const breakdown = computeShippingGelBreakdown(
-            { originCountry: p.originCountry, weight: p.weight },
-            tariffs,
-            nbgRates,
-          );
-          return {
-            ...p,
-            createdAt: new Date(p.createdAt).toLocaleDateString('ka-GE'),
-            shippingAmount:
-              breakdown != null ? breakdown.amountGel : p.shippingAmount,
-            shippingFormula:
-              breakdown != null ? breakdown.formula : null,
-          };
-        }),
-        page,
-        pageSize: limit,
-        totalCount,
-        totalPages,
-        originCounts,
-      };
-    },
-    {
-      ttlSeconds: 60,
-      tags: [AdminCacheTags.parcels, adminParcelsTag(status), AdminCacheTags.counts],
-    },
-  );
-
-  return NextResponse.json(
-    data,
-    {
-      headers: {
-        'Cache-Control': 'no-cache, no-store, must-revalidate',
-        Pragma: 'no-cache',
-        Expires: '0',
+        return {
+          parcels: parcels.map((p) => {
+            const breakdown = computeShippingGelBreakdown(
+              { originCountry: p.originCountry, weight: p.weight },
+              tariffs,
+              nbgRates,
+            );
+            return {
+              ...p,
+              createdAt: new Date(p.createdAt).toLocaleDateString('ka-GE'),
+              shippingAmount:
+                breakdown != null ? breakdown.amountGel : p.shippingAmount,
+              shippingFormula:
+                breakdown != null ? breakdown.formula : null,
+            };
+          }),
+          page,
+          pageSize: limit,
+          totalCount,
+          totalPages,
+          originCounts,
+        };
       },
+      {
+        ttlSeconds: 60,
+        tags: [AdminCacheTags.parcels, adminParcelsTag(status), AdminCacheTags.counts],
+      },
+    );
+
+    return NextResponse.json(
+      data,
+      {
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          Pragma: 'no-cache',
+          Expires: '0',
+        },
+      }
+    );
+  } finally {
+    if (process.env.REQUEST_TIMING_DEBUG === '1') {
+      console.log('[timing]', 'GET /api/admin/parcels', {
+        status,
+        page,
+        limit,
+        country: countryParam,
+        ms: Date.now() - t0,
+      });
     }
-  );
+  }
 }
 
 export async function POST(request: NextRequest) {

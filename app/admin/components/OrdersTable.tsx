@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { startTransition, useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import EditOrderModal from '../in-transit/components/EditOrderModal';
 import DeleteOrderModal from '../in-transit/components/DeleteOrderModal';
@@ -174,14 +174,21 @@ export default function OrdersTable({ orders: initialOrders, currentStatus, onOr
                     <div className="flex gap-2">
                       <button
                         type="button"
-                        onClick={() => setEditingOrder({ ...order, userId: order.userId || order.user.id })}
+                        onClick={() =>
+                          startTransition(() =>
+                            setEditingOrder({
+                              ...order,
+                              userId: order.userId || order.user.id,
+                            })
+                          )
+                        }
                         className="rounded-md bg-blue-600 px-3 py-1 text-[14px] font-medium text-white hover:bg-blue-700"
                       >
                         ცვლილება
                       </button>
                       <button
                         type="button"
-                        onClick={() => setDeletingOrder(order)}
+                        onClick={() => startTransition(() => setDeletingOrder(order))}
                         className="rounded-md bg-red-600 px-3 py-1 text-[14px] font-medium text-white hover:bg-red-700"
                       >
                         წაშლა

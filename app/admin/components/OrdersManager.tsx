@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { startTransition, useState, useEffect, useRef } from 'react';
 import OrdersTable from './OrdersTable';
 
 type Order = {
@@ -49,7 +49,8 @@ export default function OrdersManager({ initialOrders, currentStatus }: OrdersMa
         if (!res.ok) return;
         const data = await res.json();
         if (data.orders) {
-          setOrders(data.orders);
+          // Polling updates are non-urgent; keep INP snappy.
+          startTransition(() => setOrders(data.orders));
         }
       } catch (error) {
         console.error('Failed to fetch orders:', error);
@@ -73,7 +74,7 @@ export default function OrdersManager({ initialOrders, currentStatus }: OrdersMa
         if (!document.hidden) {
           fetchOrders(false); // Don't show loading on polling
         }
-      }, 3000); // Poll every 3 seconds for faster updates
+      }, 8000); // Less aggressive polling improves INP
     };
 
     startPolling();

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { startTransition, useEffect, useRef, useState } from 'react';
 import { formatOriginCountryLabel } from '@/lib/formatOriginCountry';
 import { employeeCountryLabel } from '@/lib/employeeCountryLabel';
 import { useLocale } from 'next-intl';
@@ -197,16 +197,18 @@ export default function ParcelsTable({
   }, [someSelected]);
 
   const toggleSelect = (id: string) => {
-    setSelectedIds((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
-    );
+    startTransition(() => {
+      setSelectedIds((prev) =>
+        prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
+      );
+    });
   };
 
   const toggleSelectAll = () => {
     if (allSelected) {
-      setSelectedIds([]);
+      startTransition(() => setSelectedIds([]));
     } else {
-      setSelectedIds(parcels.map((p) => p.id));
+      startTransition(() => setSelectedIds(parcels.map((p) => p.id)));
     }
   };
 
@@ -559,6 +561,11 @@ export default function ParcelsTable({
             <div
               key={parcel.id}
               className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm"
+              style={{
+                // Skip rendering work for offscreen cards (big INP win on long lists).
+                contentVisibility: 'auto',
+                containIntrinsicSize: '900px',
+              }}
             >
               <div className="mb-2 flex items-center justify-between gap-2">
                 <div className="flex min-w-0 flex-1 items-start gap-2">
@@ -811,7 +818,14 @@ export default function ParcelsTable({
              
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100 bg-white">
+          <tbody
+            className="divide-y divide-gray-100 bg-white"
+            style={{
+         
+              contentVisibility: 'auto',
+              containIntrinsicSize: '1200px',
+            }}
+          >
             {parcels.length === 0 ? (
               <tr>
                 <td
@@ -852,9 +866,12 @@ export default function ParcelsTable({
                     <td className="px-4 py-2 text-right text-[14px] text-blue-600">
                       <button
                         type="button"
-                        onClick={() =>
-                          setExpandedId(expandedId === parcel.id ? null : parcel.id)
-                        }
+                        onClick={() => {
+                          // Expanding renders a large DOM subtree; keep interaction paint fast.
+                          startTransition(() =>
+                            setExpandedId(expandedId === parcel.id ? null : parcel.id)
+                          );
+                        }}
                         className="inline-flex text-[16px] items-center gap-1 rounded-md px-2 py-1 hover:bg-blue-50"
                       >
                         <span>{t.details}</span>
