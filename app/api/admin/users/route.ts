@@ -14,7 +14,7 @@ import {
 import { cachedAdmin, AdminCacheTags } from '@/lib/cache/adminCache';
 import { invalidateCacheTags } from '@/lib/cache/redisCache';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   const t0 = Date.now();
   const session = await getServerSession(authOptions);
 
@@ -27,12 +27,26 @@ export async function GET() {
   }
 
   try {
+    const url = new URL(request.url);
+    const pageRaw = url.searchParams.get('page') ?? '1';
+    const pageSizeRaw = url.searchParams.get('pageSize') ?? url.searchParams.get('take') ?? '50';
+
+    const page = Math.max(1, Number.parseInt(pageRaw, 10) || 1);
+    const pageSize = Math.min(200, Math.max(1, Number.parseInt(pageSizeRaw, 10) || 50));
+    const skip = (page - 1) * pageSize;
+
+    // IMPORTANT: use a stable string key (no object params) so cache hits reliably.
+    const cacheParams = `role=${session.user.role}|page=${page}|pageSize=${pageSize}`;
+
     const users = await cachedAdmin(
-      'users:list:v1',
-      { role: session.user.role },
+      'users:list:v2',
+      cacheParams,
       async () => {
         return await prisma.user.findMany({
-          orderBy: { createdAt: 'desc' },
+          skip,
+          take: pageSize,
+          // Add id tie-breaker to keep pagination stable when createdAt collisions happen.
+          orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
           select: {
             id: true,
             email: true,
@@ -49,7 +63,15 @@ export async function GET() {
       { ttlSeconds: 60, tags: [AdminCacheTags.users] },
     );
 
-    return NextResponse.json({ users }, { status: 200 });
+    return NextResponse.json(
+      {
+        users,
+        page,
+        pageSize,
+        nextPage: users.length === pageSize ? page + 1 : null,
+      },
+      { status: 200 }
+    );
   } catch (error) {
     console.error('Get users error:', error);
     return NextResponse.json(
