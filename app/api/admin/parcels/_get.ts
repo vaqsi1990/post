@@ -74,7 +74,7 @@ export async function handleAdminParcelsGet(request: NextRequest) {
   };
 
   const orderBy = adminParcelsOrderBy(status);
-
+  const cacheKey = `role=${session.user.role}|status=${status}|page=${page}|limit=${limit}|country=${countryParam}`;
   try {
     const data = await cachedAdmin(
       'parcels:list:v1',

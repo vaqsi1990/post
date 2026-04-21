@@ -23,6 +23,7 @@ export async function GET() {
       'counts:v1',
       { role: session.user.role },
       async () => {
+        console.log('FETCHING COUNTS FROM DB');
         const [
           users,
           incoming,
