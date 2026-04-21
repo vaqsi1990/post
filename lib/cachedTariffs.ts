@@ -33,7 +33,9 @@ export async function getCachedActiveTariffsForGeorgia(): Promise<TariffPick[]> 
       const rows = await prisma.tariff.findMany(params);
       return rows as TariffPick[];
     },
-    { ttlSeconds: 60, tags: [ACTIVE_TARIFFS_CACHE_TAG] }
+    // Tariffs change rarely and we explicitly invalidate on admin CRUD.
+    // Longer TTL reduces DB cold-start + refresh stampedes under load.
+    { ttlSeconds: 600, tags: [ACTIVE_TARIFFS_CACHE_TAG] }
   );
 }
 

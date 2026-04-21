@@ -78,7 +78,8 @@ export async function GET(req: Request) {
           formula: breakdown.formula,
         };
       },
-      { ttlSeconds: 120 },
+      // Cache a bit longer to reduce tail latency during refresh bursts.
+      { ttlSeconds: 600 },
     );
 
     if (!result) {

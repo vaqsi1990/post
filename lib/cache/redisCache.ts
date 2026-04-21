@@ -135,8 +135,11 @@ export async function cacheAside<T>(
   opts: CacheAsideOptions = {}
 ): Promise<T> {
   const ttlSeconds = opts.ttlSeconds ?? DEFAULT_TTL_SECONDS;
-  const lockTtlMs = opts.lockTtlMs ?? 5_000;
-  const waitForLockMs = opts.waitForLockMs ?? 2_000;
+  // Under bursty load, short lock TTL / wait can cause refresh stampedes:
+  // many workers miss cache, fail to acquire lock, then all hit DB simultaneously.
+  // These defaults trade a bit more waiting for much lower tail latency.
+  const lockTtlMs = opts.lockTtlMs ?? 15_000;
+  const waitForLockMs = opts.waitForLockMs ?? 8_000;
   const tags = opts.tags ?? [];
 
   const redis = await safeConnect();
