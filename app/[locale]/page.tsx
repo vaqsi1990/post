@@ -6,6 +6,9 @@ import Why from '../Components/Why';
 import Works from '@/app/Components/Works';
 import { getPageSeoMetadata } from '@/lib/seo';
 
+// Make the marketing homepage CDN-cacheable (ISR) to reduce SSR load and cold-start impact.
+export const revalidate = 3600;
+
 type Props = {
   params: Promise<{ locale: string }>;
 };

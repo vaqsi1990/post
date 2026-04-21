@@ -3,8 +3,25 @@ import { getCachedActiveTariffsForGeorgia } from '@/lib/cachedTariffs';
 import { fetchNbgRates } from '@/lib/nbgRates';
 import { computeShippingGelBreakdown } from '@/lib/parcelShippingGel';
 import type { TariffPick } from '@/lib/tariffLookup';
+import { cacheAside, makeDeterministicCacheKey } from '@/lib/cache/redisCache';
 
 export const dynamic = 'force-dynamic';
+
+function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const t = setTimeout(() => reject(new Error(`timeout_${ms}ms`)), ms);
+    promise.then(
+      (v) => {
+        clearTimeout(t);
+        resolve(v);
+      },
+      (e) => {
+        clearTimeout(t);
+        reject(e);
+      },
+    );
+  });
+}
 
 /**
  * საჯარო ტარიფის შეფასება: DB ტარიფი × NBG კურსი × წონა → ლარი (იგივე რაც პარცელებზე).
@@ -23,28 +40,48 @@ export async function GET(req: Request) {
   }
 
   try {
-    const [tariffs, nbgRates] = await Promise.all([
-      getCachedActiveTariffsForGeorgia(),
-      fetchNbgRates().catch(() => null),
-    ]);
+    const cacheKey = makeDeterministicCacheKey('public:shipping-calculator:v2', {
+      originCountry: originCountry.toUpperCase(),
+      weight: Math.round(weight * 1000) / 1000,
+    });
 
-    const picks: TariffPick[] = tariffs.map((t) => ({
-      originCountry: t.originCountry,
-      destinationCountry: t.destinationCountry,
-      minWeight: t.minWeight,
-      maxWeight: t.maxWeight,
-      pricePerKg: t.pricePerKg,
-      currency: t.currency,
-      isActive: t.isActive,
-    }));
+    const result = await cacheAside(
+      cacheKey,
+      async () => {
+        // Keep NBG from dominating tail latency: best-effort with timeout.
+        const [tariffs, nbgRates] = await Promise.all([
+          getCachedActiveTariffsForGeorgia(),
+          withTimeout(fetchNbgRates().catch(() => null), 1200).catch(() => null),
+        ]);
 
-    const breakdown = computeShippingGelBreakdown(
-      { originCountry, weight },
-      picks,
-      nbgRates,
+        const picks: TariffPick[] = tariffs.map((t) => ({
+          originCountry: t.originCountry,
+          destinationCountry: t.destinationCountry,
+          minWeight: t.minWeight,
+          maxWeight: t.maxWeight,
+          pricePerKg: t.pricePerKg,
+          currency: t.currency,
+          isActive: t.isActive,
+        }));
+
+        const breakdown = computeShippingGelBreakdown(
+          { originCountry, weight },
+          picks,
+          nbgRates,
+        );
+
+        if (!breakdown) return null;
+
+        return {
+          amountGel: breakdown.amountGel,
+          pricePerKgGel: breakdown.pricePerKgGel,
+          formula: breakdown.formula,
+        };
+      },
+      { ttlSeconds: 120 },
     );
 
-    if (!breakdown) {
+    if (!result) {
       return NextResponse.json(
         {
           error: 'no_tariff',
@@ -54,18 +91,11 @@ export async function GET(req: Request) {
       );
     }
 
-    return NextResponse.json(
-      {
-        amountGel: breakdown.amountGel,
-        pricePerKgGel: breakdown.pricePerKgGel,
-        formula: breakdown.formula,
+    return NextResponse.json(result, {
+      headers: {
+        'Cache-Control': 'public, max-age=60, s-maxage=120',
       },
-      {
-        headers: {
-          'Cache-Control': 'public, max-age=60, s-maxage=60',
-        },
-      },
-    );
+    });
   } catch (e) {
     console.error('shipping-calculator GET:', e);
     return NextResponse.json({ error: 'server_error' }, { status: 500 });
