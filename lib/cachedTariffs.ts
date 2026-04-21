@@ -35,7 +35,7 @@ export async function getCachedActiveTariffsForGeorgia(): Promise<TariffPick[]> 
     },
     // Tariffs change rarely and we explicitly invalidate on admin CRUD.
     // Longer TTL reduces DB cold-start + refresh stampedes under load.
-    { ttlSeconds: 600, tags: [ACTIVE_TARIFFS_CACHE_TAG] }
+    { ttlSeconds: 3600, staleSeconds: 3600, tags: [ACTIVE_TARIFFS_CACHE_TAG] }
   );
 }
 

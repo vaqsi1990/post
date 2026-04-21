@@ -95,7 +95,18 @@ function getDateTimeLocale(locale: string) {
   return 'ka-GE';
 }
 
-function formatDateTime(date: Date | null, locale: string, fallback: string) {
+function asValidDate(value: unknown): Date | null {
+  if (value == null) return null;
+  if (value instanceof Date) return Number.isNaN(value.getTime()) ? null : value;
+  if (typeof value === 'string' || typeof value === 'number') {
+    const d = new Date(value);
+    return Number.isNaN(d.getTime()) ? null : d;
+  }
+  return null;
+}
+
+function formatDateTime(value: unknown, locale: string, fallback: string) {
+  const date = asValidDate(value);
   if (!date) return fallback;
   return new Intl.DateTimeFormat(getDateTimeLocale(locale), {
     year: "numeric",
@@ -104,6 +115,17 @@ function formatDateTime(date: Date | null, locale: string, fallback: string) {
     hour: "2-digit",
     minute: "2-digit",
   }).format(date);
+}
+
+function toIsoOrUndefined(value: unknown): string | undefined {
+  if (value == null) return undefined;
+  if (value instanceof Date) return value.toISOString();
+  if (typeof value === 'string' || typeof value === 'number') {
+    const d = new Date(value);
+    if (Number.isNaN(d.getTime())) return undefined;
+    return d.toISOString();
+  }
+  return undefined;
 }
 
 export const revalidate = 300;
@@ -175,8 +197,8 @@ export default async function Page({ params }: Props) {
       return {
         '@type': 'Event',
         name: `Postifly ${getFlightDisplayName(locale, flight.name)}`,
-        startDate: flight.departureAt?.toISOString(),
-        endDate: flight.arrivalAt?.toISOString() ?? undefined,
+        startDate: toIsoOrUndefined(flight.departureAt),
+        endDate: toIsoOrUndefined(flight.arrivalAt),
         eventStatus:
           flight.status === 'open'
             ? 'https://schema.org/EventScheduled'

@@ -79,7 +79,7 @@ export async function GET(req: Request) {
         };
       },
       // Cache a bit longer to reduce tail latency during refresh bursts.
-      { ttlSeconds: 600 },
+      { ttlSeconds: 900, staleSeconds: 900 },
     );
 
     if (!result) {

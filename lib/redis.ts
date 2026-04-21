@@ -21,8 +21,12 @@ export function getRedis(): Redis | null {
   const client = new Redis(url, {
     lazyConnect: true,
     enableReadyCheck: true,
-    maxRetriesPerRequest: 2,
-    connectTimeout: 5_000,
+    // Avoid request tail-latency spikes when Redis is connecting/reconnecting:
+    // don't queue commands offline; fail fast so callers can fallback.
+    enableOfflineQueue: false,
+    maxRetriesPerRequest: 1,
+    connectTimeout: 2_000,
+    commandTimeout: 1_000,
   });
 
   client.on('error', (err) => {

@@ -123,11 +123,32 @@ export async function invalidateCacheKey(cacheKey: string) {
 
 type CacheAsideOptions = {
   ttlSeconds?: number;
+  /**
+   * Serve stale values for this long after ttlSeconds, while a refresh happens.
+   * Reduces tail latency spikes during cache refresh under bursty load.
+   */
+  staleSeconds?: number;
   tags?: string[];
   // stampede control
   lockTtlMs?: number;
   waitForLockMs?: number;
 };
+
+type CacheEnvelope<T> = {
+  __cache_v: 1;
+  freshUntil: number;
+  value: T;
+};
+
+function isCacheEnvelope<T>(v: unknown): v is CacheEnvelope<T> {
+  return (
+    typeof v === 'object' &&
+    v !== null &&
+    (v as { __cache_v?: unknown }).__cache_v === 1 &&
+    typeof (v as { freshUntil?: unknown }).freshUntil === 'number' &&
+    'value' in (v as { value?: unknown })
+  );
+}
 
 export async function cacheAside<T>(
   cacheKey: string,
@@ -135,6 +156,7 @@ export async function cacheAside<T>(
   opts: CacheAsideOptions = {}
 ): Promise<T> {
   const ttlSeconds = opts.ttlSeconds ?? DEFAULT_TTL_SECONDS;
+  const staleSeconds = opts.staleSeconds ?? 0;
   // Under bursty load, short lock TTL / wait can cause refresh stampedes:
   // many workers miss cache, fail to acquire lock, then all hit DB simultaneously.
   // These defaults trade a bit more waiting for much lower tail latency.
@@ -148,7 +170,51 @@ export async function cacheAside<T>(
   try {
     const cached = await redis.get(cacheKey);
     if (cached != null) {
-      return JSON.parse(cached) as T;
+      const parsed = JSON.parse(cached) as unknown;
+      if (isCacheEnvelope<T>(parsed)) {
+        const now = Date.now();
+        if (now <= parsed.freshUntil) return parsed.value;
+
+        // Stale value: return immediately and refresh in background if possible.
+        if (staleSeconds > 0) {
+          const lockKey = `${cacheKey}:lock`;
+          const token = crypto.randomUUID();
+          try {
+            const ok = await redis.set(lockKey, token, 'PX', lockTtlMs, 'NX');
+            if (ok === 'OK') {
+              void (async () => {
+                try {
+                  const value = await fetcher();
+                  const envelope: CacheEnvelope<T> = {
+                    __cache_v: 1,
+                    freshUntil: Date.now() + ttlSeconds * 1000,
+                    value,
+                  };
+                  await redis.set(
+                    cacheKey,
+                    JSON.stringify(envelope),
+                    'EX',
+                    Math.max(ttlSeconds + staleSeconds, 1)
+                  );
+                } catch {
+                  // best-effort refresh; keep stale
+                } finally {
+                  await releaseLock(lockKey, token);
+                }
+              })();
+            }
+          } catch (e) {
+            console.error('Redis stale refresh lock error:', e);
+          }
+
+          return parsed.value;
+        }
+
+        return parsed.value;
+      }
+
+      // Back-compat: older entries stored raw value without envelope.
+      return parsed as T;
     }
   } catch (e) {
     console.error('Redis read/parse error:', e);
@@ -191,7 +257,9 @@ export async function cacheAside<T>(
     try {
       const cached = await redis.get(cacheKey);
       if (cached != null) {
-        return JSON.parse(cached) as T;
+        const parsed = JSON.parse(cached) as unknown;
+        if (isCacheEnvelope<T>(parsed)) return parsed.value;
+        return parsed as T;
       }
     } catch (e) {
       console.error('Redis read/parse after lock error:', e);
@@ -199,7 +267,19 @@ export async function cacheAside<T>(
 
     const value = await fetcher();
     try {
-      await redis.set(cacheKey, JSON.stringify(value), 'EX', ttlSeconds);
+      const envelope: CacheEnvelope<T> = {
+        __cache_v: 1,
+        freshUntil: Date.now() + ttlSeconds * 1000,
+        value,
+      };
+
+      // Hard TTL keeps stale available briefly if staleSeconds > 0.
+      await redis.set(
+        cacheKey,
+        JSON.stringify(envelope),
+        'EX',
+        Math.max(ttlSeconds + staleSeconds, 1)
+      );
 
       const uniqueTags = Array.from(new Set(tags.filter(Boolean)));
       if (uniqueTags.length > 0) {
