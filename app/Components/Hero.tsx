@@ -26,6 +26,7 @@ export default function Hero() {
 
   return (
     <section className="relative w-full overflow-hidden mt-14">
+      <h1 className="sr-only">{t("h1")}</h1>
       <div className="relative  md:h-[500px]">
         <Image
           src="/hero/hero1.jpg"

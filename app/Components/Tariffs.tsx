@@ -167,12 +167,13 @@ export default function Tariffs() {
 
   React.useEffect(() => {
     const ac = new AbortController();
+    const abort = () => ac.abort('Tariffs effect cleanup');
     const w = Number.parseFloat(weightKg.replace(',', '.'));
     if (!Number.isFinite(w) || w <= 0) {
       setShippingCalc(null);
       setShippingCalcLoading(false);
       setShippingCalcUnavailable(false);
-      return () => ac.abort();
+      return abort;
     }
 
     setShippingCalcLoading(true);
@@ -218,7 +219,17 @@ export default function Tariffs() {
           }
         }
       } catch (err: unknown) {
-        if (err instanceof Error && err.name === 'AbortError') return;
+        // Abort is an expected control-flow (route change, input change, unmount).
+        // Different runtimes throw different shapes (Error vs DOMException), so be permissive.
+        if (
+          ac.signal.aborted ||
+          (typeof err === 'object' &&
+            err !== null &&
+            'name' in err &&
+            (err as { name?: unknown }).name === 'AbortError')
+        ) {
+          return;
+        }
         if (!ac.signal.aborted) {
           setShippingCalc(null);
           setShippingCalcUnavailable(true);
@@ -228,7 +239,7 @@ export default function Tariffs() {
       }
     })();
 
-    return () => ac.abort();
+    return abort;
   }, [selectedCountryCode, weightKg]);
 
   const selectedTariff = React.useMemo(

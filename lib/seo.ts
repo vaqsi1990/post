@@ -16,7 +16,7 @@ type SeoEntry = Record<Locale, SeoLocaleEntry>;
 const seoByPath: Record<string, SeoEntry> = {
   '/': {
     ka: {
-      title: 'Postifly',
+      title: 'Postifly — ამანათების მიწოდება და თრექინგი საქართველოში',
       description: 'საერთაშორისო გზავნილების ტრანსპორტირება, დეკლარირება და ტრეკინგი ერთ პლატფორმაზე.',
       keywords: [
         'Postifly',
@@ -29,7 +29,7 @@ const seoByPath: Record<string, SeoEntry> = {
       ],
     },
     en: {
-      title: 'Postifly',
+      title: 'Postifly parcel delivery and tracking in Georgia',
       description: 'International parcel forwarding, declaration, and package tracking in one platform.',
       keywords: [
         'Postifly',
@@ -41,7 +41,7 @@ const seoByPath: Record<string, SeoEntry> = {
       ],
     },
     ru: {
-      title: 'Postifly',
+      title: 'Postifly — доставка и трекинг посылок в Грузии',
       description: 'Международная доставка, декларирование и отслеживание посылок на одной платформе.',
       keywords: [
         'Postifly',
@@ -55,58 +55,58 @@ const seoByPath: Record<string, SeoEntry> = {
   },
   '/about': {
     ka: {
-      title: 'ჩვენ შესახებ',
+      title: 'Postifly-ის შესახებ — კომპანია და სერვისის სტანდარტები',
       description: 'გაიგეთ მეტი Postifly-ს მისიისა და მომსახურების ხარისხის შესახებ.',
       keywords: ['Postifly', 'ჩვენ შესახებ', 'ლოგისტიკა', 'გადაზიდვა', 'მომსახურება', 'მისია'],
     },
     en: {
-      title: 'About Us',
+      title: 'About Postifly — company and service standards',
       description: 'Learn more about Postifly, our mission, and service quality standards.',
       keywords: ['Postifly', 'about', 'logistics', 'shipping', 'service quality', 'mission'],
     },
     ru: {
-      title: 'О нас',
+      title: 'О Postifly — компания и стандарты сервиса',
       description: 'Узнайте больше о Postifly, нашей миссии и стандартах сервиса.',
       keywords: ['Postifly', 'о нас', 'логистика', 'доставка', 'качество сервиса', 'миссия'],
     },
   },
   '/contact': {
     ka: {
-      title: 'კონტაქტი',
+      title: 'Postifly კონტაქტი — მისამართები, ტელეფონები და საათები',
       description: 'Postifly-ს საწყობების მისამართები, ტელეფონები და სამუშაო საათები.',
       keywords: ['Postifly', 'კონტაქტი', 'საწყობი', 'მისამართი', 'ტელეფონი', 'სამუშაო საათები'],
     },
     en: {
-      title: 'Contact',
+      title: 'Contact Postifly — addresses, phone numbers, and hours',
       description: 'Postifly warehouse addresses, contact numbers, and working hours.',
       keywords: ['Postifly', 'contact', 'warehouse', 'address', 'phone', 'working hours'],
     },
     ru: {
-      title: 'Контакты',
+      title: 'Контакты Postifly — адреса, телефоны и часы работы',
       description: 'Адреса складов Postifly, контактные номера и рабочие часы.',
       keywords: ['Postifly', 'контакты', 'склад', 'адрес', 'телефон', 'часы работы'],
     },
   },
   '/services': {
     ka: {
-      title: 'სერვისები',
+      title: 'Postifly სერვისები — ონლაინ შოპინგი, კურიერი და საბაჟო',
       description: 'ონლაინ შოპინგი, კომერციული გზავნილები, კურიერი და საბაჟო მომსახურებები.',
       keywords: ['Postifly', 'სერვისები', 'ონლაინ შოპინგი', 'კურიერი', 'საბაჟო', 'კომერციული ტვირთი'],
     },
     en: {
-      title: 'Services',
+      title: 'Postifly services — shopping, courier, and customs support',
       description: 'Online shopping support, commercial export, courier, and customs services.',
       keywords: ['Postifly', 'services', 'online shopping', 'courier', 'customs', 'commercial export'],
     },
     ru: {
-      title: 'Услуги',
+      title: 'Услуги Postifly — онлайн-покупки, курьер и таможня',
       description: 'Поддержка онлайн-покупок, коммерческий экспорт, курьер и таможенные услуги.',
       keywords: ['Postifly', 'услуги', 'онлайн покупки', 'курьер', 'таможня', 'коммерческий экспорт'],
     },
   },
   '/calculator': {
     ka: {
-      title: 'კალკულატორი',
+      title: 'მიტანის კალკულატორი — ტარიფის გამოთვლა | Postifly',
       description: 'გამოთვალეთ გზავნილის მიწოდების სავარაუდო ღირებულება სწრაფად და მარტივად.',
       keywords: ['Postifly', 'კალკულატორი', 'ტარიფი', 'მიტანა', 'ფასი', 'წონა', 'მოცულობითი წონა'],
     },
@@ -116,24 +116,24 @@ const seoByPath: Record<string, SeoEntry> = {
       keywords: ['Postifly', 'shipping calculator', 'rates', 'price estimate', 'weight', 'volumetric weight'],
     },
     ru: {
-      title: 'Калькулятор',
+      title: 'Калькулятор доставки — расчёт тарифа | Postifly',
       description: 'Быстро рассчитайте ориентировочную стоимость доставки посылки.',
       keywords: ['Postifly', 'калькулятор', 'тариф', 'стоимость', 'вес', 'объемный вес'],
     },
   },
   '/tracking': {
     ka: {
-      title: 'ტრეკინგი',
+      title: 'ამანათის თრექინგი Postifly-ზე — სტატუსი რეალურ დროში',
       description: 'რეალურ დროში გადაამოწმეთ თქვენი ამანათის სტატუსი და მოძრაობა.',
       keywords: ['Postifly', 'ტრეკინგი', 'ამანათის სტატუსი', 'თრექინგ კოდი', 'მოძრაობა', 'tracking'],
     },
     en: {
-      title: 'Tracking',
+      title: 'Track your parcel with Postifly in real time',
       description: 'Track parcel status and shipment movement in real time.',
       keywords: ['Postifly', 'tracking', 'track parcel', 'tracking number', 'shipment status'],
     },
     ru: {
-      title: 'Отслеживание',
+      title: 'Отслеживание посылки Postifly в реальном времени',
       description: 'Проверяйте статус и перемещение посылки в реальном времени.',
       keywords: ['Postifly', 'отслеживание', 'трек-номер', 'статус посылки', 'движение отправления'],
     },
@@ -157,68 +157,68 @@ const seoByPath: Record<string, SeoEntry> = {
   },
   '/stores': {
     ka: {
-      title: 'მაღაზიები',
+      title: 'ონლაინ მაღაზიები — პოპულარული ბრენდები და ბმულები | Postifly',
       description: 'პოპულარული საერთაშორისო ონლაინ მაღაზიები ერთ გვერდზე.',
       keywords: ['Postifly', 'მაღაზიები', 'ონლაინ მაღაზიები', 'Amazon', 'eBay', 'shopping'],
     },
     en: {
-      title: 'Stores',
+      title: 'Online stores — popular shops and links | Postifly',
       description: 'Popular international online stores in one place.',
       keywords: ['Postifly', 'stores', 'online stores', 'Amazon', 'eBay', 'shopping'],
     },
     ru: {
-      title: 'Магазины',
+      title: 'Онлайн-магазины — популярные магазины и ссылки | Postifly',
       description: 'Популярные международные онлайн-магазины в одном месте.',
       keywords: ['Postifly', 'магазины', 'онлайн магазины', 'Amazon', 'eBay', 'покупки'],
     },
   },
   '/conditions': {
     ka: {
-      title: 'პირობები',
+      title: 'მომსახურების პირობები Postifly-ზე — წესები და შეზღუდვები',
       description: 'გაეცანით მომსახურების პირობებს, წესებსა და შეზღუდვებს.',
       keywords: ['Postifly', 'პირობები', 'წესები', 'შეზღუდვები', 'დეკლარირება', 'აკრძალული ნივთები'],
     },
     en: {
-      title: 'Terms and Conditions',
+      title: 'Postifly terms and conditions — rules and restrictions',
       description: 'Read service terms, declaration rules, and shipping restrictions.',
       keywords: ['Postifly', 'terms', 'conditions', 'declaration rules', 'shipping restrictions'],
     },
     ru: {
-      title: 'Условия',
+      title: 'Условия сервиса Postifly — правила и ограничения',
       description: 'Ознакомьтесь с условиями сервиса, правилами и ограничениями.',
       keywords: ['Postifly', 'условия', 'правила', 'ограничения', 'декларация', 'запрещенные товары'],
     },
   },
   '/faq': {
     ka: {
-      title: 'ხშირად დასმული კითხვები',
+      title: 'Postifly FAQ — ხშირად დასმული კითხვები და პასუხები',
       description: 'პასუხები ყველაზე ხშირად დასმულ კითხვებზე.',
       keywords: ['Postifly', 'FAQ', 'კითხვები', 'პასუხები', 'მიწოდება', 'ტარიფები', 'დეკლარაცია'],
     },
     en: {
-      title: 'FAQ',
+      title: 'Postifly FAQ — frequently asked questions and answers',
       description: 'Answers to the most frequently asked customer questions.',
       keywords: ['Postifly', 'FAQ', 'questions', 'shipping', 'rates', 'tracking', 'declaration'],
     },
     ru: {
-      title: 'Частые вопросы',
+      title: 'Postifly FAQ — частые вопросы и ответы',
       description: 'Ответы на самые часто задаваемые вопросы клиентов.',
       keywords: ['Postifly', 'FAQ', 'вопросы', 'ответы', 'доставка', 'тарифы', 'отслеживание'],
     },
   },
   '/help': {
     ka: {
-      title: 'ონლაინ გიდი',
+      title: 'Postifly ონლაინ გიდი — დახმარება ონლაინ გამოწერაში',
       description: 'მიიღეთ დახმარება ნივთების გამოწერაში ონლაინ გიდის მხარდაჭერით.',
       keywords: ['Postifly', 'ონლაინ გიდი', 'დახმარება გამოწერაში', 'ონლაინ შოპინგი', 'ჩათი'],
     },
     en: {
-      title: 'Online Guide',
+      title: 'Postifly online guide — help with ordering and discounts',
       description: 'Get help with online ordering from the Postifly guide team.',
       keywords: ['Postifly', 'online guide', 'help with ordering', 'online shopping', 'support'],
     },
     ru: {
-      title: 'Онлайн-гид',
+      title: 'Онлайн-гид Postifly — помощь с заказом и скидками',
       description: 'Получите помощь с заказом товаров от команды онлайн-гида.',
       keywords: ['Postifly', 'онлайн-гид', 'помощь с заказом', 'онлайн покупки', 'поддержка'],
     },

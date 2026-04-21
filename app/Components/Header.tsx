@@ -257,7 +257,7 @@ const Header = () => {
               objectFit: 'contain',
             }}
           />
-          <h1 className="text-white md:text-[25px] text-[18px] font-bold drop-shadow-sm">Postifly</h1>
+          <span className="text-white md:text-[25px] text-[18px] font-bold drop-shadow-sm">Postifly</span>
         </Link>
 
         {/* Desktop nav in the top row */}
