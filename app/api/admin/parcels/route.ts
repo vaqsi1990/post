@@ -16,6 +16,8 @@ import { utapi } from '@/lib/uploadthing';
 import { adminParcelInclude } from '@/lib/adminParcelInclude';
 import { convertToGel, fetchNbgRates } from '@/lib/nbgRates';
 import { computeShippingGelBreakdown } from '@/lib/parcelShippingGel';
+import { cachedAdmin, AdminCacheTags, adminParcelsTag } from '@/lib/cache/adminCache';
+import { invalidateCacheTags } from '@/lib/cache/redisCache';
 export const dynamic = 'force-dynamic';
 
 const allowedStatuses = [
@@ -152,55 +154,67 @@ export async function GET(request: NextRequest) {
 
   const orderBy = adminParcelsOrderBy(status);
 
-  const [totalCount, parcels, originGroups, tariffs, nbgRates] = await Promise.all([
-    prisma.parcel.count({ where }),
-    prisma.parcel.findMany({
-      where,
-      orderBy,
-      skip: (page - 1) * limit,
-      take: limit,
-      include: adminParcelInclude,
-    }),
-    prisma.parcel.groupBy({
-      by: ['originCountry'],
-      where: { status },
-      _count: { _all: true },
-    }),
-    getCachedActiveTariffsForGeorgia(),
-    fetchNbgRates().catch(() => null),
-  ]);
+  const data = await cachedAdmin(
+    'parcels:list:v1',
+    { role: session.user.role, status, page, limit, country: countryParam, orderBy },
+    async () => {
+      const [totalCount, parcels, originGroups, tariffs, nbgRates] = await Promise.all([
+        prisma.parcel.count({ where }),
+        prisma.parcel.findMany({
+          where,
+          orderBy,
+          skip: (page - 1) * limit,
+          take: limit,
+          include: adminParcelInclude,
+        }),
+        prisma.parcel.groupBy({
+          by: ['originCountry'],
+          where: { status },
+          _count: { _all: true },
+        }),
+        getCachedActiveTariffsForGeorgia(),
+        fetchNbgRates().catch(() => null),
+      ]);
 
-  const originCounts: Record<string, number> = {};
-  for (const g of originGroups) {
-    const k = parcelOriginKey(g.originCountry);
-    originCounts[k] = (originCounts[k] ?? 0) + g._count._all;
-  }
+      const originCounts: Record<string, number> = {};
+      for (const g of originGroups) {
+        const k = parcelOriginKey(g.originCountry);
+        originCounts[k] = (originCounts[k] ?? 0) + g._count._all;
+      }
 
-  const totalPages = Math.max(1, Math.ceil(totalCount / limit));
+      const totalPages = Math.max(1, Math.ceil(totalCount / limit));
+
+      return {
+        parcels: parcels.map((p) => {
+          const breakdown = computeShippingGelBreakdown(
+            { originCountry: p.originCountry, weight: p.weight },
+            tariffs,
+            nbgRates,
+          );
+          return {
+            ...p,
+            createdAt: new Date(p.createdAt).toLocaleDateString('ka-GE'),
+            shippingAmount:
+              breakdown != null ? breakdown.amountGel : p.shippingAmount,
+            shippingFormula:
+              breakdown != null ? breakdown.formula : null,
+          };
+        }),
+        page,
+        pageSize: limit,
+        totalCount,
+        totalPages,
+        originCounts,
+      };
+    },
+    {
+      ttlSeconds: 60,
+      tags: [AdminCacheTags.parcels, adminParcelsTag(status), AdminCacheTags.counts],
+    },
+  );
 
   return NextResponse.json(
-    {
-      parcels: parcels.map((p) => {
-        const breakdown = computeShippingGelBreakdown(
-          { originCountry: p.originCountry, weight: p.weight },
-          tariffs,
-          nbgRates,
-        );
-        return {
-          ...p,
-          createdAt: new Date(p.createdAt).toLocaleDateString('ka-GE'),
-          shippingAmount:
-            breakdown != null ? breakdown.amountGel : p.shippingAmount,
-          shippingFormula:
-            breakdown != null ? breakdown.formula : null,
-        };
-      }),
-      page,
-      pageSize: limit,
-      totalCount,
-      totalPages,
-      originCounts,
-    },
+    data,
     {
       headers: {
         'Cache-Control': 'no-cache, no-store, must-revalidate',
@@ -404,6 +418,18 @@ export async function POST(request: NextRequest) {
     });
 
     await recordParcelTrackingEvent(prisma, parcel.id, parcel.status);
+
+    void invalidateCacheTags([
+      AdminCacheTags.parcels,
+      AdminCacheTags.counts,
+      adminParcelsTag('pending'),
+      adminParcelsTag('in_warehouse'),
+      adminParcelsTag('in_transit'),
+      adminParcelsTag('arrived'),
+      adminParcelsTag('region'),
+      adminParcelsTag('delivered'),
+      adminParcelsTag('stopped'),
+    ]);
 
     return NextResponse.json(
       {

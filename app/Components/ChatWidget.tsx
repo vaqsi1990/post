@@ -351,6 +351,12 @@ export default function ChatWidget() {
                 </div>
               )}
 
+              {success && (
+                <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-3 py-2">
+                  <p className="text-[15px] text-emerald-800">{success}</p>
+                </div>
+              )}
+
              
 
               {isGuest && !threadId && (

@@ -5,6 +5,7 @@ import { authOptions } from '../../../lib/auth';
 import prisma from '../../../lib/prisma';
 import SettingsProfileForm from './components/SettingsProfileForm';
 import SettingsPasswordForm from './components/SettingsPasswordForm';
+import { cachedDashboard, dashUserProfileTag } from '@/lib/cache/dashboardCache';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,18 +17,26 @@ export default async function DashboardSettingsPage() {
   if (session.user.role === 'EMPLOYEE') redirect('/employee');
   if (session.user.role === 'SUPPORT') redirect('/support');
 
-  const user = await prisma.user.findUnique({
-    where: { id: session.user.id },
-    select: {
-      email: true,
-      firstName: true,
-      lastName: true,
-      phone: true,
-      phoneVerified: true,
-      personalIdNumber: true,
-      postalIndex: true,
+  const userId = session.user.id;
+  const user = await cachedDashboard(
+    'profile:ssr:v1',
+    { userId },
+    async () => {
+      return await prisma.user.findUnique({
+        where: { id: userId },
+        select: {
+          email: true,
+          firstName: true,
+          lastName: true,
+          phone: true,
+          phoneVerified: true,
+          personalIdNumber: true,
+          postalIndex: true,
+        },
+      });
     },
-  });
+    { ttlSeconds: 60, tags: [dashUserProfileTag(userId)] },
+  );
 
   if (!user) redirect('/login');
 

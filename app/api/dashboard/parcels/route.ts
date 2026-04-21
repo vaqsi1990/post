@@ -8,6 +8,8 @@ import { recordParcelTrackingEvent } from '../../../../lib/parcelTrackingLog';
 import { resolveTariffForParcel } from '../../../../lib/tariffLookup';
 import { utapi } from '../../../../lib/uploadthing';
 import { convertToGel, fetchNbgRates } from '../../../../lib/nbgRates';
+import { dashUserParcelsTag, dashUserParcelsStatusTag } from '@/lib/cache/dashboardCache';
+import { invalidateCacheTags } from '@/lib/cache/redisCache';
 
 function isPrismaClientKnownRequestError(
   err: unknown,
@@ -208,6 +210,16 @@ export async function POST(request: NextRequest) {
     });
 
     await recordParcelTrackingEvent(prisma, parcel.id, parcel.status);
+
+    void invalidateCacheTags([
+      dashUserParcelsTag(userId),
+      dashUserParcelsStatusTag(userId, 'pending'),
+      dashUserParcelsStatusTag(userId, 'in_warehouse'),
+      dashUserParcelsStatusTag(userId, 'in_transit'),
+      dashUserParcelsStatusTag(userId, 'arrived'),
+      dashUserParcelsStatusTag(userId, 'stopped'),
+      dashUserParcelsStatusTag(userId, 'delivered'),
+    ]);
 
     return NextResponse.json(
       {

@@ -3,6 +3,11 @@ import { getServerSession } from 'next-auth';
 import { z } from 'zod';
 import { authOptions } from '../../../../lib/auth';
 import prisma from '../../../../lib/prisma';
+import {
+  cachedDashboard,
+  dashUserBalanceTag,
+} from '@/lib/cache/dashboardCache';
+import { invalidateCacheTags } from '@/lib/cache/redisCache';
 
 export const dynamic = 'force-dynamic';
 
@@ -24,11 +29,18 @@ export async function GET() {
 
   const userId = session.user.id;
 
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    select: { balance: true },
-  });
-  const balance = user?.balance ?? 0;
+  const balance = await cachedDashboard(
+    'balance:get:v1',
+    { userId },
+    async () => {
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { balance: true },
+      });
+      return user?.balance ?? 0;
+    },
+    { ttlSeconds: 60, tags: [dashUserBalanceTag(userId)] },
+  );
 
   return NextResponse.json(
     { balance, currency: 'GEL' },
@@ -76,6 +88,8 @@ export async function POST(request: NextRequest) {
       select: { balance: true },
     });
     const newBalance = updated?.balance ?? 0;
+
+    void invalidateCacheTags([dashUserBalanceTag(userId)]);
 
     return NextResponse.json(
       {

@@ -80,10 +80,10 @@ export default async function Page({ params }: Props) {
   const countryName = countryNameByLocale[locale] ?? countryNameByLocale.ka;
   const routeSeparator = t('routeSeparator');
   const notSpecified = t('notSpecified');
-  const messagesByLocale: Record<string, any> = {
+  const messagesByLocale: Record<string, typeof kaMessages> = {
     ka: kaMessages,
-    en: enMessages,
-    ru: ruMessages,
+    en: enMessages as typeof kaMessages,
+    ru: ruMessages as typeof kaMessages,
   };
   const messages = messagesByLocale[locale] ?? kaMessages;
 

@@ -3,6 +3,8 @@ import { getServerSession } from 'next-auth';
 import { z } from 'zod';
 import { authOptions } from '../../../../../../lib/auth';
 import prisma from '../../../../../../lib/prisma';
+import { dashUserParcelIdTag, dashUserParcelsTag, dashUserParcelsStatusTag } from '@/lib/cache/dashboardCache';
+import { invalidateCacheTags } from '@/lib/cache/redisCache';
 
 const patchSchema = z.object({
   courierServiceRequested: z.boolean(),
@@ -51,6 +53,12 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
         courierServiceRequested: true,
       },
     });
+
+    void invalidateCacheTags([
+      dashUserParcelIdTag(session.user.id, id),
+      dashUserParcelsTag(session.user.id),
+      dashUserParcelsStatusTag(session.user.id, 'arrived'),
+    ]);
 
     return NextResponse.json({ parcel: updated });
   } catch (error) {

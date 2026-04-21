@@ -2,6 +2,10 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../../../../lib/auth';
 import prisma from '../../../../lib/prisma';
+import {
+  cachedDashboard,
+  dashUserOrdersTag,
+} from '@/lib/cache/dashboardCache';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,10 +21,17 @@ export async function GET() {
   }
 
   const userId = session.user.id;
-  const orders = await prisma.order.findMany({
-    where: { userId },
-    orderBy: { createdAt: 'desc' },
-  });
+  const orders = await cachedDashboard(
+    'orders:list:v1',
+    { userId },
+    async () => {
+      return await prisma.order.findMany({
+        where: { userId },
+        orderBy: { createdAt: 'desc' },
+      });
+    },
+    { ttlSeconds: 60, tags: [dashUserOrdersTag(userId)] },
+  );
 
   const formatted = orders.map((order) => ({
     id: order.id,

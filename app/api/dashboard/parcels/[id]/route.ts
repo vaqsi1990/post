@@ -6,6 +6,8 @@ import prisma from '@/lib/prisma';
 import { getCachedActiveTariffsForGeorgia } from '@/lib/cachedTariffs';
 import { resolveTariffForParcel } from '@/lib/tariffLookup';
 import { convertToGel, fetchNbgRates } from '@/lib/nbgRates';
+import { cachedDashboard, dashUserParcelIdTag, dashUserParcelsTag, dashUserParcelsStatusTag } from '@/lib/cache/dashboardCache';
+import { invalidateCacheTags } from '@/lib/cache/redisCache';
 
 export const dynamic = 'force-dynamic';
 
@@ -61,20 +63,27 @@ export async function GET(
   const userId = session.user.id;
   const { id } = await params;
 
-  const parcel = await prisma.parcel.findFirst({
-    where: { id, userId },
-    select: {
-      id: true,
-      status: true,
-      price: true,
-      onlineShop: true,
-      quantity: true,
-      originCountry: true,
-      weight: true,
-      description: true,
-      comment: true,
+  const parcel = await cachedDashboard(
+    'parcel:edit:get:v1',
+    { userId, id },
+    async () => {
+      return await prisma.parcel.findFirst({
+        where: { id, userId },
+        select: {
+          id: true,
+          status: true,
+          price: true,
+          onlineShop: true,
+          quantity: true,
+          originCountry: true,
+          weight: true,
+          description: true,
+          comment: true,
+        },
+      });
     },
-  });
+    { ttlSeconds: 60, tags: [dashUserParcelIdTag(userId, id)] },
+  );
 
   if (!parcel) return NextResponse.json({ error: 'Not found' }, { status: 404 });
   if (parcel.status !== 'pending') {
@@ -205,6 +214,17 @@ export async function PATCH(
 
       return updated;
     });
+
+    void invalidateCacheTags([
+      dashUserParcelIdTag(userId, id),
+      dashUserParcelsTag(userId),
+      dashUserParcelsStatusTag(userId, 'pending'),
+      dashUserParcelsStatusTag(userId, 'in_warehouse'),
+      dashUserParcelsStatusTag(userId, 'in_transit'),
+      dashUserParcelsStatusTag(userId, 'arrived'),
+      dashUserParcelsStatusTag(userId, 'stopped'),
+      dashUserParcelsStatusTag(userId, 'delivered'),
+    ]);
 
     return NextResponse.json(
       {

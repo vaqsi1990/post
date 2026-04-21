@@ -4,6 +4,11 @@ import { z } from 'zod';
 import bcrypt from 'bcryptjs';
 import { authOptions } from '../../../../lib/auth';
 import prisma from '../../../../lib/prisma';
+import {
+  cachedDashboard,
+  dashUserProfileTag,
+} from '@/lib/cache/dashboardCache';
+import { invalidateCacheTags } from '@/lib/cache/redisCache';
 
 export const dynamic = 'force-dynamic';
 
@@ -38,19 +43,27 @@ export async function GET() {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   }
 
-  const user = await prisma.user.findUnique({
-    where: { id: session.user.id },
-    select: {
-      email: true,
-      firstName: true,
-      lastName: true,
-      phone: true,
-      phoneVerified: true,
-      personalIdNumber: true,
-      postalIndex: true,
-      createdAt: true,
+  const userId = session.user.id;
+  const user = await cachedDashboard(
+    'profile:get:v1',
+    { userId },
+    async () => {
+      return await prisma.user.findUnique({
+        where: { id: userId },
+        select: {
+          email: true,
+          firstName: true,
+          lastName: true,
+          phone: true,
+          phoneVerified: true,
+          personalIdNumber: true,
+          postalIndex: true,
+          createdAt: true,
+        },
+      });
     },
-  });
+    { ttlSeconds: 60, tags: [dashUserProfileTag(userId)] },
+  );
 
   if (!user) {
     return NextResponse.json({ error: 'მომხმარებელი ვერ მოიძებნა' }, { status: 404 });
@@ -83,6 +96,7 @@ export async function PATCH(request: NextRequest) {
 
   try {
     const body = await request.json();
+    const userId = session.user.id;
 
     if (body.newPassword != null) {
       const data = changePasswordSchema.parse({
@@ -105,15 +119,16 @@ export async function PATCH(request: NextRequest) {
       }
       const hashed = await bcrypt.hash(data.newPassword, 10);
       await prisma.user.update({
-        where: { id: session.user.id },
+        where: { id: userId },
         data: { password: hashed },
       });
+      void invalidateCacheTags([dashUserProfileTag(userId)]);
       return NextResponse.json({ message: 'პაროლი წარმატებით შეიცვალა' });
     }
 
     const data = updateProfileSchema.parse(body);
     await prisma.user.update({
-      where: { id: session.user.id },
+      where: { id: userId },
       data: {
         ...(data.firstName !== undefined && { firstName: data.firstName || null }),
         ...(data.lastName !== undefined && { lastName: data.lastName || null }),
@@ -123,6 +138,7 @@ export async function PATCH(request: NextRequest) {
         }),
       },
     });
+    void invalidateCacheTags([dashUserProfileTag(userId)]);
     return NextResponse.json({ message: 'პროფილი განახლდა' });
   } catch (err) {
     if (err instanceof z.ZodError) {

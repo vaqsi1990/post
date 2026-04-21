@@ -11,6 +11,8 @@ import {
   generateNextRoomNumber,
   withRetryOnDuplicateRoomNumber,
 } from '../../../../lib/roomNumber';
+import { cachedAdmin, AdminCacheTags } from '@/lib/cache/adminCache';
+import { invalidateCacheTags } from '@/lib/cache/redisCache';
 
 export async function GET() {
   const session = await getServerSession(authOptions);
@@ -24,20 +26,27 @@ export async function GET() {
   }
 
   try {
-    const users = await prisma.user.findMany({
-      orderBy: { createdAt: 'desc' },
-      select: {
-        id: true,
-        email: true,
-        firstName: true,
-        lastName: true,
-        address: true,
-        role: true,
-        employeeCountry: true,
-        createdAt: true,
-        roomNumber: true,
+    const users = await cachedAdmin(
+      'users:list:v1',
+      { role: session.user.role },
+      async () => {
+        return await prisma.user.findMany({
+          orderBy: { createdAt: 'desc' },
+          select: {
+            id: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+            address: true,
+            role: true,
+            employeeCountry: true,
+            createdAt: true,
+            roomNumber: true,
+          },
+        });
       },
-    });
+      { ttlSeconds: 60, tags: [AdminCacheTags.users] },
+    );
 
     return NextResponse.json({ users }, { status: 200 });
   } catch (error) {
@@ -148,6 +157,9 @@ export async function POST(request: NextRequest) {
         },
       });
     }
+
+    // Best-effort: keep admin lists/counters fresh.
+    void invalidateCacheTags([AdminCacheTags.users, AdminCacheTags.counts]);
 
     return NextResponse.json(
       {

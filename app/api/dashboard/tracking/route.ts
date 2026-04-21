@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../../../../lib/auth';
 import prisma from '../../../../lib/prisma';
+import { cachedDashboard, dashUserTrackingTag } from '@/lib/cache/dashboardCache';
 
 export const dynamic = 'force-dynamic';
 
@@ -26,15 +27,23 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  const parcel = await prisma.parcel.findFirst({
-    where: {
-      userId: session.user.id,
-      trackingNumber: { equals: code, mode: 'insensitive' },
+  const userId = session.user.id;
+  const parcel = await cachedDashboard(
+    'tracking:get:v1',
+    { userId, code: code.toLowerCase() },
+    async () => {
+      return await prisma.parcel.findFirst({
+        where: {
+          userId,
+          trackingNumber: { equals: code, mode: 'insensitive' },
+        },
+        include: {
+          tracking: { orderBy: { createdAt: 'desc' }, take: 80 },
+        },
+      });
     },
-    include: {
-      tracking: { orderBy: { createdAt: 'desc' }, take: 80 },
-    },
-  });
+    { ttlSeconds: 60, tags: [dashUserTrackingTag(userId, code)] },
+  );
 
   if (!parcel) {
     return NextResponse.json(

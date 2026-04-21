@@ -10,6 +10,7 @@ import {
 } from '@/lib/dashboardParcelList';
 import { fetchNbgRates } from '../../lib/nbgRates';
 import { computeShippingGelBreakdown } from '../../lib/parcelShippingGel';
+import { cachedDashboard, dashUserParcelsTag, dashUserParcelsStatusTag } from '@/lib/cache/dashboardCache';
 import DashboardHeader from './components/DashboardHeader';
 import UserParcelsTabs, { UserParcel } from './components/UserParcelsTabs';
 
@@ -33,14 +34,28 @@ export default async function DashboardPage({
   const userId = session.user.id;
 
   const [statusGroups, totalForTab, tariffs, nbgRates] = await Promise.all([
-    prisma.parcel.groupBy({
-      by: ['status'],
-      where: { userId },
-      _count: { _all: true },
-    }),
-    prisma.parcel.count({
-      where: { userId, status: parcelTab },
-    }),
+    cachedDashboard(
+      'parcels:statusGroups:v1',
+      { userId },
+      async () => {
+        return await prisma.parcel.groupBy({
+          by: ['status'],
+          where: { userId },
+          _count: { _all: true },
+        });
+      },
+      { ttlSeconds: 60, tags: [dashUserParcelsTag(userId)] },
+    ),
+    cachedDashboard(
+      'parcels:countByStatus:v1',
+      { userId, status: parcelTab },
+      async () => {
+        return await prisma.parcel.count({
+          where: { userId, status: parcelTab },
+        });
+      },
+      { ttlSeconds: 60, tags: [dashUserParcelsStatusTag(userId, parcelTab)] },
+    ),
     getCachedActiveTariffsForGeorgia(),
     fetchNbgRates().catch(() => null),
   ]);
@@ -51,12 +66,22 @@ export default async function DashboardPage({
   );
   const page = Math.min(pageRequested, totalPages);
 
-  const parcels = await prisma.parcel.findMany({
-    where: { userId, status: parcelTab },
-    orderBy: { createdAt: 'desc' },
-    skip: (page - 1) * DASHBOARD_PARCEL_PAGE_SIZE,
-    take: DASHBOARD_PARCEL_PAGE_SIZE,
-  });
+  const parcels = await cachedDashboard(
+    'parcels:listByStatus:v1',
+    { userId, status: parcelTab, page, pageSize: DASHBOARD_PARCEL_PAGE_SIZE },
+    async () => {
+      return await prisma.parcel.findMany({
+        where: { userId, status: parcelTab },
+        orderBy: { createdAt: 'desc' },
+        skip: (page - 1) * DASHBOARD_PARCEL_PAGE_SIZE,
+        take: DASHBOARD_PARCEL_PAGE_SIZE,
+      });
+    },
+    {
+      ttlSeconds: 60,
+      tags: [dashUserParcelsTag(userId), dashUserParcelsStatusTag(userId, parcelTab)],
+    },
+  );
 
   const statusCounts: Partial<Record<string, number>> = {};
   for (const row of statusGroups) {

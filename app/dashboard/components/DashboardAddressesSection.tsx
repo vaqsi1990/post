@@ -4,6 +4,7 @@ import prisma from '@/lib/prisma';
 import type React from 'react';
 import { getTranslations } from 'next-intl/server';
 import CopyableText from './CopyableText';
+import { cachedDashboard, dashUserAddressesTag } from '@/lib/cache/dashboardCache';
 import {
   GB,
   US,
@@ -102,10 +103,18 @@ export default async function DashboardAddressesSection() {
 
   const tAddr = await getTranslations('addresses');
 
-  const user = await prisma.user.findUnique({
-    where: { id: session.user.id },
-    select: { firstName: true, lastName: true, roomNumber: true },
-  });
+  const userId = session.user.id;
+  const user = await cachedDashboard(
+    'addresses:userBasics:v1',
+    { userId },
+    async () => {
+      return await prisma.user.findUnique({
+        where: { id: userId },
+        select: { firstName: true, lastName: true, roomNumber: true },
+      });
+    },
+    { ttlSeconds: 60, tags: [dashUserAddressesTag(userId)] },
+  );
 
   const userFirstName = user?.firstName ?? '';
   const userLastName = user?.lastName ?? '';
