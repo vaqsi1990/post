@@ -29,6 +29,35 @@ function isAllowedStatus(status: string): status is (typeof allowedStatuses)[num
   return (allowedStatuses as readonly string[]).includes(status);
 }
 
+type ParcelCursor = {
+  id: string;
+  createdAt: string; // ISO
+  originCountry?: string | null;
+};
+
+function parseCursor(raw: string | null): ParcelCursor | null {
+  if (!raw) return null;
+  try {
+    const json = Buffer.from(raw, 'base64url').toString('utf8');
+    const parsed = JSON.parse(json) as unknown;
+    if (typeof parsed !== 'object' || parsed === null) return null;
+    const p = parsed as Partial<ParcelCursor>;
+    if (!p.id || typeof p.id !== 'string') return null;
+    if (!p.createdAt || typeof p.createdAt !== 'string') return null;
+    return {
+      id: p.id,
+      createdAt: p.createdAt,
+      originCountry: 'originCountry' in p ? (p.originCountry ?? null) : undefined,
+    };
+  } catch {
+    return null;
+  }
+}
+
+function makeCursor(c: ParcelCursor): string {
+  return Buffer.from(JSON.stringify(c), 'utf8').toString('base64url');
+}
+
 function countryFilterWhere(country: string | null): Prisma.ParcelWhereInput | undefined {
   if (!country) return undefined;
   if (country === UNKNOWN_COUNTRY_KEY) {
@@ -73,6 +102,8 @@ export async function handleAdminParcelsGet(request: NextRequest) {
   }
 
   const page = parseAdminParcelPage(searchParams.get('page') ?? undefined);
+  const cursorRaw = searchParams.get('cursor');
+  const cursor = parseCursor(cursorRaw);
   const limitRaw = parseInt(searchParams.get('limit') ?? '', 10);
   const limit = Math.min(
     50,
@@ -135,18 +166,61 @@ export async function handleAdminParcelsGet(request: NextRequest) {
         role: session.user.role,
         status,
         page,
+        cursor: cursorRaw,
         limit,
         country: countryParam,
         orderBy,
         includeShipping,
       },
       async () => {
+        const cursorDate =
+          cursor?.createdAt && Number.isFinite(Date.parse(cursor.createdAt))
+            ? new Date(cursor.createdAt)
+            : null;
+
+        // Keyset pagination (cursor) avoids expensive OFFSET (skip) on high pages.
+        // Fallback to page-based pagination if cursor is absent/invalid.
+        let paginationWhere: Prisma.ParcelWhereInput | undefined;
+        if (cursor && cursorDate) {
+          if (status === 'region') {
+            paginationWhere = {
+              OR: [
+                { createdAt: { lt: cursorDate } },
+                { createdAt: { equals: cursorDate }, id: { lt: cursor.id } },
+              ],
+            };
+          } else {
+            const origin = cursor.originCountry ?? '';
+            paginationWhere = {
+              OR: [
+                { originCountry: { gt: origin } },
+                {
+                  AND: [
+                    { originCountry: { equals: origin } },
+                    {
+                      OR: [
+                        { createdAt: { lt: cursorDate } },
+                        { createdAt: { equals: cursorDate }, id: { lt: cursor.id } },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            };
+          }
+        }
+
+        const whereWithPagination: Prisma.ParcelWhereInput = paginationWhere
+          ? { AND: [where, paginationWhere] }
+          : where;
+
         const [parcels, tariffs, nbgRates] = await Promise.all([
           prisma.parcel.findMany({
-            where,
+            where: whereWithPagination,
             orderBy,
-            skip: (page - 1) * limit,
-            take: limit,
+            ...(paginationWhere
+              ? { take: limit }
+              : { skip: (page - 1) * limit, take: limit }),
             select: {
               id: true,
               trackingNumber: true,
@@ -173,6 +247,16 @@ export async function handleAdminParcelsGet(request: NextRequest) {
             : Promise.resolve(null),
         ]);
 
+        const last = parcels.length > 0 ? parcels[parcels.length - 1] : null;
+        const nextCursor =
+          last && parcels.length === limit
+            ? makeCursor({
+                id: last.id,
+                createdAt: last.createdAt.toISOString(),
+                originCountry: status === 'region' ? undefined : (last.originCountry ?? null),
+              })
+            : null;
+
         return {
           parcels: parcels.map((p) => {
             const breakdown = includeShipping
@@ -188,6 +272,7 @@ export async function handleAdminParcelsGet(request: NextRequest) {
               shippingFormula: breakdown != null ? breakdown.formula : null,
             };
           }),
+          nextCursor,
         };
       },
       {

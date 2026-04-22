@@ -181,6 +181,8 @@ model Parcel {
   @@index([status])
   @@index([status, createdAt(sort: Desc)])
   @@index([status, originCountry, createdAt(sort: Desc)])
+  @@index([status, createdAt(sort: Desc), id(sort: Desc)])
+  @@index([status, originCountry, createdAt(sort: Desc), id(sort: Desc)])
   @@index([createdById])
   @@map("parcels")
 }

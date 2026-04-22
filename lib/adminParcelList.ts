@@ -7,9 +7,11 @@ export function adminParcelsOrderBy(
   status: string,
 ): Prisma.ParcelOrderByWithRelationInput | Prisma.ParcelOrderByWithRelationInput[] {
   if (status === 'region') {
-    return { createdAt: 'desc' };
+    // Stable ordering for keyset pagination
+    return [{ createdAt: 'desc' }, { id: 'desc' }];
   }
-  return [{ originCountry: 'asc' }, { createdAt: 'desc' }];
+  // Stable ordering for keyset pagination
+  return [{ originCountry: 'asc' }, { createdAt: 'desc' }, { id: 'desc' }];
 }
 
 export function parseAdminParcelPage(raw: string | undefined): number {
