@@ -42,6 +42,7 @@ export async function POST(request: NextRequest) {
 
     const changed = await prisma.$transaction(async (tx) => {
       // One round-trip: update + return only rows that actually changed.
+      // Keep this transaction minimal to reduce lock time and tail latency.
       const updatedRows = await tx.$queryRaw<{ id: string }[]>(
         Prisma.sql`UPDATE "parcels"
           SET "status" = ${status}::"ParcelStatus"
@@ -51,24 +52,27 @@ export async function POST(request: NextRequest) {
       );
 
       const updatedIds = updatedRows.map((r) => r.id);
-      if (updatedIds.length === 0) return { updatedCount: 0, updatedIds: [] as string[] };
-
-      // Keep tracking history without N individual PATCH calls.
-      // NOTE: we intentionally skip SMS notifications here (too costly for bulk ops).
-      await tx.tracking.createMany({
-        data: updatedIds.map((id) => ({
-          parcelId: id,
-          status,
-          location: null,
-          description: null,
-        })),
-      });
-
       return {
         updatedCount: updatedIds.length,
         updatedIds,
       };
     });
+
+    // Write tracking history out-of-band (best-effort) so this endpoint stays fast under load.
+    if (changed.updatedIds.length > 0) {
+      void prisma.tracking
+        .createMany({
+          data: changed.updatedIds.map((id) => ({
+            parcelId: id,
+            status,
+            location: null,
+            description: null,
+          })),
+        })
+        .catch((e) => {
+          console.error('Bulk parcel status tracking createMany error:', e);
+        });
+    }
 
     void invalidateCacheTags([AdminCacheTags.parcels, AdminCacheTags.counts]);
 
