@@ -8,7 +8,7 @@ import { parcelOriginKey } from '@/lib/parcelOriginKey';
 import ParcelsTable from './ParcelsTable';
 import IncomingCountryHub from './IncomingCountryHub';
 
-type Parcel = {
+export type Parcel = {
   id: string;
   trackingNumber: string;
   status: string;
@@ -138,6 +138,7 @@ function ParcelsManagerContent({
     number
   > | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const isInitialMount = useRef(true);
@@ -153,10 +154,22 @@ function ParcelsManagerContent({
   };
 
   useEffect(() => {
+    // If we're on the first page, a persisted `cursor` in the URL will make the
+    // client fetch older pages and "lose" newly created parcels after refresh.
+    if (page === 1 && cursor) {
+      const p = new URLSearchParams(searchParams.toString());
+      p.delete('cursor');
+      router.replace(`${pathname}?${p.toString()}`, { scroll: false });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
     const fetchParcels = async (showLoading = true) => {
       if (showLoading) {
         setIsLoading(true);
       }
+      setLoadError(null);
       try {
         const params = new URLSearchParams();
         params.set('status', currentStatus);
@@ -164,7 +177,8 @@ function ParcelsManagerContent({
         if (countryFilter) {
           params.set('country', countryFilter);
         }
-        if (cursor) {
+        // Only use cursor for forward pagination; page=1 must always show newest.
+        if (cursor && page > 1) {
           params.set('cursor', cursor);
         }
         const res = await fetch(`/api/admin/parcels?${params.toString()}`, {
@@ -174,8 +188,18 @@ function ParcelsManagerContent({
             Pragma: 'no-cache',
           },
         });
-        if (!res.ok) return;
-        const data = await res.json();
+        if (!res.ok) {
+          const text = await res.text().catch(() => '');
+          setLoadError(
+            `Failed to load parcels (${res.status}). ${text ? text.slice(0, 200) : ''}`.trim()
+          );
+          return;
+        }
+        const data = await res.json().catch(() => null);
+        if (!data) {
+          setLoadError('Failed to load parcels (invalid response).');
+          return;
+        }
         if (data.parcels) {
           // Polling updates are non-urgent; keep INP snappy.
           startTransition(() => setParcels(data.parcels));
@@ -199,7 +223,9 @@ function ParcelsManagerContent({
       }
     };
 
-    fetchParcels(!isInitialMount.current);
+    const shouldShowLoading =
+      isInitialMount.current && initialParcels.length === 0;
+    fetchParcels(shouldShowLoading || !isInitialMount.current);
     isInitialMount.current = false;
 
     const startPolling = () => {
@@ -273,6 +299,11 @@ function ParcelsManagerContent({
             <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-black" />
             <p className="text-[16px] text-gray-600">იტვირთება...</p>
           </div>
+        </div>
+      )}
+      {loadError && !isLoading && (
+        <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-[14px] text-red-800">
+          {loadError}
         </div>
       )}
       {showMainHub ? (

@@ -354,7 +354,23 @@ export default function AdminCreateParcelForm({
       }
 
       setSuccess(t('createSuccess'));
-      router.push(successRedirect);
+      // If we're redirecting to incoming and we have an originCountry,
+      // preselect it so the staff sees the new parcel immediately.
+      const redirectUrl = (() => {
+        try {
+          if (!originCountry || !successRedirect.startsWith('/admin/incoming')) {
+            return successRedirect;
+          }
+          const u = new URL(successRedirect, window.location.origin);
+          u.searchParams.set('country', originCountry.trim().toLowerCase());
+          u.searchParams.set('page', '1');
+          u.searchParams.delete('cursor');
+          return `${u.pathname}?${u.searchParams.toString()}`;
+        } catch {
+          return successRedirect;
+        }
+      })();
+      router.push(redirectUrl);
       router.refresh();
     } catch {
       setError(tCommon('networkError'));

@@ -163,7 +163,7 @@ export default function CreateOrderForm({ isOpen, onClose, onOrderCreated }: Cre
           </svg>
         </button>
 
-        <h2 className="mb-4 text-xl font-semibold text-black">ახალი ამანათის დამატება</h2>
+        <h2 className="mb-4 text-xl font-semibold text-black">ახალი ორდერის დამატება</h2>
 
         {loading ? (
           <p className="text-[16px] text-black">იტვირთება...</p>
@@ -258,7 +258,7 @@ export default function CreateOrderForm({ isOpen, onClose, onOrderCreated }: Cre
                 disabled={saving}
                 className="rounded-md bg-black px-4 py-2 text-[16px] font-semibold text-white disabled:opacity-50"
               >
-                {saving ? 'ინახება...' : 'დამატება'}
+                {saving ? 'ინახება...' : 'ორდერის შექმნა'}
               </button>
             </div>
           </form>

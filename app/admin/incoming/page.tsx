@@ -1,5 +1,5 @@
 import AdminShell from '../components/AdminShell';
-import ParcelsManager from '../components/ParcelsManager';
+import ParcelsManager, { type Parcel } from '../components/ParcelsManager';
 import Link from 'next/link';
 import { getLocale } from 'next-intl/server';
 import { fetchAdminParcelsSsr } from '@/lib/adminParcelSsr';
@@ -20,11 +20,6 @@ export default async function AdminIncomingPage({
       : { title: 'მოლოდინში', description: 'მოლოდინში ამანათების მართვა.', newParcel: 'ამანათის დამატება' };
   const { parcels } = await fetchAdminParcelsSsr('pending', sp);
 
-  const formattedParcels = parcels.map((parcel) => ({
-    ...parcel,
-    createdAt: new Date(parcel.createdAt).toLocaleDateString('ka-GE'),
-  }));
-
   return (
     <AdminShell
       title={text.title}
@@ -40,7 +35,7 @@ export default async function AdminIncomingPage({
           </Link>
         </div>
         <ParcelsManager
-          initialParcels={formattedParcels}
+          initialParcels={parcels as unknown as Parcel[]}
           currentStatus="pending"
           countryHub
         />

@@ -124,6 +124,15 @@ export async function handleAdminParcelsGet(request: NextRequest) {
 
   const orderBy = adminParcelsOrderBy(status);
   try {
+    // Incoming (pending) must reflect newly created parcels immediately.
+    // Avoid serving stale cache for this status; otherwise new parcels can "disappear"
+    // after refresh when the client re-fetches from the API.
+    const isIncoming = status === 'pending';
+    // Even with tag invalidation, Redis might be temporarily unavailable during cold starts.
+    // Keeping a near-zero TTL for incoming avoids "new parcel appears after 60s" behavior.
+    const ttlSeconds = isIncoming ? 1 : 60;
+    const staleSeconds = isIncoming ? 0 : 300;
+
     // Cache expensive aggregates separately from page results.
     // This avoids repeating COUNT/GROUP BY work for every page cache key.
     const meta = await cachedAdmin(
@@ -153,8 +162,8 @@ export async function handleAdminParcelsGet(request: NextRequest) {
         return { totalCount, originCounts };
       },
       {
-        ttlSeconds: 60,
-        staleSeconds: 300,
+        ttlSeconds,
+        staleSeconds,
         tags: [AdminCacheTags.parcels, adminParcelsTag(status), AdminCacheTags.counts],
       },
     );
@@ -182,7 +191,7 @@ export async function handleAdminParcelsGet(request: NextRequest) {
         // Fallback to page-based pagination if cursor is absent/invalid.
         let paginationWhere: Prisma.ParcelWhereInput | undefined;
         if (cursor && cursorDate) {
-          if (status === 'region') {
+          if (status === 'region' || status === 'pending') {
             paginationWhere = {
               OR: [
                 { createdAt: { lt: cursorDate } },
@@ -253,7 +262,10 @@ export async function handleAdminParcelsGet(request: NextRequest) {
             ? makeCursor({
                 id: last.id,
                 createdAt: last.createdAt.toISOString(),
-                originCountry: status === 'region' ? undefined : (last.originCountry ?? null),
+                originCountry:
+                  status === 'region' || status === 'pending'
+                    ? undefined
+                    : (last.originCountry ?? null),
               })
             : null;
 
@@ -276,8 +288,8 @@ export async function handleAdminParcelsGet(request: NextRequest) {
         };
       },
       {
-        ttlSeconds: 60,
-        staleSeconds: 300,
+        ttlSeconds,
+        staleSeconds,
         tags: [AdminCacheTags.parcels, adminParcelsTag(status)],
       },
     );

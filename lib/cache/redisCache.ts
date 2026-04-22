@@ -235,7 +235,10 @@ export async function cacheAside<T>(
           return parsed.value;
         }
 
-        return parsed.value;
+        // With staleSeconds=0 we must NOT serve stale; treat as miss and refresh.
+        // Otherwise "expired" entries would remain visible until hard TTL expiry,
+        // causing newly created data to appear with delay.
+        // Fall through to lock+fetch.
       }
 
       // Back-compat: older entries stored raw value without envelope.
@@ -254,7 +257,11 @@ export async function cacheAside<T>(
       const cached = await redis.get(cacheKey);
       if (cached == null) return null;
       const parsed = JSON.parse(cached) as unknown;
-      if (isCacheEnvelope<T>(parsed)) return parsed.value;
+      if (isCacheEnvelope<T>(parsed)) {
+        const now = Date.now();
+        if (now <= parsed.freshUntil) return parsed.value;
+        return staleSeconds > 0 ? parsed.value : null;
+      }
       return parsed as T;
     } catch (e) {
       console.error('Redis read/parse error:', e);

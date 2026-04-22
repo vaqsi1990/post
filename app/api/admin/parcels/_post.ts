@@ -246,6 +246,8 @@ export async function handleAdminParcelsPost(request: NextRequest) {
       data: {
         userId: user.id,
         createdById: session.user.id,
+        // Always start new parcels as pending (Incoming).
+        status: 'pending',
         customerName: parsed.customerName.trim(),
         trackingNumber: parsed.trackingNumber.trim(),
         price: parsed.price,
@@ -263,7 +265,7 @@ export async function handleAdminParcelsPost(request: NextRequest) {
 
     await recordParcelTrackingEvent(prisma, parcel.id, parcel.status);
 
-    void invalidateCacheTags([
+    await invalidateCacheTags([
       AdminCacheTags.parcels,
       AdminCacheTags.counts,
       adminParcelsTag('pending'),
