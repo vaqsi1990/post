@@ -93,8 +93,43 @@ export async function handleAdminParcelsGet(request: NextRequest) {
 
   const orderBy = adminParcelsOrderBy(status);
   try {
-    const data = await cachedAdmin(
-      'parcels:list:v2',
+    // Cache expensive aggregates separately from page results.
+    // This avoids repeating COUNT/GROUP BY work for every page cache key.
+    const meta = await cachedAdmin(
+      'parcels:meta:v1',
+      {
+        role: session.user.role,
+        status,
+        country: countryParam,
+      },
+      async () => {
+        const [totalCount, originGroups] = await Promise.all([
+          prisma.parcel.count({ where }),
+          prisma.parcel.groupBy({
+            by: ['originCountry'],
+            // Keep counts consistent with the active filter (incl. country if provided).
+            where,
+            _count: { _all: true },
+          }),
+        ]);
+
+        const originCounts: Record<string, number> = {};
+        for (const g of originGroups) {
+          const k = parcelOriginKey(g.originCountry);
+          originCounts[k] = (originCounts[k] ?? 0) + g._count._all;
+        }
+
+        return { totalCount, originCounts };
+      },
+      {
+        ttlSeconds: 60,
+        staleSeconds: 300,
+        tags: [AdminCacheTags.parcels, adminParcelsTag(status), AdminCacheTags.counts],
+      },
+    );
+
+    const pageData = await cachedAdmin(
+      'parcels:page:v3',
       // Keep params deterministic: cache key stability matters.
       {
         role: session.user.role,
@@ -106,8 +141,7 @@ export async function handleAdminParcelsGet(request: NextRequest) {
         includeShipping,
       },
       async () => {
-        const [totalCount, parcels, originGroups, tariffs, nbgRates] = await Promise.all([
-          prisma.parcel.count({ where }),
+        const [parcels, tariffs, nbgRates] = await Promise.all([
           prisma.parcel.findMany({
             where,
             orderBy,
@@ -133,25 +167,11 @@ export async function handleAdminParcelsGet(request: NextRequest) {
               createdBy: adminParcelInclude.createdBy,
             },
           }),
-          prisma.parcel.groupBy({
-            by: ['originCountry'],
-            // Keep counts consistent with the active filter (incl. country if provided).
-            where,
-            _count: { _all: true },
-          }),
           includeShipping ? getCachedActiveTariffsForGeorgia() : Promise.resolve([]),
           includeShipping
             ? withTimeout(fetchNbgRates().catch(() => null), 1200).catch(() => null)
             : Promise.resolve(null),
         ]);
-
-        const originCounts: Record<string, number> = {};
-        for (const g of originGroups) {
-          const k = parcelOriginKey(g.originCountry);
-          originCounts[k] = (originCounts[k] ?? 0) + g._count._all;
-        }
-
-        const totalPages = Math.max(1, Math.ceil(totalCount / limit));
 
         return {
           parcels: parcels.map((p) => {
@@ -168,19 +188,24 @@ export async function handleAdminParcelsGet(request: NextRequest) {
               shippingFormula: breakdown != null ? breakdown.formula : null,
             };
           }),
-          page,
-          pageSize: limit,
-          totalCount,
-          totalPages,
-          originCounts,
         };
       },
       {
         ttlSeconds: 60,
         staleSeconds: 300,
-        tags: [AdminCacheTags.parcels, adminParcelsTag(status), AdminCacheTags.counts],
+        tags: [AdminCacheTags.parcels, adminParcelsTag(status)],
       },
     );
+
+    const totalPages = Math.max(1, Math.ceil(meta.totalCount / limit));
+    const data = {
+      ...pageData,
+      page,
+      pageSize: limit,
+      totalCount: meta.totalCount,
+      totalPages,
+      originCounts: meta.originCounts,
+    };
 
     return NextResponse.json(data, {
       headers: {

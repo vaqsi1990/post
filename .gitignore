@@ -44,3 +44,5 @@ yarn-error.log*
 next-env.d.ts
 
 /app/generated/prisma
+touch locustfile.py
+__pycache__/touch locustfile.cpython-313.pyc
