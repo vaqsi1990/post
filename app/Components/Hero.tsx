@@ -27,62 +27,46 @@ export default function Hero() {
   return (
     <section className="relative w-full overflow-hidden mt-14">
       <h1 className="sr-only">{t("h1")}</h1>
-      <div className="relative  md:h-[500px]">
+      <div className="relative h-[420px] sm:h-[500px] md:h-[600px]">
         <Image
-          src="/hero/hero1.jpg"
+          src="/hero/Artboard1.png"
           alt="pricing background"
-          width={1700}
-          height={800}
+          fill
+          priority
+          sizes="100vw"
           className={`h-full w-full object-cover image object-center transition-opacity duration-1000 ease-in-out ${
             activeSlide === 0 ? "opacity-90" : "opacity-0"
           }`}
         />
         <Image
-          src="/hero/map.jpeg"
+          src="/hero/Artboard2.jpg"
           alt="pricing background alternate"
-          width={1700}
-          height={800}
-          className={`absolute  inset-0 h-full w-full object-cover image object-center transition-opacity duration-1000 ease-in-out ${
+          fill
+          sizes="100vw"
+          className={`absolute inset-0 h-full w-full object-cover image object-center transition-opacity duration-1000 ease-in-out ${
             activeSlide === 1 ? "opacity-90" : "opacity-0"
           }`}
         />
       </div>
       {activeSlide === 0 && (
         <div className="absolute inset-0 mx-auto grid h-full max-w-screen-1xl grid-cols-1 content-start px-4 py-6 sm:px-6 md:py-8 lg:px-5">
-          <div className="relative z-10 flex justify-center  flex-col max-w-2xl rounded-2xl p-6 sm:p-8 ">
-            <p className="text-balance text-[25px] md:text-[30px] font-semibold leading-tight text-white ">
-              Postifly
-            </p>
-            <p className="mt-4 text-pretty text-[25px] md:text-[30px]  leading-relaxed text-white ">
-              {line1}
-            </p>
-            <p className=" text-pretty text-[25px] md:text-[30px] leading-relaxed text-white ">
-              {line2}
-            </p>
+          <div className="relative z-10 flex justify-center flex-col max-w-2xl rounded-2xl p-6 pt-40 sm:p-8 sm:pt-44 md:pt-[330px]">
+           
             <Link
               href="#tariffs"
-              className="mt-5 inline-flex w-[150px] items-center justify-center rounded-xl bg-[#3a5bff] px-6 py-3 text-base font-semibold text-white transition hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-[#3a5bff] mx-auto lg:mx-0"
+              className="mt-5 inline-flex w-[150px] items-center justify-center rounded-xl bg-[#3a5bff] px-6 py-3 text-base font-semibold text-white transition hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-[#3a5bff] mx-auto"
             >
               {t("tariffsTitle")}
             </Link>
           </div>
-          <div className="relative z-10 max-w-2xl rounded-2xl p-6 text-center text-[25px] text-white  md:text-start md:text-[30px]">
-            {line3}
-          </div>
+        
         </div>
       )}
       {activeSlide === 1 && (
         <div className="absolute inset-0 mx-auto grid h-full max-w-screen-1xl grid-cols-1 content-start px-4 py-6 sm:px-6 md:py-8 lg:px-5">
-          <div className="relative z-10 flex justify-center  flex-col max-w-2xl rounded-2xl p-6 sm:p-8 ">
-            <p className="text-balance text-[22px] font-semibold leading-tight text-white sm:text-[26px] md:text-[30px]">
-              {slide2Title}
-            </p>
-            <p className=" text-pretty text-[20px] md:text-[30px] leading-relaxed text-white">
-              <span className="block">{slide2SubtitleLine1}</span>
-              <span className="block">{slide2SubtitleLine2}</span>
-            </p>
-
-            <div className="mt-5 flex w-full items-center justify-center gap-3 md:justify-start">
+          <div className="relative z-10 flex justify-center flex-col max-w-2xl rounded-2xl p-6 pt-40 sm:p-8 sm:pt-44 md:pt-[330px]">
+           
+            <div className="mt-5 flex w-full items-center justify-center gap-3">
             <Link
               href="/register"
               className="w-[150px] rounded-xl inline-flex items-center justify-center text-center bg-[#3a5bff] px-6 py-3 text-base font-semibold text-white transition hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-[#3a5bff]"
