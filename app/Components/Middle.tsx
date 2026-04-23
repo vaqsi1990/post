@@ -61,7 +61,7 @@ const Middle = () => {
                         <h2 className="text-[clamp(2.75rem,9vw,6.25rem)] font-extrabold leading-none tracking-tight text-[#8f35ff]">
                           POSTIFLY
                         </h2>
-                        <p className="mt-2 text-[clamp(1.15rem,3.6vw,2.25rem)] font-extrabold leading-tight tracking-tight text-[#8f35ff]">
+                        <p className="mt-2 text-[clamp(1.15rem,3.6vw,2.25rem)] text-center md:text-left font-extrabold leading-tight tracking-tight text-[#8f35ff]">
                           {t('heroMiddleSlide1Tagline')}
                         </p>
                       </>
@@ -70,7 +70,7 @@ const Middle = () => {
                         <h2 className="text-[clamp(2.35rem,7vw,5.25rem)] text-center md:text-left font-extrabold leading-none tracking-tight text-[#8f35ff]">
                           POSTIFLY
                         </h2>
-                        <p className="mt-1 text-[clamp(1.55rem,4.6vw,2.9rem)] font-extrabold leading-[1.05] tracking-tight text-[#8f35ff]">
+                        <p className="mt-1 text-[clamp(1.15rem,3.6vw,2.25rem)] font-extrabold leading-[1.05] tracking-tight text-[#8f35ff]">
                           <span className="block">{t('heroMiddleSlide2Line1')}</span>
                           <span className="block">{t('heroMiddleSlide2Line2')}</span>
                         </p>
@@ -80,10 +80,10 @@ const Middle = () => {
                         <p className="text-sm font-semibold tracking-wide text-white/90 sm:text-base">
                           {slide.eyebrow}
                         </p>
-                        <h2 className="mt-2 text-3xl font-extrabold leading-tight text-white sm:text-4xl lg:text-5xl">
+                        <h2 className="mt-2 text-3xl font-extrabold leading-tight text-white">
                           {slide.title}
                         </h2>
-                        <p className="mt-3 max-w-xl md:mt-14 text-base text-white/90 sm:text-lg">
+                        <p className="mt-3 max-w-xl md:mt-14 text-base text-white/90">
                           {slide.subtitle}
                         </p>
                       </>
