@@ -29,7 +29,7 @@ const Page = () => {
   
       <Works />
       <Tariffs />
-      {/* <HomeMarqueeBand /> */}
+
       {/* <Reviews /> */}
     </div>
   );
