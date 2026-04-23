@@ -6,7 +6,12 @@ const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 const nextConfig: NextConfig = {
   // Enable HTTP compression at the Next.js server layer where applicable.
   compress: true,
+  turbopack: {
+    // Avoid incorrect root inference when multiple lockfiles exist on disk.
+    root: __dirname,
+  },
   images: {
+    qualities: [75, 85],
     remotePatterns: [
       {
         protocol: "https",
