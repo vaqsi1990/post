@@ -8,12 +8,6 @@ import { Link } from "@/i18n/navigation";
 export default function Hero() {
   const t = useTranslations("home");
   const tHeader = useTranslations("header");
-  const line1 = t("heroSpeedLine1");
-  const line2 = t("heroSpeedLine2");
-  const line3 = t("heroSpeedLine3");
-  const slide2Title = t("heroSlide2Title");
-  const slide2SubtitleLine1 = t("heroSlide2SubtitleLine1");
-  const slide2SubtitleLine2 = t("heroSlide2SubtitleLine2");
   const [activeSlide, setActiveSlide] = useState(0);
 
   useEffect(() => {
@@ -27,14 +21,15 @@ export default function Hero() {
   return (
     <section className="relative w-full overflow-hidden mt-14">
       <h1 className="sr-only">{t("h1")}</h1>
-      <div className="relative h-[420px] sm:h-[500px] md:h-[600px]">
+      <div className="relative h-[420px] sm:h-[520px] lg:h-[600px]">
         <Image
           src="/hero/Artboard1.png"
           alt="pricing background"
           fill
           priority
-          sizes="100vw"
-          className={`h-full w-full object-cover image object-left sm:object-center transition-opacity duration-1000 ease-in-out ${
+          quality={85}
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 100vw"
+          className={`absolute inset-0 h-full w-full object-cover object-center transition-opacity duration-1000 ease-in-out ${
             activeSlide === 0 ? "opacity-90" : "opacity-0"
           }`}
         />
@@ -42,16 +37,16 @@ export default function Hero() {
           src="/hero/Artboard2.jpg"
           alt="pricing background alternate"
           fill
-          sizes="100vw"
-          className={`absolute inset-0 h-full w-full object-cover image object-left sm:object-center transition-opacity duration-1000 ease-in-out ${
+          quality={85}
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 100vw"
+          className={`absolute inset-0 h-full w-full object-cover object-center transition-opacity duration-1000 ease-in-out ${
             activeSlide === 1 ? "opacity-90" : "opacity-0"
           }`}
         />
       </div>
       {activeSlide === 0 && (
-        <div className="absolute inset-0 mx-auto grid h-full max-w-screen-1xl grid-cols-1 content-start px-4 py-6 sm:px-6 md:py-8 lg:px-5">
-          <div className="relative z-10 flex justify-center flex-col max-w-2xl rounded-2xl p-6 pt-40 sm:p-8 sm:pt-[530px] md:pt-[330px]">
-           
+        <div className="absolute inset-0 mx-auto flex h-full w-full max-w-screen-1xl items-center justify-center px-4 sm:px-6 lg:px-5">
+          <div className="relative z-10 flex w-full max-w-2xl flex-col items-center rounded-2xl p-6 sm:p-8">
             <Link
               href="#tariffs"
               className="mt-5 inline-flex w-[150px] items-center justify-center rounded-xl bg-[#3a5bff] px-6 py-3 text-base font-semibold text-white transition hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-[#3a5bff] mx-auto"
@@ -59,13 +54,11 @@ export default function Hero() {
               {t("tariffsTitle")}
             </Link>
           </div>
-        
         </div>
       )}
       {activeSlide === 1 && (
-        <div className="absolute inset-0 mx-auto grid h-full max-w-screen-1xl grid-cols-1 content-start px-4 py-6 sm:px-6 md:py-8 lg:px-5">
-          <div className="relative z-10 flex justify-center flex-col max-w-2xl rounded-2xl p-6 pt-40 sm:p-8 sm:pt-44 md:pt-[330px]">
-           
+        <div className="absolute inset-0 mx-auto flex h-full w-full max-w-screen-1xl items-center justify-center px-4 sm:px-6 lg:px-5">
+          <div className="relative z-10 flex w-full max-w-2xl flex-col items-center rounded-2xl p-6 sm:p-8">
             <div className="mt-5 flex w-full items-center justify-center gap-3">
             <Link
               href="/register"
