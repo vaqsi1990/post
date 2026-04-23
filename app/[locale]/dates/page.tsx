@@ -132,18 +132,24 @@ export const revalidate = 300;
 
 const getDatesFlights = unstable_cache(
   async () => {
-    return prisma.reis.findMany({
-      orderBy: [{ departureAt: "asc" }, { createdAt: "desc" }],
-      select: {
-        id: true,
-        name: true,
-        originCountry: true,
-        destinationCountry: true,
-        departureAt: true,
-        arrivalAt: true,
-        status: true,
-      },
-    });
+    try {
+      return await prisma.reis.findMany({
+        orderBy: [{ departureAt: "asc" }, { createdAt: "desc" }],
+        select: {
+          id: true,
+          name: true,
+          originCountry: true,
+          destinationCountry: true,
+          departureAt: true,
+          arrivalAt: true,
+          status: true,
+        },
+      });
+    } catch {
+      // If DB is temporarily unavailable during prerender/ISR,
+      // fail soft and render an empty list instead of breaking the build.
+      return [];
+    }
   },
   ['public:dates:flights:v1'],
   { revalidate: 300 },
@@ -151,25 +157,29 @@ const getDatesFlights = unstable_cache(
 
 const getDatesFlightsSummary = unstable_cache(
   async () => {
-    const now = new Date();
-    const [upcomingCount, nextUpcoming] = await Promise.all([
-      prisma.reis.count({
-        where: {
-          status: 'open',
-          departureAt: { gte: now },
-        },
-      }),
-      prisma.reis.findFirst({
-        where: {
-          status: 'open',
-          departureAt: { gte: now },
-        },
-        orderBy: [{ departureAt: 'asc' }, { createdAt: 'desc' }],
-        select: { departureAt: true },
-      }),
-    ]);
+    try {
+      const now = new Date();
+      const [upcomingCount, nextUpcoming] = await Promise.all([
+        prisma.reis.count({
+          where: {
+            status: 'open',
+            departureAt: { gte: now },
+          },
+        }),
+        prisma.reis.findFirst({
+          where: {
+            status: 'open',
+            departureAt: { gte: now },
+          },
+          orderBy: [{ departureAt: 'asc' }, { createdAt: 'desc' }],
+          select: { departureAt: true },
+        }),
+      ]);
 
-    return { upcomingCount, nextUpcoming };
+      return { upcomingCount, nextUpcoming };
+    } catch {
+      return { upcomingCount: 0, nextUpcoming: null };
+    }
   },
   ['public:dates:flights:summary:v1'],
   { revalidate: 300 },
