@@ -29,7 +29,7 @@ export default function Hero() {
           priority
           quality={85}
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 100vw"
-          className={`absolute inset-0 h-full w-full object-cover object-center transition-opacity duration-1000 ease-in-out ${
+          className={`absolute inset-0 h-full w-full object-cover object-left sm:object-center transition-opacity duration-1000 ease-in-out ${
             activeSlide === 0 ? "opacity-90" : "opacity-0"
           }`}
         />
@@ -39,7 +39,7 @@ export default function Hero() {
           fill
           quality={85}
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 100vw"
-          className={`absolute inset-0 h-full w-full object-cover object-center transition-opacity duration-1000 ease-in-out ${
+          className={`absolute inset-0 h-full w-full object-cover object-left sm:object-center transition-opacity duration-1000 ease-in-out ${
             activeSlide === 1 ? "opacity-90" : "opacity-0"
           }`}
         />
