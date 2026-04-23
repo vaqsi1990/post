@@ -79,6 +79,9 @@ const DASHBOARD_TARIFF_ORIGIN_ORDER = [
   'TR',
 ] as const;
 
+/** Dashboard-ზე არ ვაჩვენებთ ამ origin ISO-ებს (მიუხედავად იმისა, რომ DB-ში შეიძლება არსებობდეს). */
+const DASHBOARD_TARIFF_ORIGIN_BLOCKLIST = new Set(['DE', 'ES', 'IT']);
+
 export function formKeyForTariffIso(iso: string): string | null {
   const u = iso.toUpperCase();
   for (const [key, code] of Object.entries(FORM_TO_TARIFF_COUNTRY)) {
@@ -90,7 +93,7 @@ export function formKeyForTariffIso(iso: string): string | null {
 export function buildDashboardTariffRows(tariffs: TariffPick[]) {
   const origins = [
     ...new Set(tariffs.map((t) => t.originCountry.toUpperCase())),
-  ];
+  ].filter((iso) => !DASHBOARD_TARIFF_ORIGIN_BLOCKLIST.has(iso));
   const preferred = DASHBOARD_TARIFF_ORIGIN_ORDER as readonly string[];
   const ordered = [
     ...preferred.filter((iso) => origins.includes(iso)),

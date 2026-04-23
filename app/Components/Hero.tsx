@@ -34,7 +34,7 @@ export default function Hero() {
           fill
           priority
           sizes="100vw"
-          className={`h-full w-full object-cover image object-center transition-opacity duration-1000 ease-in-out ${
+          className={`h-full w-full object-cover image object-left sm:object-center transition-opacity duration-1000 ease-in-out ${
             activeSlide === 0 ? "opacity-90" : "opacity-0"
           }`}
         />
@@ -43,14 +43,14 @@ export default function Hero() {
           alt="pricing background alternate"
           fill
           sizes="100vw"
-          className={`absolute inset-0 h-full w-full object-cover image object-center transition-opacity duration-1000 ease-in-out ${
+          className={`absolute inset-0 h-full w-full object-cover image object-left sm:object-center transition-opacity duration-1000 ease-in-out ${
             activeSlide === 1 ? "opacity-90" : "opacity-0"
           }`}
         />
       </div>
       {activeSlide === 0 && (
         <div className="absolute inset-0 mx-auto grid h-full max-w-screen-1xl grid-cols-1 content-start px-4 py-6 sm:px-6 md:py-8 lg:px-5">
-          <div className="relative z-10 flex justify-center flex-col max-w-2xl rounded-2xl p-6 pt-40 sm:p-8 sm:pt-44 md:pt-[330px]">
+          <div className="relative z-10 flex justify-center flex-col max-w-2xl rounded-2xl p-6 pt-40 sm:p-8 sm:pt-[530px] md:pt-[330px]">
            
             <Link
               href="#tariffs"
