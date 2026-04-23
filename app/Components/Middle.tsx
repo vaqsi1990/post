@@ -26,22 +26,22 @@ const Middle = () => {
         loop
         pagination={{ clickable: true }}
         autoplay={{ delay: 5500, disableOnInteraction: false }}
-        className="h-[900px]"
+       className="h-[600px]"
       >
         {[
           { src: '/hero/resized_image.jpg', alt: 'pricing background 1' },
           { src: '/hero/resized_image.jpg', alt: 'pricing background 2' },
         ].map((slide, idx) => (
-          <SwiperSlide key={`${slide.src}-${idx}`} className="h-[700px]">
+          <SwiperSlide key={`${slide.src}-${idx}`} className="h-full">
             <div className="relative  w-full h-[700px] ">
-              <Image
-                src={slide.src}
-                alt={slide.alt}
-                fill
-                priority
-                sizes="150vw"
-                className="object-cover"
-              />
+            <Image
+        src={slide.src}
+        alt={slide.alt}
+        fill
+        priority
+        sizes="100vw"
+        className="object-contain"
+      />
             </div>
           </SwiperSlide>
         ))}
