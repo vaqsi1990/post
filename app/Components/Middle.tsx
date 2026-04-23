@@ -83,23 +83,23 @@ const Middle = () => {
                         <h2 className="mt-2 text-3xl font-extrabold leading-tight text-white sm:text-4xl lg:text-5xl">
                           {slide.title}
                         </h2>
-                        <p className="mt-3 max-w-xl text-base text-white/90 sm:text-lg">
+                        <p className="mt-3 max-w-xl http://localhost:3000/ka md:mt-14 text-base text-white/90 sm:text-lg">
                           {slide.subtitle}
                         </p>
                       </>
                     )}
                     {idx === 0 ? (
-                      <div className="mt-6 inline-flex max-w-full flex-col rounded-full bg-[#8f35ff] px-6 py-3 text-white sm:px-7 sm:py-4">
-                        <span className="text-[clamp(0.95rem,2.6vw,1.25rem)] font-extrabold leading-tight">
+                      <div className="mt-6 inline-flex md:mt-14 max-w-full flex-col rounded-full bg-[#8f35ff] px-6 py-3 text-white sm:px-7 sm:py-4">
+                        <span className="text-[clamp(0.95rem,2.6vw,1.25rem)] md:text-[18px] text-[16px] font-extrabold leading-tight">
                           მიღება ამანათები საფრანგეთიდან
                         </span>
-                        <span className="text-[clamp(1.6rem,4.8vw,2.75rem)] font-extrabold leading-none">
+                        <span className="text-[clamp(1.6rem,4.8vw,2.75rem)] md:text-[18px] text-[16px] font-extrabold leading-none">
                           1-3 დღეში
                         </span>
                       </div>
                     ) : idx === 1 ? (
-                      <div className="mt-6 inline-flex max-w-full items-center justify-center rounded-full bg-[#2563eb] px-6 py-3 text-center text-white ring-2 ring-white/90 ring-offset-2 ring-offset-transparent sm:px-8 sm:py-4">
-                        <span className="text-[clamp(1rem,3.4vw,1.6rem)] font-extrabold leading-snug">
+                      <div className="mt-6 inline-flex md:mt-14 max-w-full items-center justify-center rounded-full bg-[#2563eb] px-6 py-3 text-center text-white ring-2 ring-white/90 ring-offset-2 ring-offset-transparent sm:px-8 sm:py-4">
+                        <span className="text-[clamp(1rem,3.4vw,1.6rem)]  md:text-[18px] text-[16px]font-extrabold leading-snug">
                           შეუკვეთე მარტივად მიიღე სწრაფად
                         </span>
                       </div>
