@@ -14,6 +14,14 @@ import {
 
 type FlagComponent = (props: { title?: string; className?: string }) => React.ReactNode;
 
+type FieldErrors = Record<string, string>;
+
+function FieldError({ name, errors }: { name: string; errors: FieldErrors }) {
+  const msg = errors[name];
+  if (!msg) return null;
+  return <p className="mt-1 text-[16px] text-red-600">{msg}</p>;
+}
+
 const FLAGS: Record<string, FlagComponent> = {
   GB,
   US,
@@ -41,6 +49,12 @@ const ORIGIN_COUNTRIES: { code: string }[] = [
   { code: 'fr' },
   { code: 'tr' },
 ];
+
+function getInitialOriginCountry(allowedOriginCountryCodes?: string[]) {
+  if (allowedOriginCountryCodes?.length !== 1) return '';
+  const code = allowedOriginCountryCodes[0];
+  return ORIGIN_COUNTRIES.some((c) => c.code === code) ? code : '';
+}
 
 const FORM_TO_TARIFF_COUNTRY: Record<string, string> = {
   uk: 'GB',
@@ -104,7 +118,9 @@ export default function AdminCreateParcelForm({
   const [price, setPrice] = useState('');
   const [onlineShop, setOnlineShop] = useState('');
   const [quantity, setQuantity] = useState('1');
-  const [originCountry, setOriginCountry] = useState('');
+  const [originCountry, setOriginCountry] = useState(() =>
+    getInitialOriginCountry(allowedOriginCountryCodes),
+  );
   const [city, setCity] = useState('');
   const [address, setAddress] = useState('');
   const [phone, setPhone] = useState('');
@@ -115,7 +131,7 @@ export default function AdminCreateParcelForm({
   const [file, setFile] = useState<File | null>(null);
 
   const [error, setError] = useState<string | null>(null);
-  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -152,16 +168,6 @@ export default function AdminCreateParcelForm({
     const allowed = new Set(allowedOriginCountryCodes);
     return ORIGIN_COUNTRIES.filter((c) => allowed.has(c.code));
   }, [allowedOriginCountryCodes]);
-
-  useEffect(() => {
-    if (
-      allowedOriginCountryCodes?.length === 1 &&
-      !originCountry &&
-      originCountriesList.some((c) => c.code === allowedOriginCountryCodes[0])
-    ) {
-      setOriginCountry(allowedOriginCountryCodes[0]);
-    }
-  }, [allowedOriginCountryCodes, originCountry, originCountriesList]);
 
   useEffect(() => {
     let cancelled = false;
@@ -332,7 +338,7 @@ export default function AdminCreateParcelForm({
       if (d.address) formData.append('address', d.address);
       if (d.phone) formData.append('phone', d.phone);
       if (d.comment) formData.append('comment', d.comment);
-      formData.append('weight', String(d.weight));
+      if (d.weight != null) formData.append('weight', String(d.weight));
       formData.append('description', d.description);
       if (file) formData.append('file', file);
 
@@ -382,12 +388,6 @@ export default function AdminCreateParcelForm({
   const fieldRing = (name: string) =>
     fieldErrors[name] ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-gray-400';
 
-  function FieldError({ name }: { name: string }) {
-    const msg = fieldErrors[name];
-    if (!msg) return null;
-    return <p className="mt-1 text-[16px] text-red-600">{msg}</p>;
-  }
-
   return (
     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
       <h2 className="mb-4 text-[18px] md:text-[20px] font-semibold text-black">
@@ -423,7 +423,7 @@ export default function AdminCreateParcelForm({
               className={`w-full placeholder:font-normal placeholder:text-black placeholder:text-[14px] rounded-lg border bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 ${fieldRing('userEmail')}`}
               placeholder={t('userEmailPlaceholder')}
             />
-            <FieldError name="userEmail" />
+            <FieldError name="userEmail" errors={fieldErrors} />
             <p className="mt-1 text-[13px] text-gray-600">{t('userEmailRegisteredOnlyHint')}</p>
           </div>
 
@@ -458,7 +458,7 @@ export default function AdminCreateParcelForm({
               className={`w-full placeholder:font-normal placeholder:text-black placeholder:text-[14px] rounded-lg border bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 ${fieldRing('customerName')}`}
               placeholder={t('customerNamePlaceholder')}
             />
-            <FieldError name="customerName" />
+            <FieldError name="customerName" errors={fieldErrors} />
           </div>
 
           <div>
@@ -476,7 +476,7 @@ export default function AdminCreateParcelForm({
               className={`w-full placeholder:font-normal placeholder:text-black placeholder:text-[14px] rounded-lg border bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 ${fieldRing('trackingNumber')}`}
               placeholder={t('trackingPlaceholder')}
             />
-            <FieldError name="trackingNumber" />
+            <FieldError name="trackingNumber" errors={fieldErrors} />
           </div>
 
           <div>
@@ -495,7 +495,7 @@ export default function AdminCreateParcelForm({
               className={`w-full placeholder:font-normal placeholder:text-black placeholder:text-[14px] rounded-lg border bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 ${fieldRing('price')}`}
               placeholder={t('pricePlaceholder')}
             />
-            <FieldError name="price" />
+            <FieldError name="price" errors={fieldErrors} />
           
           </div>
 
@@ -514,7 +514,7 @@ export default function AdminCreateParcelForm({
               className={`w-full placeholder:font-normal placeholder:text-black placeholder:text-[14px] rounded-lg border bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 ${fieldRing('onlineShop')}`}
               placeholder={t('onlineShopPlaceholder')}
             />
-            <FieldError name="onlineShop" />
+            <FieldError name="onlineShop" errors={fieldErrors} />
           </div>
 
           <div>
@@ -570,7 +570,7 @@ export default function AdminCreateParcelForm({
               aria-invalid={Boolean(fieldErrors.quantity)}
               className={`w-full placeholder:font-normal placeholder:text-black placeholder:text-[14px] rounded-lg border bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 ${fieldRing('quantity')}`}
             />
-            <FieldError name="quantity" />
+            <FieldError name="quantity" errors={fieldErrors} />
           </div>
 
           <div ref={countryRef} className="relative">
@@ -633,12 +633,12 @@ export default function AdminCreateParcelForm({
                 })}
               </ul>
             )}
-            <FieldError name="originCountry" />
+            <FieldError name="originCountry" errors={fieldErrors} />
           </div>
 
           <div>
             <label className="mb-1 block text-[15px] font-semibold text-black">
-              {t('weight')} *
+              {t('weight')}
             </label>
             <input
               type="text"
@@ -652,7 +652,7 @@ export default function AdminCreateParcelForm({
               className={`w-full placeholder:font-normal placeholder:text-black placeholder:text-[14px] rounded-lg border bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 ${fieldRing('weight')}`}
               placeholder={t('weightPlaceholder')}
             />
-            <FieldError name="weight" />
+            <FieldError name="weight" errors={fieldErrors} />
             {calculated != null && (
               <p className="mt-1 text-[14px] text-black">
                 {t('shippingAmountLabel')}: {calculated.shippingAmount.toFixed(2)} GEL{' '}
@@ -728,7 +728,7 @@ export default function AdminCreateParcelForm({
               </ul>
             )}
           </div>
-          <FieldError name="description" />
+          <FieldError name="description" errors={fieldErrors} />
         </div>
 
         <div>
@@ -770,7 +770,7 @@ export default function AdminCreateParcelForm({
             aria-invalid={Boolean(fieldErrors.file)}
             className={`block w-full rounded-lg border px-3 py-2 text-[15px] text-black file:mr-3 file:rounded-md file:border file:border-gray-300 file:bg-white file:px-3 file:py-1.5 file:text-[15px] file:font-medium file:text-black hover:file:bg-gray-50 ${fieldRing('file')}`}
           />
-          <FieldError name="file" />
+          <FieldError name="file" errors={fieldErrors} />
           <p className="mt-1 text-[14px] font-medium text-black">{tDeclaration('maxFileSize')}</p>
         </div>
 

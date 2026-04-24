@@ -83,12 +83,21 @@ export function buildAdminCreateParcelFormSchema(
         .trim()
         .transform((s) => (s === '' ? undefined : s))
         .optional(),
-      weight: z
-        .string()
-        .trim()
-        .min(1, m.weightInvalid)
-        .transform((s) => Number(s.replace(',', '.')))
-        .refine((n) => !Number.isNaN(n) && n > 0, m.weightInvalid),
+      weight: z.preprocess(
+        (v) => {
+          if (typeof v === 'string') {
+            const trimmed = v.trim();
+            if (!trimmed) return undefined;
+            return Number(trimmed.replace(',', '.'));
+          }
+          return v;
+        },
+        z
+          .number({ message: m.weightInvalid })
+          .refine((n) => !Number.isNaN(n) && n > 0, m.weightInvalid)
+          .optional(),
+      )
+        .optional(),
       description: z.string().trim().min(1, m.descriptionRequired),
     })
     .superRefine((data, ctx) => {
