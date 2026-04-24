@@ -12,7 +12,7 @@ type ContactAddress = {
   postalCode: string;
   phone: string;
   mapEmbedUrl?: string;
-  workingHours?: Array<{ day: string; time: string }>;
+  workingHours?: Array<{ dayKey: string; time: string }>;
 };
 
 const addresses: ContactAddress[] = [
@@ -26,9 +26,17 @@ const addresses: ContactAddress[] = [
     mapEmbedUrl:
       "https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d744.3538607707357!2d44.7685562!3d41.7331312!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x404472e617d00001%3A0xeb1aa7f4ba81d489!2sJuri%2C%204%2F4%20Iuri%20Gagarini%20St%2C%20T%27bilisi!5e0!3m2!1sen!2sge!4v1774941743964!5m2!1sen!2sge",
     workingHours: [
-      { day: "ყოველდღე", time: "11:00 - 19:00" },
-      { day: "ონლაინ", time: "11:00 - 22:00" },
+      { dayKey: "everyday", time: "11:00 - 19:00" },
+      { dayKey: "online", time: "11:00 - 22:00" },
     ],
+  },
+  {
+    countryKey: "fr",
+    countryCode: "FR",
+    adress: "7 bis rue decres",
+    cityKey: "Paris",
+    postalCode: "75014",
+    phone: "+33 7 53 19 86 83",
   },
   {
     countryKey: "uk",
@@ -52,12 +60,21 @@ const addresses: ContactAddress[] = [
     mapEmbedUrl:
       "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3071.4048731036296!2d-75.6154525!3d39.6631062!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c7037c8a5160f7%3A0x64f625d37d93c3be!2s22%20Parkway%20Cir%20Suite%205%2C%20New%20Castle%2C%20DE%2019720%2C%20USA!5e0!3m2!1sen!2sge!4v1774941427350!5m2!1sen!2sge",
     workingHours: [
-      { day: "ორშ", time: "09:30 - 17:00" },
-      { day: "სამ", time: "09:30 - 17:00" },
-      { day: "ოთხ", time: "09:30 - 17:00" },
-      { day: "ხუთ", time: "09:30 - 17:00" },
-      { day: "პარ", time: "09:30 - 17:00" },
+      { dayKey: "mon", time: "09:30 - 17:00" },
+      { dayKey: "tue", time: "09:30 - 17:00" },
+      { dayKey: "wed", time: "09:30 - 17:00" },
+      { dayKey: "thu", time: "09:30 - 17:00" },
+      { dayKey: "fri", time: "09:30 - 17:00" },
     ],
+  },
+  {
+    countryKey: "cn",
+    countryCode: "CN",
+    adress: "广州市白云区聚源街50号欣凯科创园C栋102",
+    cityKey: "Guangzhou City / 广州",
+    stateKey: "GuangDong Province / 广东省",
+    postalCode: "510407",
+    phone: "+86 16602079929",
   },
 ];
 
@@ -65,6 +82,8 @@ const countryTitle: Record<string, string> = {
   GE: "Georgia",
   GB: "United Kingdom",
   US: "United States",
+  FR: "France",
+  CN: "China",
 };
 
 function mapQuery(address: ContactAddress) {
@@ -131,8 +150,8 @@ export default async function ContactPage() {
                     <p className="mb-1 font-semibold text-slate-900">{t('workingHoursTitle')}</p>
                     <div className="space-y-1 text-xs sm:text-sm">
                       {address.workingHours.map((row) => (
-                        <div key={row.day} className="flex justify-between gap-3">
-                          <span>{row.day}:</span>
+                        <div key={row.dayKey} className="flex justify-between gap-3">
+                          <span>{t(`days.${row.dayKey}`)}:</span>
                           <span>{row.time}</span>
                         </div>
                       ))}

@@ -46,7 +46,16 @@
   },
   "contact": {
     "addressesTitle": "Contact Addresses",
-    "workingHoursTitle": "Working hours"
+    "workingHoursTitle": "Working hours",
+    "days": {
+      "everyday": "Every day",
+      "online": "Online",
+      "mon": "Mon",
+      "tue": "Tue",
+      "wed": "Wed",
+      "thu": "Thu",
+      "fri": "Fri"
+    }
   },
   "adminsidebar": {
     "users": "Users",

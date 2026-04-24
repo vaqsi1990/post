@@ -27,7 +27,16 @@
   },
   "contact": {
     "addressesTitle": "საკონტაქტო მისამართები",
-    "workingHoursTitle": "სამუშაო საათები"
+    "workingHoursTitle": "სამუშაო საათები",
+    "days": {
+      "everyday": "ყოველდღე",
+      "online": "ონლაინ",
+      "mon": "ორშ",
+      "tue": "სამ",
+      "wed": "ოთხ",
+      "thu": "ხუთ",
+      "fri": "პარ"
+    }
   },
   "adminsidebar": {
     "users": "მომხმარებლები",

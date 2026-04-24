@@ -23,13 +23,13 @@ const FLAGS: Record<string, React.ComponentType<{ title?: string; className?: st
   TR,
 };
 
-const COUNTRY_KA: Record<string, string> = {
-  GB: 'დიდი ბრიტანეთი',
-  US: 'ამერიკა',
-  CN: 'ჩინეთი',
-  GR: 'საბერძნეთი',
-  FR: 'საფრანგეთი',
-  TR: 'თურქეთი',
+const COUNTRY_KEY_BY_CODE: Record<string, string> = {
+  GB: 'unitedkingdom',
+  US: 'usa',
+  CN: 'china',
+  GR: 'greece',
+  FR: 'france',
+  TR: 'turkey',
 };
 
 type AddressRow = {
@@ -169,15 +169,18 @@ export default async function DashboardAddressesSection() {
             <div className="mb-3 flex items-center justify-center gap-3">
               {(() => {
                 const Flag = FLAGS[row.countryCode];
+                const countryKey = COUNTRY_KEY_BY_CODE[row.countryCode];
+                const flagTitle =
+                  countryKey && tAddr.has(countryKey) ? tAddr(countryKey) : row.country;
                 return Flag ? (
                   <Flag
-                    title={COUNTRY_KA[row.countryCode] ?? row.country}
+                    title={flagTitle}
                     className="h-10 w-auto rounded object-cover shadow-md ring-1 ring-black/10"
                   />
                 ) : null;
               })()}
               <div className="whitespace-nowrap text-[15px] font-semibold text-[#3a5bff]">
-                {COUNTRY_KA[row.countryCode] ?? row.country}
+                {row.country}
               </div>
             </div>
             {hasUserName ? (

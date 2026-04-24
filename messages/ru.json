@@ -46,7 +46,16 @@
   },
   "contact": {
     "addressesTitle": "Контактные адреса",
-    "workingHoursTitle": "Часы работы"
+    "workingHoursTitle": "Часы работы",
+    "days": {
+      "everyday": "Ежедневно",
+      "online": "Онлайн",
+      "mon": "Пн",
+      "tue": "Вт",
+      "wed": "Ср",
+      "thu": "Чт",
+      "fri": "Пт"
+    }
   },
   "adminsidebar": {
     "users": "Пользователи",
@@ -523,7 +532,7 @@
     "unitedkingdom": "Великобритания",
     "postalCode": "Zip code",
     "phone": "Телефон",
-    "uk": "United Kingdom",
+    "uk": "Великобритания",
     "us": "США",
     "usa": "США",
     "cn": "China",
